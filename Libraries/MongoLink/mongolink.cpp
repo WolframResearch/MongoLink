@@ -14,7 +14,8 @@
 #include "WolframRawArrayLibrary.h"
 
 // Source files
-// #include "bulk_insert.h"
+#include "connection.h"
+#include "bulk_insert.h"
 
 /* Return the version of Library Link */
 EXTERN_C DLLEXPORT mint WolframLibrary_getVersion() {
@@ -22,15 +23,28 @@ EXTERN_C DLLEXPORT mint WolframLibrary_getVersion() {
 }
 
 EXTERN_C DLLEXPORT int WolframLibrary_initialize(WolframLibraryData libData) {
+  // initialize mongodb
+  mongoc_init();
   // Register All Library Managers
-  // (*libData->registerLibraryExpressionManager)();
-  // "MongoBulkOperation", manage_instance_mongobulkoperation);
+  (*libData->registerLibraryExpressionManager)("MongoClient",
+                                               manage_instance_mongoclient);
+  (*libData->registerLibraryExpressionManager)("MongoDatabase",
+                                               manage_instance_mongodatabase);
+  (*libData->registerLibraryExpressionManager)("MongoCollection",
+                                               manage_instance_mongocollection);
+  (*libData->registerLibraryExpressionManager)(
+      "MongoBulkOperation", manage_instance_mongobulkoperation);
   return 0;
 }
 
 EXTERN_C DLLEXPORT void
 WolframLibrary_uninitialize(WolframLibraryData libData) {
+  // Cleanup mongo
+  mongoc_cleanup();
   // Unitialize All Library Managers
-  // (*libData->unregisterLibraryExpressionManager)("MongoBulkOperation");
+  (*libData->unregisterLibraryExpressionManager)("MongoClient");
+  (*libData->unregisterLibraryExpressionManager)("MongoDatabase");
+  (*libData->unregisterLibraryExpressionManager)("MongoCollection");
+  (*libData->unregisterLibraryExpressionManager)("MongoBulkOperation");
   return;
 }
