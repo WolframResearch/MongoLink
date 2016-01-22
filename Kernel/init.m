@@ -1,1 +1,1 @@
-Package["MongoDBLink`"]
+Package["MongoLink`"]

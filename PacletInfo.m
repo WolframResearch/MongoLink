@@ -1,5 +1,3 @@
-(* ::Package:: *)
-
 Paclet[
 	Name -> "MongoLink",
 	Version -> "10.4",
@@ -9,6 +7,7 @@ Paclet[
 	Creator -> "Sebastian Bodenstein <sebastianb@wolfram.com>",
 	Extensions -> {
 		{"Kernel", Context -> {"MongoLink`"}, Symbols -> {
+			"MongoLink`GetClient"
 		}},
 		{"LibraryLink"}
 	}

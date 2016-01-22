@@ -12,4 +12,14 @@ std::map<mint, mongoc_collection_t *> collectionHandleMap;
 std::map<mint, mongoc_bulk_operation_t *> bulkOperationHandleMap;
 
 // Return string to store any returned strings outside of scope of functions
-// std::string return_string;
+char *returnCharArray = 0;
+std::string errorString = "None";
+
+////////////////////////////////////////////////////////////////////////////////
+
+EXTERN_C DLLEXPORT int WL_MongoGetLastError(WolframLibraryData libData,
+                                            mint Argc, MArgument *Args,
+                                            MArgument Res) {
+  MArgument_setUTF8String(Res, const_cast<char *>(errorString.c_str()));
+  return LIBRARY_NO_ERROR;
+}
