@@ -1,0 +1,224 @@
+(* Content-type: application/vnd.wolfram.mathematica *)
+
+(*** Wolfram Notebook File ***)
+(* http://www.wolfram.com/nb *)
+
+(* CreatedBy='Mathematica 10.4' *)
+
+(*CacheID: 234*)
+(* Internal cache information:
+NotebookFileLineBreakTest
+NotebookFileLineBreakTest
+NotebookDataPosition[       158,          7]
+NotebookDataLength[      6570,        215]
+NotebookOptionsPosition[      4962,        155]
+NotebookOutlinePosition[      5476,        177]
+CellTagsIndexPosition[      5391,        172]
+WindowFrame->Normal*)
+
+(* Beginning of Notebook Content *)
+Notebook[{
+
+Cell[CellGroupData[{
+Cell["MongoDB Link Examples", "Title",
+ CellChangeTimes->{{3.662457973465026*^9, 3.662457976663933*^9}}],
+
+Cell[BoxData["Quit"], "Input",
+ CellChangeTimes->{{3.662465402976988*^9, 3.662465403333809*^9}}],
+
+Cell[BoxData["Quit"], "Input",
+ CellChangeTimes->{{3.66246584187466*^9, 3.662465842155521*^9}}],
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"PacletDirectoryAdd", "[", 
+   RowBox[{"ParentDirectory", "@", 
+    RowBox[{"NotebookDirectory", "[", "]"}]}], "]"}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{"<<", "MongoLink`"}]}], "Code",
+ CellChangeTimes->{3.66245811514736*^9, 3.66245822137041*^9, 
+  3.662458761168262*^9}],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"GetClient", "[", "\"\<sdjfoisj\>\"", "]"}]], "Input",
+ CellChangeTimes->{{3.662458784381967*^9, 3.6624587843830423`*^9}, {
+  3.662458867449872*^9, 3.662458895464216*^9}}],
+
+Cell[BoxData["$Failed"], "Output",
+ CellChangeTimes->{{3.66245886786945*^9, 3.6624589250000267`*^9}, 
+   3.6624590081609573`*^9, 3.662459089905551*^9, 3.66245914490633*^9, 
+   3.662459197681655*^9, 3.6624592476306047`*^9, {3.662460438046171*^9, 
+   3.6624604663168907`*^9}, {3.662460803739307*^9, 3.6624608078333263`*^9}, {
+   3.6624657553753843`*^9, 3.662465784308214*^9}, {3.6624658145522203`*^9, 
+   3.662465897609186*^9}, 3.6624659320484953`*^9, 3.662466002160632*^9, {
+   3.662466045898014*^9, 3.662466061764825*^9}}]
+}, Open  ]],
+
+Cell[BoxData["Quit"], "Input",
+ CellChangeTimes->{{3.6624658190588837`*^9, 3.66246582063844*^9}}],
+
+Cell[BoxData["MongoCollection"], "Input",
+ CellChangeTimes->{{3.662459249261222*^9, 3.6624592517251453`*^9}}],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[{
+ RowBox[{"UpValues", "@", "GetClient"}], "\[IndentingNewLine]", 
+ RowBox[{"DownValues", "@", "GetClient"}]}], "Input",
+ CellChangeTimes->{{3.662459010795375*^9, 3.662459021887066*^9}}],
+
+Cell[BoxData[
+ RowBox[{"{", "}"}]], "Output",
+ CellChangeTimes->{{3.662459016337633*^9, 3.6624590220557117`*^9}}],
+
+Cell[BoxData[
+ RowBox[{"{", "}"}]], "Output",
+ CellChangeTimes->{{3.662459016337633*^9, 3.6624590220629253`*^9}}]
+}, Open  ]],
+
+Cell[BoxData[""], "Input",
+ CellChangeTimes->{{3.662460668057597*^9, 3.662460670052065*^9}}],
+
+Cell[BoxData["Message"], "Input",
+ CellChangeTimes->{{3.6624654815200653`*^9, 3.662465482739785*^9}}],
+
+Cell[BoxData[
+ RowBox[{"Message", "[", 
+  RowBox[{
+   RowBox[{"f", "::", "argx"}], ",", "1", ",", "2"}], "]"}]], "Input"],
+
+Cell[BoxData[
+ RowBox[{"On", "["}]], "Input",
+ CellChangeTimes->{{3.662465465736599*^9, 3.662465475491968*^9}}],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"?", "LibraryLink`*"}]], "Input",
+ CellChangeTimes->{{3.6624606355611753`*^9, 3.6624606414935083`*^9}}],
+
+Cell[BoxData[
+ StyleBox["\<\"$LibraryError returns the system-dependent error message from \
+loading a library, or None if there was no error.\"\>", "MSG"]], "Print", \
+"PrintUsage",
+ CellChangeTimes->{3.662460641782816*^9},
+ CellTags->"Info43662467841-2939010"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData["LibraryLink`$LibraryError"], "Input",
+ CellChangeTimes->{{3.662460654045494*^9, 3.6624606592119217`*^9}}],
+
+Cell[BoxData["\<\"dlsym(0x7fc5e3ef3030, WolframCompileLibrary_wrapper): \
+symbol not found\"\>"], "Output",
+ CellChangeTimes->{3.6624606594282303`*^9}]
+}, Open  ]],
+
+Cell[BoxData["LibraryLink"], "Input",
+ CellChangeTimes->{{3.662460189584361*^9, 3.662460191468174*^9}}],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[{
+ RowBox[{"PacletDirectoryAdd", "[", "Parent", "]"}], "\[IndentingNewLine]", 
+ RowBox[{"<<", "MongoLink`"}]}], "Input",
+ CellChangeTimes->{{3.662458125768379*^9, 3.6624581464803*^9}, {
+  3.662458186730114*^9, 3.662458187432353*^9}}],
+
+Cell[BoxData["$Failed"], "Output",
+ CellChangeTimes->{3.6624581292115183`*^9}]
+}, Open  ]],
+
+Cell[BoxData["PacletDirectoryAdd"], "Input",
+ CellChangeTimes->{{3.662458092385653*^9, 3.662458095813574*^9}}],
+
+Cell["", "Text",
+ CellChangeTimes->{{3.662457981185306*^9, 3.662457984431992*^9}}],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[{
+ RowBox[{"PacletDirectoryAdd", "[", 
+  RowBox[{"ParentDirectory", "@", 
+   RowBox[{"NotebookDirectory", "[", "]"}]}], "]"}], "\[IndentingNewLine]", 
+ RowBox[{"<<", "MongoLink`"}]}], "Input",
+ CellChangeTimes->{{3.662458189404346*^9, 3.6624582154980593`*^9}}],
+
+Cell[BoxData[
+ RowBox[{"{", "\<\"/Users/sebastianb/git/mongolink\"\>", "}"}]], "Output",
+ CellChangeTimes->{{3.662458194803275*^9, 3.6624582163873873`*^9}}]
+}, Open  ]]
+}, Open  ]]
+},
+WindowSize->{808, 690},
+WindowMargins->{{111, Automatic}, {-168, Automatic}},
+FrontEndVersion->"10.4 for Mac OS X x86 (32-bit, 64-bit Kernel) (January 11, \
+2016)",
+StyleDefinitions->"Default.nb"
+]
+(* End of Notebook Content *)
+
+(* Internal cache information *)
+(*CellTagsOutline
+CellTagsIndex->{
+ "Info43662467841-2939010"->{
+  Cell[3225, 101, 262, 5, 43, "Print",
+   CellTags->"Info43662467841-2939010"]}
+ }
+*)
+(*CellTagsIndex
+CellTagsIndex->{
+ {"Info43662467841-2939010", 5287, 166}
+ }
+*)
+(*NotebookFileOutline
+Notebook[{
+Cell[CellGroupData[{
+Cell[580, 22, 104, 1, 92, "Title"],
+Cell[687, 25, 96, 1, 28, "Input"],
+Cell[786, 28, 95, 1, 28, "Input"],
+Cell[884, 31, 314, 8, 66, "Code"],
+Cell[CellGroupData[{
+Cell[1223, 43, 194, 3, 28, "Input"],
+Cell[1420, 48, 522, 7, 28, "Output"]
+}, Open  ]],
+Cell[1957, 58, 97, 1, 28, "Input"],
+Cell[2057, 61, 109, 1, 28, "Input"],
+Cell[CellGroupData[{
+Cell[2191, 66, 199, 3, 46, "Input"],
+Cell[2393, 71, 113, 2, 28, "Output"],
+Cell[2509, 75, 113, 2, 28, "Output"]
+}, Open  ]],
+Cell[2637, 80, 92, 1, 28, "Input"],
+Cell[2732, 83, 101, 1, 28, "Input"],
+Cell[2836, 86, 121, 3, 28, "Input"],
+Cell[2960, 91, 111, 2, 28, "Input"],
+Cell[CellGroupData[{
+Cell[3096, 97, 126, 2, 28, "Input"],
+Cell[3225, 101, 262, 5, 43, "Print",
+ CellTags->"Info43662467841-2939010"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[3524, 111, 119, 1, 28, "Input"],
+Cell[3646, 114, 151, 2, 28, "Output"]
+}, Open  ]],
+Cell[3812, 119, 103, 1, 28, "Input"],
+Cell[CellGroupData[{
+Cell[3940, 124, 246, 4, 46, "Input"],
+Cell[4189, 130, 78, 1, 28, "Output"]
+}, Open  ]],
+Cell[4282, 134, 110, 1, 28, "Input"],
+Cell[4395, 137, 82, 1, 30, "Text"],
+Cell[CellGroupData[{
+Cell[4502, 142, 273, 5, 46, "Input"],
+Cell[4778, 149, 156, 2, 28, "Output"]
+}, Open  ]]
+}, Open  ]]
+}
+]
+*)
+
+(* End of internal cache information *)

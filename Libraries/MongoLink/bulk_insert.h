@@ -14,8 +14,9 @@
 
 ////////////////////////////////////////////////////////////////////////////////
 
-DLLEXPORT void manage_instance_mongobulkoperation(WolframLibraryData libData,
-                                                  mbool mode, mint id);
+DLLEXPORT void
+manage_instance_mongocollectionbulkoperation(WolframLibraryData libData,
+                                             mbool mode, mint id);
 
 ////////////////////////////////////////////////////////////////////////////////
 

@@ -12,6 +12,8 @@ PackageExport["MongoDatabase"]
 PackageExport["MongoCollection"]
 
 PackageExport["GetClient"]
+PackageExport["GetDatabase"]
+PackageExport["GetCollection"]
 
 (******************************************************************************)
 
@@ -82,17 +84,18 @@ GetDatabase[client_MongoClient, databaseName_String] := Module[
 
 (******************************************************************************)
 
-GetDatabase[client_MongoClient, databaseName_String] := Module[
-	{databaseHandle, result},
-	databaseHandle = CreateManagedLibraryExpression["MongoDatabase", MongoDatabase];
-	result = databaseHandleCreate[
+GetCollection[client_MongoClient, databaseName_String, collectionName_String] := Module[
+	{collectionHandle, result},
+	collectionHandle = CreateManagedLibraryExpression["MongoCollection", MongoCollection];
+	result = collectionHandleCreate[
 		ManagedLibraryExpressionID@client, 
-		ManagedLibraryExpressionID@databaseHandle,
-		databaseName
+		ManagedLibraryExpressionID@collectionHandle,
+		databaseName, 
+		collectionName
 	];
 	If[LibraryFunctionFailureQ@result, 
-		MongoFailureMessage[GetDatabase]; 
+		MongoFailureMessage[GetCollection]; 
 		Return@$Failed
 	];
-	databaseHandle
+	collectionHandle
 ]

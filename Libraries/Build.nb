@@ -10,10 +10,10 @@
 NotebookFileLineBreakTest
 NotebookFileLineBreakTest
 NotebookDataPosition[       158,          7]
-NotebookDataLength[     15558,        335]
-NotebookOptionsPosition[     14897,        307]
-NotebookOutlinePosition[     15256,        323]
-CellTagsIndexPosition[     15213,        320]
+NotebookDataLength[     37048,        916]
+NotebookOptionsPosition[     33225,        784]
+NotebookOutlinePosition[     33583,        800]
+CellTagsIndexPosition[     33540,        797]
 WindowFrame->Normal*)
 
 (* Beginning of Notebook Content *)
@@ -62,8 +62,7 @@ Cell[BoxData[{
      RowBox[{
       RowBox[{
       "$CompileOptions", " ", "=", " ", 
-       "\"\<-std=c++11 -mmacosx-version-min=10.9 -stdlib=libc++\>\""}], ";", 
-      " ", 
+       "\"\<-std=c++11 -framework Foundation -g\>\""}], ";", " ", 
       RowBox[{"(*", " ", 
        RowBox[{"Stupid", " ", "hack"}], " ", "*)"}], "\n", "\t\t", 
       RowBox[{"$MXNetLibraryName", " ", "=", " ", "\"\<libmxnet.so\>\""}], 
@@ -96,12 +95,33 @@ Cell[BoxData[{
     RowBox[{"{", 
      RowBox[{
      "\"\<mongolink.cpp\>\"", ",", " ", "\"\<common.cpp\>\"", ",", " ", 
-      "\"\<connection.cpp\>\"", ",", " ", "\"\<bulk_insert.cpp\>\""}], 
-     "}"}]}]}], ";"}], "\n", 
+      "\"\<connection.cpp\>\"", ",", " ", "\"\<bulk_insert.cpp\>\"", ",", 
+      " ", "\"\<write_concern.cpp\>\""}], "}"}]}]}], ";"}], "\n", 
  RowBox[{
   RowBox[{
    RowBox[{"$WLInclude", " ", "=", " ", 
     RowBox[{"{", "$CSourceDir", "}"}]}], ";"}], "\n", "\n", 
+  RowBox[{"(*", " ", 
+   RowBox[{"MathLink", " ", "Source"}], " ", "*)"}], "\n"}], "\n", 
+ RowBox[{
+  RowBox[{"$MathDIR", " ", "=", " ", 
+   RowBox[{"FileNameJoin", "[", 
+    RowBox[{"{", 
+     RowBox[{
+     "$InstallationDirectory", ",", "\"\<SystemFiles\>\"", ",", 
+      "\"\<Links\>\"", ",", "\"\<Mathlink\>\"", ",", "\"\<DeveloperKit\>\"", 
+      ",", " ", "$SystemID", ",", " ", "\"\<CompilerAdditions\>\""}], "}"}], 
+    "]"}]}], ";"}], "\n", 
+ RowBox[{
+  RowBox[{"$MathLib", " ", "=", " ", 
+   RowBox[{"{", "\"\<MLi4\>\"", "}"}]}], ";"}], "\n", 
+ RowBox[{
+  RowBox[{"$MathInc", " ", "=", " ", 
+   RowBox[{"{", "$MathDIR", "}"}]}], ";"}], "\n", 
+ RowBox[{
+  RowBox[{
+   RowBox[{"$MathLibDir", " ", "=", " ", 
+    RowBox[{"{", "$MathDIR", "}"}]}], ";"}], "\n", "\n", 
   RowBox[{"(*", " ", 
    RowBox[{"Mongo", " ", "Source"}], " ", "*)"}]}], "\n", 
  RowBox[{
@@ -118,30 +138,32 @@ Cell[BoxData[{
  RowBox[{
   RowBox[{"$Include", " ", "=", " ", 
    RowBox[{"Join", "[", 
-    RowBox[{"$WLInclude", ",", " ", "$MongoInc"}], "]"}]}], ";"}], "\n", 
+    RowBox[{"$WLInclude", ",", " ", "$MongoInc", ",", " ", "$MathInc"}], 
+    "]"}]}], ";"}], "\n", 
+ RowBox[{
+  RowBox[{"$Libraries", " ", "=", " ", 
+   RowBox[{"Join", "[", 
+    RowBox[{"$MongoLib", ",", " ", "$MathLib"}], "]"}]}], ";"}], "\n", 
  RowBox[{
   RowBox[{
-   RowBox[{"$Libraries", " ", "=", " ", 
-    RowBox[{"Join", "[", "$MongoLib", "]"}]}], ";"}], "\n"}], "\n", 
- RowBox[{
-  RowBox[{"$MongoLinkLib", " ", "=", " ", 
-   RowBox[{"CreateLibrary", "[", "\n", "\t", 
-    RowBox[{"$WLSource", ",", " ", "\"\<MongoLink\>\"", ",", "\n", "\t", 
-     RowBox[{"\"\<IncludeDirectories\>\"", "\[Rule]", " ", "$Include"}], ",", 
-     "\n", "\t", 
-     RowBox[{"\"\<Libraries\>\"", " ", "\[Rule]", " ", 
-      RowBox[{"First", "@", "$MongoLib"}]}], ",", "\n", "\t", 
-     RowBox[{"\"\<CompileOptions\>\"", "\[Rule]", "$CompileOptions"}], ",", 
-     "\n", "\t", 
-     RowBox[{"\"\<Language\>\"", " ", "->", " ", "\"\<C++\>\""}], ",", "\n", 
-     "\n", 
-     RowBox[{"(*", "\t", 
-      RowBox[{
-       RowBox[{
-       "\"\<CompileOptions\>\"", " ", "\[Rule]", " ", "$CompileOptions"}], 
-       ","}], "*)"}], "\n", "\t", "\n", "\t", 
-     RowBox[{"\"\<Debug\>\"", " ", "\[Rule]", " ", "True"}]}], "\n", "]"}]}], 
-  "\n"}], "\n"}], "Code",
+   RowBox[{"$LibraryDir", " ", "=", " ", 
+    RowBox[{"Join", "[", "$MathLibDir", "]"}]}], ";"}], "\n"}], "\n", 
+ RowBox[{"$MongoLinkLib", " ", "=", " ", 
+  RowBox[{"CreateLibrary", "[", "\n", "\t", 
+   RowBox[{"$WLSource", ",", " ", "\"\<MongoLink\>\"", ",", "\n", "\t", 
+    RowBox[{"\"\<IncludeDirectories\>\"", "\[Rule]", " ", "$Include"}], ",", 
+    "\n", "\t", 
+    RowBox[{"\"\<Libraries\>\"", " ", "\[Rule]", " ", "$Libraries"}], ",", 
+    "\n", "\t", 
+    RowBox[{"\"\<CompileOptions\>\"", "\[Rule]", "$CompileOptions"}], ",", 
+    "\n", "\t", 
+    RowBox[{
+    "\"\<LibraryDirectories\>\"", " ", "\[Rule]", " ", "$LibraryDir"}], ",", 
+    "\n", "\t", 
+    RowBox[{"\"\<Language\>\"", " ", "->", " ", "\"\<C++\>\""}], ",", "\n", 
+    "\t", 
+    RowBox[{"\"\<Debug\>\"", " ", "\[Rule]", " ", "True"}]}], "\n", 
+   "]"}]}]}], "Code",
  CellChangeTimes->{{3.655742720636463*^9, 3.655742730739047*^9}, {
    3.655742958622713*^9, 3.655743081153853*^9}, {3.655743169192954*^9, 
    3.655743223885983*^9}, {3.655743285799737*^9, 3.6557432899021387`*^9}, {
@@ -220,21 +242,36 @@ Cell[BoxData[{
    3.6624138207879868`*^9, 3.662413824027055*^9}, {3.662413900054104*^9, 
    3.6624139178827477`*^9}, {3.662454234083082*^9, 3.662454237913732*^9}, {
    3.662454323083025*^9, 3.662454328361833*^9}, {3.66246041182285*^9, 
-   3.6624604270133553`*^9}}],
+   3.6624604270133553`*^9}, {3.6625407654072104`*^9, 3.662540766916643*^9}, {
+   3.662546163206485*^9, 3.662546163708705*^9}, {3.662550472390153*^9, 
+   3.6625504775969667`*^9}, {3.6626268844361267`*^9, 3.662626889309864*^9}, {
+   3.662626967517193*^9, 3.662627216899642*^9}, 3.6626277128387623`*^9, {
+   3.662628619521522*^9, 3.662628666466172*^9}, {3.662628702678197*^9, 
+   3.662628703300602*^9}, {3.662628870862005*^9, 3.662628873740553*^9}, {
+   3.662628918061529*^9, 3.662628929253722*^9}, {3.66262903490994*^9, 
+   3.662629065807555*^9}, {3.662629114134098*^9, 3.6626291193478737`*^9}, 
+   3.662629280805654*^9, {3.66262937960555*^9, 3.662629403763873*^9}, {
+   3.6626302785337563`*^9, 3.662630314173031*^9}, {3.662632871078657*^9, 
+   3.662632900934808*^9}, 3.6626331160248404`*^9, {3.66263314698913*^9, 
+   3.662633214596086*^9}, 3.662633293295961*^9, {3.6626333383502283`*^9, 
+   3.662633418340396*^9}, {3.662633719309931*^9, 3.662633744428179*^9}, {
+   3.662633806499969*^9, 3.662633811597068*^9}, {3.662633898564981*^9, 
+   3.662633898749755*^9}, {3.6626339339725857`*^9, 3.662633935116311*^9}, {
+   3.662634005728169*^9, 3.66263403156542*^9}, {3.6626345632058487`*^9, 
+   3.662634563803226*^9}}],
 
 Cell[BoxData["\<\"\"\>"], "Print",
- CellChangeTimes->{
-  3.662413201124598*^9, {3.662413236248516*^9, 3.662413245148643*^9}, {
-   3.662413421073419*^9, 3.662413456098127*^9}, {3.6624135167500963`*^9, 
-   3.66241355323129*^9}, {3.662413642818879*^9, 3.662413698975212*^9}, {
-   3.662413765866276*^9, 3.662413846039876*^9}, {3.662413894918432*^9, 
-   3.6624139571649103`*^9}, 3.662414059022913*^9, {3.662453920760824*^9, 
-   3.662453955693696*^9}, 3.6624540617521048`*^9, 3.662454115231215*^9, {
-   3.662454239967634*^9, 3.6624542647829027`*^9}, 3.662454329553403*^9, 
-   3.662454615428376*^9, 3.6624547637333612`*^9, 3.6624547976657887`*^9, 
-   3.66245483860728*^9, 3.662454870626377*^9, 3.66245507694448*^9, 
-   3.662455397624662*^9, 3.662455574641053*^9, {3.662455664538451*^9, 
-   3.662455674998266*^9}, {3.662460395745426*^9, 3.662460418089826*^9}}],
+ CellChangeTimes->{{3.66263336737523*^9, 3.662633393092606*^9}, 
+   3.662633444125705*^9, 3.6626335179708776`*^9, {3.66263359561965*^9, 
+   3.662633621337179*^9}, {3.662633703408779*^9, 3.662633782758203*^9}, 
+   3.66263381393472*^9, 3.662633861308661*^9, 3.662633900636105*^9, 
+   3.662633937347062*^9, {3.662634020303628*^9, 3.662634033750902*^9}, 
+   3.6626341307411423`*^9, {3.6626341951515427`*^9, 3.662634209695952*^9}, 
+   3.662634253432151*^9, {3.662634292002246*^9, 3.6626343118072166`*^9}, 
+   3.662634444100163*^9, 3.662634559389489*^9, 3.662634612892528*^9, {
+   3.662635114921948*^9, 3.6626351393436613`*^9}, 3.662635268849341*^9, 
+   3.662635306518256*^9, 3.662635527915491*^9, 3.662635684097299*^9, 
+   3.662635891242082*^9, 3.662636010116725*^9}],
 
 Cell[BoxData["\<\"/Users/sebastianb/Library/Mathematica/SystemFiles/\
 LibraryResources/MacOSX-x86-64/MongoLink.dylib\"\>"], "Output",
@@ -258,8 +295,363 @@ LibraryResources/MacOSX-x86-64/MongoLink.dylib\"\>"], "Output",
    3.662454763830883*^9, 3.662454797675685*^9, 3.662454838614809*^9, 
    3.662454870634809*^9, 3.662455076953227*^9, 3.662455397632285*^9, 
    3.6624555746488047`*^9, {3.662455664729692*^9, 3.662455675008835*^9}, {
-   3.662460395753305*^9, 3.662460418100771*^9}}]
+   3.662460395753305*^9, 3.662460431693385*^9}, {3.662464057254725*^9, 
+   3.662464101485358*^9}, {3.662464204213376*^9, 3.662464213130603*^9}, 
+   3.662464266394031*^9, {3.662464308846521*^9, 3.6624643313148117`*^9}, {
+   3.662464385508513*^9, 3.6624643982537613`*^9}, {3.662464500661045*^9, 
+   3.662464506334374*^9}, {3.6624653119708147`*^9, 3.662465334846464*^9}, 
+   3.6624654007260017`*^9, 3.66246594995302*^9, {3.662466182588702*^9, 
+   3.6624661993942003`*^9}, 3.662466345078538*^9, 3.662539927378716*^9, 
+   3.662540769823107*^9, {3.662546112534141*^9, 3.662546212262024*^9}, 
+   3.6625462646867857`*^9, {3.6625463571538467`*^9, 3.662546378854989*^9}, 
+   3.66254647738888*^9, 3.66255048077392*^9, {3.66255051309375*^9, 
+   3.662550523196258*^9}, 3.662551072275556*^9, 3.662551109815702*^9, 
+   3.662551192785452*^9, 3.662551240294943*^9, 3.66255140233608*^9, {
+   3.6625519029610863`*^9, 3.6625519200221033`*^9}, 3.662553239555924*^9, 
+   3.6625532829311953`*^9, 3.6625551043571653`*^9, 3.6625551355628443`*^9, 
+   3.662555364445805*^9, 3.6625554310592327`*^9, 3.66255660798578*^9, 
+   3.662556839248348*^9, 3.662557054278893*^9, {3.662557753470457*^9, 
+   3.6625577581088753`*^9}, 3.662626852101807*^9, 3.662626891905712*^9, {
+   3.66262698743399*^9, 3.662627006522072*^9}, 3.6626270376152077`*^9, {
+   3.662627098135285*^9, 3.662627107159588*^9}, {3.662627170694396*^9, 
+   3.662627247135041*^9}, 3.6626273971829777`*^9, 3.662627714776291*^9, 
+   3.6626277907035522`*^9, 3.662628267941452*^9, 3.662628440251178*^9, 
+   3.6626284789824257`*^9, {3.662628646161604*^9, 3.662628669405766*^9}, {
+   3.662628705329796*^9, 3.6626287380968037`*^9}, 3.662628778511435*^9, 
+   3.6626288189940567`*^9, {3.662628880005253*^9, 3.662628996950603*^9}, {
+   3.662629043148838*^9, 3.662629130308085*^9}, 3.66262919064736*^9, {
+   3.6626292768149652`*^9, 3.662629292491088*^9}, 3.662629339152141*^9, 
+   3.662629405571164*^9, 3.662633125026449*^9, {3.662633169806057*^9, 
+   3.662633198564563*^9}, 3.662633281106524*^9, {3.662633360159165*^9, 
+   3.66263339318538*^9}, 3.6626334442185698`*^9, 3.662633518056443*^9, {
+   3.6626335957132607`*^9, 3.6626336214929543`*^9}, {3.662633703508532*^9, 
+   3.662633782845129*^9}, 3.6626338140332947`*^9, 3.66263386145532*^9, 
+   3.662633900729163*^9, 3.662633937431897*^9, {3.662634020391471*^9, 
+   3.662634033839119*^9}, 3.662634130830723*^9, {3.6626341952367373`*^9, 
+   3.662634209782174*^9}, 3.662634253516418*^9, {3.662634292010295*^9, 
+   3.662634311899692*^9}, 3.662634444183634*^9, 3.6626345593988447`*^9, 
+   3.662634612981529*^9, {3.662635115210083*^9, 3.662635139349409*^9}, 
+   3.662635268856937*^9, 3.662635306526175*^9, 3.662635527925692*^9, 
+   3.6626356841066313`*^9, 3.66263589126476*^9, 3.6626360101241903`*^9}]
 }, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"\n", 
+  RowBox[{
+   RowBox[{
+    RowBox[{
+    "$MongoLinkLib", " ", "=", " ", 
+     "\"\</Users/sebastianb/Library/Mathematica/SystemFiles/LibraryResources/\
+MacOSX-x86-64/MongoLink.dylib\>\""}], ";"}], "\n", 
+   RowBox[{"WriteConcernGetInfo", " ", "=", " ", 
+    RowBox[{"LibraryFunctionLoad", "[", 
+     RowBox[{
+     "$MongoLinkLib", ",", " ", "\"\<WL_WriteConcernGetInfo\>\"", ",", " ", 
+      "\n", "\t", 
+      RowBox[{"{", "\n", "\t\t", 
+       RowBox[{"Integer", ",", "\t\t", 
+        RowBox[{"(*", " ", 
+         RowBox[{"write", " ", "concern", " ", "handle", " ", "key"}], " ", 
+         "*)"}], "\n", "\t\t", "LinkObject"}], "\n", "\t", "}"}], ",", " ", 
+      "\n", "\t", "LinkObject"}], "\t\t\t\t\t\t", "\n", "]"}]}], "\n", "\n", 
+   "LibraryLink`$LibraryError"}]}]], "Code",
+ CellChangeTimes->{{3.6626351519092207`*^9, 3.662635199458878*^9}, 
+   3.6626352406071377`*^9, 3.662635278076552*^9, {3.662635340900581*^9, 
+   3.662635391732358*^9}, 3.662635440006371*^9, {3.662635509708411*^9, 
+   3.6626355220561247`*^9}, {3.662635658680818*^9, 3.6626356936145773`*^9}, 
+   3.662635780304595*^9, 3.662635869442515*^9, {3.662636127804757*^9, 
+   3.662636140675035*^9}}],
+
+Cell[BoxData["$Failed"], "Output",
+ CellChangeTimes->{{3.662635364139031*^9, 3.6626353889988747`*^9}, {
+   3.6626354409110117`*^9, 3.662635449690036*^9}, {3.662635511723024*^9, 
+   3.6626355297544613`*^9}, {3.662635659074974*^9, 3.662635694016808*^9}, {
+   3.662635872434051*^9, 3.662635894284832*^9}, 3.662636017214869*^9, 
+   3.662636131956395*^9}],
+
+Cell[BoxData["None"], "Output",
+ CellChangeTimes->{{3.662635364139031*^9, 3.6626353889988747`*^9}, {
+   3.6626354409110117`*^9, 3.662635449690036*^9}, {3.662635511723024*^9, 
+   3.6626355297544613`*^9}, {3.662635659074974*^9, 3.662635694016808*^9}, {
+   3.662635872434051*^9, 3.662635894284832*^9}, 3.662636017214869*^9, 
+   3.662636131963787*^9}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData["Quit"], "Input",
+ CellChangeTimes->{{3.662635903717461*^9, 3.662635905026534*^9}, 
+   3.662636011652268*^9}],
+
+Cell[BoxData["Quite"], "Output",
+ CellChangeTimes->{3.662635905318755*^9}]
+}, Open  ]],
+
+Cell[BoxData[
+ StyleBox[
+  RowBox[{"LibraryFunctionLoad", "::", "linkarg"}], "MessageName"]], "Input"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[""], "Input",
+ CellChangeTimes->{{3.662635249621872*^9, 3.662635264618394*^9}, 
+   3.662635691718424*^9}],
+
+Cell[BoxData["\<\"dlsym(0x7fb654c0c530, WolframCompileLibrary_wrapper): \
+symbol not found\"\>"], "Output",
+ CellChangeTimes->{{3.662635264826528*^9, 3.662635280316766*^9}, {
+   3.662635315594603*^9, 3.662635376996429*^9}, 3.662635670036874*^9}]
+}, Open  ]],
+
+Cell[BoxData["Quit"], "Input",
+ CellChangeTimes->{{3.662635188534774*^9, 3.662635188985243*^9}}],
+
+Cell[CellGroupData[{
+
+Cell[BoxData["asdfasdf"], "Input",
+ CellChangeTimes->{{3.662633916099667*^9, 3.662633916464932*^9}}],
+
+Cell[BoxData[
+ RowBox[{"{", "\<\"MLi4\"\>", "}"}]], "Output",
+ CellChangeTimes->{{3.662632609718279*^9, 3.66263261392623*^9}, {
+   3.662632806198032*^9, 3.662632839850404*^9}, 3.6626334050302877`*^9, 
+   3.662633509761574*^9, {3.6626338376994953`*^9, 3.662633841073223*^9}, 
+   3.662633882197817*^9}],
+
+Cell[BoxData[
+ RowBox[{"{", \
+"\<\"/Applications/Mathematica.app/Contents/SystemFiles/Links/Mathlink/\
+DeveloperKit/MacOSX-x86-64/CompilerAdditions\"\>", "}"}]], "Output",
+ CellChangeTimes->{{3.662632609718279*^9, 3.66263261392623*^9}, {
+   3.662632806198032*^9, 3.662632839850404*^9}, 3.6626334050302877`*^9, 
+   3.662633509761574*^9, {3.6626338376994953`*^9, 3.662633841073223*^9}, 
+   3.662633882205755*^9}],
+
+Cell[BoxData["\<\"/Users/sebastianb/Software/tempFolder/test.cpp\"\>"], \
+"Output",
+ CellChangeTimes->{{3.662632609718279*^9, 3.66263261392623*^9}, {
+   3.662632806198032*^9, 3.662632839850404*^9}, 3.6626334050302877`*^9, 
+   3.662633509761574*^9, {3.6626338376994953`*^9, 3.662633841073223*^9}, 
+   3.662633882212069*^9}],
+
+Cell[BoxData[
+ RowBox[{"{", \
+"\<\"/Applications/Mathematica.app/Contents/SystemFiles/Links/Mathlink/\
+DeveloperKit/MacOSX-x86-64/CompilerAdditions\"\>", "}"}]], "Output",
+ CellChangeTimes->{{3.662632609718279*^9, 3.66263261392623*^9}, {
+   3.662632806198032*^9, 3.662632839850404*^9}, 3.6626334050302877`*^9, 
+   3.662633509761574*^9, {3.6626338376994953`*^9, 3.662633841073223*^9}, 
+   3.6626338822190533`*^9}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData["$Libraries"], "Input"],
+
+Cell[BoxData[
+ RowBox[{"{", "\<\"MLi4\"\>", "}"}]], "Output",
+ CellChangeTimes->{3.662633844681274*^9}]
+}, Open  ]],
+
+Cell[BoxData["\[AliasDelimiter]"], "Input",
+ CellChangeTimes->{3.662629141192975*^9}],
+
+Cell[CellGroupData[{
+
+Cell[BoxData["$Libraries"], "Input"],
+
+Cell[BoxData[
+ RowBox[{"{", 
+  RowBox[{"\<\"mongoc-1.0.0\"\>", ",", "\<\"MLi4\"\>"}], "}"}]], "Output",
+ CellChangeTimes->{{3.6626338522918797`*^9, 3.6626338631885347`*^9}}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData["$Include"], "Input"],
+
+Cell[BoxData[
+ RowBox[{"{", 
+  RowBox[{"\<\"/Users/sebastianb/git/mongolink/Libraries/MongoLink\"\>", 
+   ",", "\<\"/usr/local/include/libmongoc-1.0\"\>", 
+   ",", "\<\"/usr/local/include/libbson-1.0\"\>", 
+   ",", "\<\"/Applications/Mathematica.app/Contents/SystemFiles/Links/\
+Mathlink/DeveloperKit/MacOSX-x86-64/CompilerAdditions\"\>"}], "}"}]], "Output",\
+
+ CellChangeTimes->{3.6626338325929623`*^9}]
+}, Open  ]],
+
+Cell[BoxData["Quit"], "Input",
+ CellChangeTimes->{{3.662633614214026*^9, 3.662633614731954*^9}}],
+
+Cell[CellGroupData[{
+
+Cell[BoxData["$LibraryDir"], "Input"],
+
+Cell[BoxData[
+ RowBox[{"{", \
+"\<\"/Applications/Mathematica.app/Contents/SystemFiles/Links/Mathlink/\
+DeveloperKit/MacOSX-x86-64/CompilerAdditions\"\>", "}"}]], "Output",
+ CellChangeTimes->{3.662633472799028*^9}]
+}, Open  ]],
+
+Cell[BoxData[
+ RowBox[{"SystemOpen", "@", 
+  "\"\</Applications/Mathematica.app/Contents/SystemFiles/Links/Mathlink/\
+DeveloperKit/MacOSX-x86-64/CompilerAdditions\>\""}]], "Input",
+ CellChangeTimes->{{3.662633479956184*^9, 3.6626334821879387`*^9}}],
+
+Cell[CellGroupData[{
+
+Cell[BoxData["$CompileOptions"], "Input"],
+
+Cell[BoxData["\<\"-std=c++11 -mmacosx-version-min=10.9 -stdlib=libc++\"\>"], \
+"Output",
+ CellChangeTimes->{3.6626334636283283`*^9}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData["$Libraries"], "Input"],
+
+Cell[BoxData[
+ RowBox[{"{", "\<\"mongoc-1.0.0\"\>", "}"}]], "Output",
+ CellChangeTimes->{3.662633457767953*^9}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData["$Include"], "Input"],
+
+Cell[BoxData[
+ RowBox[{"{", 
+  RowBox[{"\<\"/Users/sebastianb/git/mongolink/Libraries/MongoLink\"\>", 
+   ",", "\<\"/usr/local/include/libmongoc-1.0\"\>", 
+   ",", "\<\"/usr/local/include/libbson-1.0\"\>", 
+   ",", "\<\"/Applications/Mathematica.app/Contents/SystemFiles/Links/\
+Mathlink/DeveloperKit/MacOSX-x86-64/CompilerAdditions\"\>"}], "}"}]], "Output",\
+
+ CellChangeTimes->{{3.662633431261592*^9, 3.6626334464756193`*^9}}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData["$Libraries"], "Input"],
+
+Cell[BoxData[
+ RowBox[{"{", 
+  RowBox[{"\<\"mongoc-1.0.0\"\>", ",", "\<\"MLi4\"\>"}], "}"}]], "Output",
+ CellChangeTimes->{3.662633382341095*^9}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"NotebookDirectory", "[", "]"}]], "Input",
+ CellChangeTimes->{{3.662633237549762*^9, 3.662633241596088*^9}}],
+
+Cell[BoxData["\<\"/Users/sebastianb/git/mongolink/Libraries/\"\>"], "Output",
+ CellChangeTimes->{3.662633241858037*^9}]
+}, Open  ]],
+
+Cell[BoxData["MLGetType"], "Input",
+ CellChangeTimes->{{3.6626300245749903`*^9, 3.6626300290746517`*^9}}],
+
+Cell[BoxData[
+ RowBox[{"SystemOpen", "@", "$CADDSDIR"}]], "Input",
+ CellChangeTimes->{{3.662629051212282*^9, 3.6626290540125093`*^9}}],
+
+Cell[BoxData["MLPutInteger"], "Input",
+ CellChangeTimes->{{3.662628458239191*^9, 3.6626284582403603`*^9}}],
+
+Cell[BoxData["M"], "Input",
+ CellChangeTimes->{3.662628455029492*^9}],
+
+Cell[BoxData["$"], "Input",
+ CellChangeTimes->{3.662633186620973*^9}],
+
+Cell[CellGroupData[{
+
+Cell[BoxData["$SystemID"], "Input",
+ CellChangeTimes->{{3.662626940127253*^9, 3.6626269419947042`*^9}}],
+
+Cell[BoxData["\<\"MacOSX-x86-64\"\>"], "Output",
+ CellChangeTimes->{3.662626942285372*^9}]
+}, Open  ]],
+
+Cell[BoxData["LibraryLink"], "Input",
+ CellChangeTimes->{{3.662627992864381*^9, 3.662627995306531*^9}}],
+
+Cell[BoxData[
+ RowBox[{"SystemOpen", "@", "$CADDSDIR"}]], "Input",
+ CellChangeTimes->{{3.6626277981272*^9, 3.66262780718683*^9}}],
+
+Cell[CellGroupData[{
+
+Cell[BoxData["$VersionNumber"], "Input",
+ CellChangeTimes->{{3.6626278580814466`*^9, 3.662627859218614*^9}}],
+
+Cell[BoxData["10.4`"], "Output",
+ CellChangeTimes->{3.6626278594257*^9}]
+}, Open  ]],
+
+Cell[BoxData[
+ RowBox[{"SystemOpen", "@", 
+  RowBox[{"FileNameJoin", "[", 
+   RowBox[{"{", 
+    RowBox[{
+    "$InstallationDirectory", ",", 
+     "\"\<SystemFiles/Links/LibraryLink/LibraryResources/Source/\>\""}], 
+    "}"}], "]"}]}]], "Input",
+ CellChangeTimes->{{3.662628129424787*^9, 3.662628166996488*^9}}],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"SystemOpen", "@", 
+  RowBox[{"FileNameJoin", "[", 
+   RowBox[{"{", 
+    RowBox[{
+     RowBox[{"FileNameDrop", "[", 
+      RowBox[{
+       RowBox[{"NotebookDirectory", "[", "]"}], ",", " ", 
+       RowBox[{"-", "3"}]}], "]"}], ",", "\"\<LibraryResources\>\"", ",", 
+     "\"\<Source\>\""}], "}"}], "]"}]}]], "Input",
+ CellChangeTimes->{{3.662627441060742*^9, 3.662627443403617*^9}}],
+
+Cell[BoxData["$Failed"], "Output",
+ CellChangeTimes->{{3.662627438720138*^9, 3.662627448254842*^9}}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"FileNameJoin", "[", 
+  RowBox[{"{", 
+   RowBox[{
+    RowBox[{"FileNameDrop", "[", 
+     RowBox[{
+      RowBox[{"NotebookDirectory", "[", "]"}], ",", " ", 
+      RowBox[{"-", "3"}]}], "]"}], ",", "\"\<LibraryResources\>\"", ",", 
+    "\"\<Source\>\""}], "}"}], "]"}]], "Input"],
+
+Cell[BoxData["\<\"/Users/sebastianb/LibraryResources/Source\"\>"], "Output",
+ CellChangeTimes->{3.662627451087631*^9}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[""], "Input",
+ CellChangeTimes->{{3.662626901683333*^9, 3.662626963630795*^9}}],
+
+Cell[BoxData["\<\"/Applications/Mathematica.app/Contents/SystemFiles/Links/\
+WSTP/DeveloperKit/MacOSX-x86-64/CompilerAdditions\"\>"], "Output",
+ CellChangeTimes->{{3.662626932413418*^9, 3.662626958935279*^9}}]
+}, Open  ]],
+
+Cell[CellGroupData[{
 
 Cell[BoxData[
  RowBox[{
@@ -288,8 +680,9 @@ Cell[BoxData[
     RowBox[{"If", "[", 
      RowBox[{
       RowBox[{"FileExistsQ", "@", "$MongoPackageLib"}], ",", " ", 
-      RowBox[{"DeleteFile", "@", "$MongoPackageLib"}]}], "]"}], ";", " ", 
-    RowBox[{"(*", " ", "Overwrite", " ", "*)"}], "\n", 
+      RowBox[{"DeleteFile", "@", "$MongoPackageLib"}]}], "]"}], ";"}], " ", 
+   RowBox[{"(*", " ", "Overwrite", " ", "*)"}], "\n", 
+   RowBox[{
     RowBox[{"If", "[", 
      RowBox[{
       RowBox[{"Not", "@", 
@@ -302,11 +695,95 @@ Cell[BoxData[
    "\n", "\n", 
    RowBox[{"LibraryLoad", "@", "$MongoPackageLib"}], "\n", 
    "LibraryLink`$LibraryError"}]}]], "Code",
- CellChangeTimes->{3.662411425692749*^9}]
+ CellChangeTimes->{3.662411425692749*^9}],
+
+Cell[BoxData["None"], "Output",
+ CellChangeTimes->{3.662466182689247*^9}]
+}, Open  ]],
+
+Cell[BoxData[""], "Input",
+ CellChangeTimes->{{3.662556738422213*^9, 3.662556739035116*^9}}],
+
+Cell[BoxData["BooleanQ"], "Input",
+ CellChangeTimes->{{3.6625526150569*^9, 3.662552624029385*^9}}],
+
+Cell[BoxData["Message"], "Input",
+ CellChangeTimes->{{3.662552132782043*^9, 3.662552133579556*^9}}],
+
+Cell[BoxData["Failure"], "Input",
+ CellChangeTimes->{{3.6624646382598753`*^9, 3.662464643116167*^9}}],
+
+Cell[BoxData["Message"], "Input",
+ CellChangeTimes->{{3.662464926863613*^9, 3.6624649276282873`*^9}}],
+
+Cell[BoxData["Quit"], "Input",
+ CellChangeTimes->{{3.662465336032404*^9, 3.662465336460536*^9}}],
+
+Cell[BoxData["Dataset"], "Input",
+ CellChangeTimes->{{3.662540207055868*^9, 3.662540207727047*^9}}],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"Options", "@", "CreateLibrary"}]], "Input",
+ CellChangeTimes->{{3.662552047050723*^9, 3.662552052670844*^9}}],
+
+Cell[BoxData[
+ RowBox[{"{", 
+  RowBox[{
+   RowBox[{"\<\"Compiler\"\>", "\[RuleDelayed]", "Automatic"}], ",", 
+   RowBox[{"\<\"CleanIntermediate\"\>", "\[Rule]", "Automatic"}], ",", 
+   RowBox[{"\<\"CreateBinary\"\>", "\[Rule]", "True"}], ",", 
+   RowBox[{"\<\"Debug\"\>", "\[Rule]", "False"}], ",", 
+   RowBox[{"\<\"Defines\"\>", "\[Rule]", 
+    RowBox[{"{", "}"}]}], ",", 
+   RowBox[{"\<\"CompileOptions\"\>", "\[Rule]", 
+    RowBox[{"{", "}"}]}], ",", 
+   RowBox[{"\<\"CompilerInstallation\"\>", "\[Rule]", "Automatic"}], ",", 
+   RowBox[{"\<\"CompilerName\"\>", "\[Rule]", "Automatic"}], ",", 
+   RowBox[{"\<\"ExtraObjectFiles\"\>", "\[Rule]", 
+    RowBox[{"{", "}"}]}], ",", 
+   RowBox[{"\<\"IncludeDirectories\"\>", "\[Rule]", 
+    RowBox[{"{", "}"}]}], ",", 
+   RowBox[{"\<\"Language\"\>", "\[Rule]", "Automatic"}], ",", 
+   RowBox[{"\<\"Libraries\"\>", "\[Rule]", 
+    RowBox[{"{", "}"}]}], ",", 
+   RowBox[{"\<\"LibraryDirectories\"\>", "\[Rule]", 
+    RowBox[{"{", "}"}]}], ",", 
+   RowBox[{"\<\"LibraryType\"\>", "\[Rule]", "\<\"Dynamic\"\>"}], ",", 
+   RowBox[{"\<\"LinkerOptions\"\>", "\[Rule]", 
+    RowBox[{"{", "}"}]}], ",", 
+   RowBox[{"\<\"PreCompileCommands\"\>", "\[Rule]", "\<\"\"\>"}], ",", 
+   RowBox[{"\<\"PostCompileCommands\"\>", "\[Rule]", "\<\"\"\>"}], ",", 
+   RowBox[{"\<\"ShellCommandFunction\"\>", "\[Rule]", "None"}], ",", 
+   RowBox[{"\<\"ShellOutputFunction\"\>", "\[Rule]", "None"}], ",", 
+   RowBox[{"\<\"SystemCompileOptions\"\>", "\[Rule]", 
+    RowBox[{"{", "}"}]}], ",", 
+   RowBox[{"\<\"SystemDefines\"\>", "\[Rule]", "Automatic"}], ",", 
+   RowBox[{"\<\"SystemIncludeDirectories\"\>", "\[Rule]", "Automatic"}], ",", 
+   
+   RowBox[{"\<\"SystemLibraries\"\>", "\[Rule]", "Automatic"}], ",", 
+   RowBox[{"\<\"SystemLibraryDirectories\"\>", "\[Rule]", "Automatic"}], ",", 
+   
+   RowBox[{"\<\"SystemLinkerOptions\"\>", "\[Rule]", 
+    RowBox[{"{", "}"}]}], ",", 
+   RowBox[{"\<\"TargetDirectory\"\>", 
+    "\[Rule]", \
+"\<\"/Users/sebastianb/Library/Mathematica/SystemFiles/LibraryResources/\
+MacOSX-x86-64\"\>"}], ",", 
+   RowBox[{"\<\"TargetSystemID\"\>", "\[Rule]", "\<\"MacOSX-x86-64\"\>"}], 
+   ",", 
+   RowBox[{"\<\"WorkingDirectory\"\>", "\[Rule]", "Automatic"}]}], 
+  "}"}]], "Output",
+ CellChangeTimes->{3.6625520529644423`*^9}]
+}, Open  ]],
+
+Cell[BoxData["Positive"], "Input",
+ CellChangeTimes->{{3.66255271427597*^9, 3.662552715251911*^9}}]
 }, Open  ]]
 },
 WindowSize->{1234, 788},
-WindowMargins->{{84, Automatic}, {-13, Automatic}},
+WindowMargins->{{-21, Automatic}, {Automatic, 1}},
 FrontEndVersion->"10.4 for Mac OS X x86 (32-bit, 64-bit Kernel) (January 11, \
 2016)",
 StyleDefinitions->"Default.nb"
@@ -331,11 +808,115 @@ Cell[1045, 35, 178, 5, 28, "Input"],
 Cell[1226, 42, 132, 2, 28, "Output"]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[1395, 49, 9448, 173, 700, "Code"],
-Cell[10846, 224, 852, 12, 21, "Print"],
-Cell[11701, 238, 1587, 22, 28, "Output"]
+Cell[1395, 49, 11465, 211, 762, "Code"],
+Cell[12863, 262, 797, 11, 21, "Print"],
+Cell[13663, 275, 4302, 59, 28, "Output"]
 }, Open  ]],
-Cell[13303, 263, 1578, 41, 194, "Code"]
+Cell[CellGroupData[{
+Cell[18002, 339, 1201, 25, 209, "Code"],
+Cell[19206, 366, 350, 5, 28, "Output"],
+Cell[19559, 373, 347, 5, 28, "Output"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[19943, 383, 122, 2, 28, "Input"],
+Cell[20068, 387, 74, 1, 28, "Output"]
+}, Open  ]],
+Cell[20157, 391, 102, 2, 28, "Input"],
+Cell[CellGroupData[{
+Cell[20284, 397, 118, 2, 28, "Input"],
+Cell[20405, 401, 245, 3, 28, "Output"]
+}, Open  ]],
+Cell[20665, 407, 96, 1, 28, "Input"],
+Cell[CellGroupData[{
+Cell[20786, 412, 100, 1, 28, "Input"],
+Cell[20889, 415, 300, 5, 28, "Output"],
+Cell[21192, 422, 410, 7, 28, "Output"],
+Cell[21605, 431, 322, 5, 28, "Output"],
+Cell[21930, 438, 412, 7, 28, "Output"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[22379, 450, 36, 0, 28, "Input"],
+Cell[22418, 452, 103, 2, 28, "Output"]
+}, Open  ]],
+Cell[22536, 457, 85, 1, 28, "Input"],
+Cell[CellGroupData[{
+Cell[22646, 462, 36, 0, 28, "Input"],
+Cell[22685, 464, 173, 3, 28, "Output"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[22895, 472, 34, 0, 28, "Input"],
+Cell[22932, 474, 404, 8, 46, "Output"]
+}, Open  ]],
+Cell[23351, 485, 96, 1, 28, "Input"],
+Cell[CellGroupData[{
+Cell[23472, 490, 37, 0, 28, "Input"],
+Cell[23512, 492, 213, 4, 28, "Output"]
+}, Open  ]],
+Cell[23740, 499, 248, 4, 28, "Input"],
+Cell[CellGroupData[{
+Cell[24013, 507, 41, 0, 28, "Input"],
+Cell[24057, 509, 132, 2, 28, "Output"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[24226, 516, 36, 0, 28, "Input"],
+Cell[24265, 518, 111, 2, 28, "Output"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[24413, 525, 34, 0, 28, "Input"],
+Cell[24450, 527, 428, 8, 46, "Output"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[24915, 540, 36, 0, 28, "Input"],
+Cell[24954, 542, 145, 3, 28, "Output"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[25136, 550, 131, 2, 28, "Input"],
+Cell[25270, 554, 119, 1, 28, "Output"]
+}, Open  ]],
+Cell[25404, 558, 105, 1, 28, "Input"],
+Cell[25512, 561, 134, 2, 28, "Input"],
+Cell[25649, 565, 106, 1, 28, "Input"],
+Cell[25758, 568, 69, 1, 28, "Input"],
+Cell[25830, 571, 69, 1, 28, "Input"],
+Cell[CellGroupData[{
+Cell[25924, 576, 103, 1, 28, "Input"],
+Cell[26030, 579, 90, 1, 28, "Output"]
+}, Open  ]],
+Cell[26135, 583, 103, 1, 28, "Input"],
+Cell[26241, 586, 129, 2, 28, "Input"],
+Cell[CellGroupData[{
+Cell[26395, 592, 108, 1, 28, "Input"],
+Cell[26506, 595, 72, 1, 28, "Output"]
+}, Open  ]],
+Cell[26593, 599, 310, 8, 28, "Input"],
+Cell[CellGroupData[{
+Cell[26928, 611, 405, 10, 28, "Input"],
+Cell[27336, 623, 100, 1, 28, "Output"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[27473, 629, 300, 8, 28, "Input"],
+Cell[27776, 639, 118, 1, 28, "Output"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[27931, 645, 92, 1, 28, "Input"],
+Cell[28026, 648, 209, 2, 28, "Output"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[28272, 655, 1591, 42, 194, "Code"],
+Cell[29866, 699, 73, 1, 28, "Output"]
+}, Open  ]],
+Cell[29954, 703, 92, 1, 28, "Input"],
+Cell[30049, 706, 98, 1, 28, "Input"],
+Cell[30150, 709, 99, 1, 28, "Input"],
+Cell[30252, 712, 101, 1, 28, "Input"],
+Cell[30356, 715, 101, 1, 28, "Input"],
+Cell[30460, 718, 96, 1, 28, "Input"],
+Cell[30559, 721, 99, 1, 28, "Input"],
+Cell[CellGroupData[{
+Cell[30683, 726, 133, 2, 28, "Input"],
+Cell[30819, 730, 2276, 47, 131, "Output"]
+}, Open  ]],
+Cell[33110, 780, 99, 1, 28, "Input"]
 }, Open  ]]
 }
 ]

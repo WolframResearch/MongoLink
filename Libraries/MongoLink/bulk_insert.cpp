@@ -8,34 +8,43 @@
 
 ////////////////////////////////////////////////////////////////////////////////
 
-DLLEXPORT void manage_instance_mongobulkoperation(WolframLibraryData libData,
-                                                  mbool mode, mint id) {
+DLLEXPORT void
+manage_instance_mongocollectionbulkoperation(WolframLibraryData libData,
+                                             mbool mode, mint id) {
   // Only do destruction. Deal with creation later
-  if ((mode != 0) && (bulkOperationHandleMap.count(id) > 0)) {
-    mongoc_bulk_operation_destroy(bulkOperationHandleMap[id]);
-    bulkOperationHandleMap.erase(id);
+  if ((mode != 0) && (collectionBulkOperationHandleMap.count(id) > 0)) {
+    mongoc_bulk_operation_destroy(collectionBulkOperationHandleMap[id]);
+    collectionBulkOperationHandleMap.erase(id);
   }
 }
 
-// ////////////////////////////////////////////////////////////////////////////////
-//
-// EXTERN_C DLLEXPORT int WL(WolframLibraryData libData, mint Argc,
-//                           MArgument *Args, MArgument Res) {
-//
-//   int symbol_handle_key = MArgument_getInteger(Args[0]);
-//   char *jsonString = MArgument_getUTF8String(Args[1]);
-//
-//   SymbolHandle out;
-//   MX_CALL(MXSymbolCreateFromJSON(jsonString, &out));
-//
-//   // Write outputted symbol into map
-//   symbolHandleMap[symbol_handle_key] = out;
-//
-//   // // Disown Strings
-//   libData->UTF8String_disown(MArgument_getUTF8String(Args[1]));
-//
-//   return LIBRARY_NO_ERROR;
-// }
+EXTERN_C DLLEXPORT int
+WL_MongoCollectionBulkOperation(WolframLibraryData libData, mint Argc,
+                                MArgument *Args, MArgument Res) {
+
+  int bulk_handle_key = MArgument_getInteger(Args[0]);
+  auto collection = collectionHandleMap[MArgument_getInteger(Args[1])];
+  int32_t writeConcern = MArgument_getInteger(Args[2]);
+  int32_t writeConcernTimeout = MArgument_getInteger(Args[3]);
+  bool ordered = MArgument_getInteger(Args[4]);
+
+  auto *wc = mongoc_write_concern_new();
+  mongoc_write_concern_set_w(wc, writeConcern);
+  mongoc_write_concern_set_wtimeout(wc, writeConcernTimeout); /* milliseconds */
+
+  auto bulk = mongoc_collection_create_bulk_operation(collection, true, wc);
+
+  if (!bulk) {
+    errorString = "Cannot create bulk operation.";
+    return LIBRARY_FUNCTION_ERROR;
+  }
+  collectionBulkOperationHandleMap[bulk_handle_key] = bulk;
+
+  // // Disown Strings
+  // libData->UTF8String_disown(MArgument_getUTF8String(Args[1]));
+
+  return LIBRARY_NO_ERROR;
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 

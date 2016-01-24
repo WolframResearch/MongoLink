@@ -8,8 +8,8 @@
 std::map<mint, mongoc_client_t *> clientHandleMap;
 std::map<mint, mongoc_database_t *> databaseHandleMap;
 std::map<mint, mongoc_collection_t *> collectionHandleMap;
-
-std::map<mint, mongoc_bulk_operation_t *> bulkOperationHandleMap;
+std::map<mint, mongoc_bulk_operation_t *> collectionBulkOperationHandleMap;
+std::map<mint, mongoc_write_concern_t *> writeConcernHandleMap;
 
 // Return string to store any returned strings outside of scope of functions
 char *returnCharArray = 0;
@@ -23,3 +23,5 @@ EXTERN_C DLLEXPORT int WL_MongoGetLastError(WolframLibraryData libData,
   MArgument_setUTF8String(Res, const_cast<char *>(errorString.c_str()));
   return LIBRARY_NO_ERROR;
 }
+
+////////////////////////////////////////////////////////////////////////////////

@@ -54,8 +54,13 @@ EXTERN_C DLLEXPORT int WL_DatabaseHandleCreate(WolframLibraryData libData,
   int database_handle_key = MArgument_getInteger(Args[1]);
   char *databaseName = MArgument_getUTF8String(Args[2]);
 
-  databaseHandleMap[database_handle_key] = mongoc_client_get_database(
-      clientHandleMap[client_handle_key], databaseName);
+  auto database = mongoc_client_get_database(clientHandleMap[client_handle_key],
+                                             databaseName);
+  if (!database) {
+    errorString = "Cannot connect to database.";
+    return LIBRARY_FUNCTION_ERROR;
+  }
+  databaseHandleMap[database_handle_key] = database;
 
   // Disown string
   libData->UTF8String_disown(databaseName);
@@ -82,10 +87,18 @@ EXTERN_C DLLEXPORT int WL_CollectionHandleCreate(WolframLibraryData libData,
   char *databaseName = MArgument_getUTF8String(Args[2]);
   char *collectionName = MArgument_getUTF8String(Args[3]);
 
-  collectionHandleMap[collection_handle_key] = mongoc_client_get_collection(
+  // Create collection handle, append to collectionHandleMap if successfully
+  // created
+  auto collection = mongoc_client_get_collection(
       clientHandleMap[client_handle_key], databaseName, collectionName);
 
-  // Disown string
+  if (!collection) {
+    errorString = "Cannot connect to collection.";
+    return LIBRARY_FUNCTION_ERROR;
+  }
+  collectionHandleMap[collection_handle_key] = collection;
+
+  // Disown strings
   libData->UTF8String_disown(databaseName);
   libData->UTF8String_disown(collectionName);
   return LIBRARY_NO_ERROR;

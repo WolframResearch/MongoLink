@@ -15,7 +15,8 @@ PackageExport["MongoFailureMessage"]
 
 (****** Global Variables ******)
 $MongoLinkLib = FindLibrary["MongoLink"];
-	
+
+
 (******************************************************************************)
 (****** Load Library Functions ******)
 MongoGetLastError = LibraryFunctionLoad[$MongoLinkLib, "WL_MongoGetLastError", 
