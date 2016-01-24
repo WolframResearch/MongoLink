@@ -10,12 +10,11 @@
 #include <mongoc.h>
 #include <bson.h>
 
-#include "WolframLibrary.h"
-#include "WolframRawArrayLibrary.h"
-
 // Source files
+#include "common.h"
 #include "connection.h"
 #include "bulk_insert.h"
+#include "write_concern.h"
 
 /* Return the version of Library Link */
 EXTERN_C DLLEXPORT mint WolframLibrary_getVersion() {
@@ -33,7 +32,10 @@ EXTERN_C DLLEXPORT int WolframLibrary_initialize(WolframLibraryData libData) {
   (*libData->registerLibraryExpressionManager)("MongoCollection",
                                                manage_instance_mongocollection);
   (*libData->registerLibraryExpressionManager)(
-      "MongoBulkOperation", manage_instance_mongobulkoperation);
+      "MongoCollectionBulkOperation",
+      manage_instance_mongocollectionbulkoperation);
+  (*libData->registerLibraryExpressionManager)(
+      "MongoWriteConcern", manage_instance_mongowriteconcern);
   return 0;
 }
 
@@ -45,6 +47,8 @@ WolframLibrary_uninitialize(WolframLibraryData libData) {
   (*libData->unregisterLibraryExpressionManager)("MongoClient");
   (*libData->unregisterLibraryExpressionManager)("MongoDatabase");
   (*libData->unregisterLibraryExpressionManager)("MongoCollection");
-  (*libData->unregisterLibraryExpressionManager)("MongoBulkOperation");
+  (*libData->unregisterLibraryExpressionManager)(
+      "MongoCollectionBulkOperation");
+  (*libData->unregisterLibraryExpressionManager)("MongoWriteConcern");
   return;
 }
