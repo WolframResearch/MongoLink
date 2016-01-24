@@ -1,5 +1,5 @@
-#ifndef COLLECTION_H_INCLUDED
-#define COLLECTION_H_INCLUDED
+#ifndef ITERATOR_H_INCLUDED
+#define ITERATOR_H_INCLUDED
 
 #include <map>
 #include <iostream>
@@ -12,9 +12,8 @@
 
 ////////////////////////////////////////////////////////////////////////////////
 
-EXTERN_C DLLEXPORT int WL_MongoCollectionCount(WolframLibraryData libData,
-                                               mint Argc, MArgument *Args,
-                                               MArgument Res);
+DLLEXPORT void manage_instance_mongoiterator(WolframLibraryData libData,
+                                             mbool mode, mint id);
 
 ////////////////////////////////////////////////////////////////////////////////
 

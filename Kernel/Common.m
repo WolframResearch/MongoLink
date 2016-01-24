@@ -10,6 +10,7 @@ Package["MongoLink`"]
 PackageExport["$MongoLinkLib"]
 PackageExport["LibraryFunctionFailureQ"]
 PackageExport["MongoFailureMessage"]
+PackageExport["MongoGetLastError"]
 
 (******************************************************************************)
 

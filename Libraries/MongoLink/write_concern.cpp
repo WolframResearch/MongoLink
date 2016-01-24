@@ -55,34 +55,63 @@ EXTERN_C DLLEXPORT int WL_WriteConcernSetJournal(WolframLibraryData libData,
 ////////////////////////////////////////////////////////////////////////////////
 EXTERN_C DLLEXPORT int WL_WriteConcernGetInfo(WolframLibraryData libData,
                                               MLINK mlp) {
+  // Load write concern handle
   int wc_handle;
-  mongoc_write_concern_t *wc;
+  int len;
+  if (!MLTestHead(mlp, "List", &len) || len != 1)
+    return LIBRARY_FUNCTION_ERROR;
+  if (!MLGetInteger(mlp, &wc_handle))
+    return LIBRARY_FUNCTION_ERROR;
+  auto wc = writeConcernHandleMap[wc_handle];
+
   // Get metadata
   bool journal = mongoc_write_concern_get_journal(wc);
   int32_t wtimeout = mongoc_write_concern_get_wtimeout(wc);
   int32_t w = mongoc_write_concern_get_w(wc);
   bool majority = mongoc_write_concern_get_wmajority(wc);
-  int len;
-  if (!MLTestHead(mlp, "List", &len) || len != 1)
-    goto retPt;
 
-  z1 if (!MLGetInteger(mlp, &wc_handle)) goto retPt;
-  z2 wc = writeConcernHandleMap[wc_handle];
+  // Export to linkobject
   if (!MLNewPacket(mlp))
     goto retPt;
-  z3 if (!MLPutFunction(mlp, "Association", 1)) goto retPt;
+  if (!MLPutFunction(mlp, "Association", 4))
+    goto retPt;
+  // Export journal
   if (!MLPutFunction(mlp, "Rule", 2))
     goto retPt;
-  z4 if (!MLPutString(mlp, "Journal")) goto retPt;
-  z5 if (!MLPutInteger(mlp, 423)) goto retPt;
-  z6
-      // if (!WSPutInteger(mlp, 4))
-      //   goto retPt;
-      // if (!WSPutInteger(mlp, 289374))
-      //   goto retPt;
-      // Return via mathlink
+  if (!MLPutString(mlp, "Journal"))
+    goto retPt;
+  if (journal) {
+    if (!MLPutSymbol(mlp, "True"))
+      goto retPt;
+  } else if (!MLPutSymbol(mlp, "False"))
+    goto retPt;
+  // Export wtimeout
+  if (!MLPutFunction(mlp, "Rule", 2))
+    goto retPt;
+  if (!MLPutString(mlp, "Timeout"))
+    goto retPt;
+  if (!MLPutInteger(mlp, wtimeout))
+    goto retPt;
+  // Export write concern
+  if (!MLPutFunction(mlp, "Rule", 2))
+    goto retPt;
+  if (!MLPutString(mlp, "WriteConcern"))
+    goto retPt;
+  if (!MLPutInteger(mlp, w))
+    goto retPt;
+  // Export majority
+  if (!MLPutFunction(mlp, "Rule", 2))
+    goto retPt;
+  if (!MLPutString(mlp, "Majority"))
+    goto retPt;
+  if (majority) {
+    if (!MLPutSymbol(mlp, "True"))
+      goto retPt;
+  } else if (!MLPutSymbol(mlp, "False"))
+    goto retPt;
+  // Return via mathlink
 
-      return LIBRARY_NO_ERROR;
+  return LIBRARY_NO_ERROR;
 retPt:
   return LIBRARY_FUNCTION_ERROR;
 }

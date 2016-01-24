@@ -12,9 +12,11 @@
 
 // Source files
 #include "common.h"
+#include "iterator.h"
 #include "connection.h"
 #include "bulk_insert.h"
 #include "write_concern.h"
+#include "wl_bson.h"
 
 /* Return the version of Library Link */
 EXTERN_C DLLEXPORT mint WolframLibrary_getVersion() {
@@ -36,6 +38,10 @@ EXTERN_C DLLEXPORT int WolframLibrary_initialize(WolframLibraryData libData) {
       manage_instance_mongocollectionbulkoperation);
   (*libData->registerLibraryExpressionManager)(
       "MongoWriteConcern", manage_instance_mongowriteconcern);
+  (*libData->registerLibraryExpressionManager)("MongoBSON",
+                                               manage_instance_mongobson);
+  (*libData->registerLibraryExpressionManager)("MongoIterator",
+                                               manage_instance_mongoiterator);
   return 0;
 }
 
@@ -50,5 +56,7 @@ WolframLibrary_uninitialize(WolframLibraryData libData) {
   (*libData->unregisterLibraryExpressionManager)(
       "MongoCollectionBulkOperation");
   (*libData->unregisterLibraryExpressionManager)("MongoWriteConcern");
+  (*libData->unregisterLibraryExpressionManager)("MongoBSON");
+  (*libData->unregisterLibraryExpressionManager)("MongoIterator");
   return;
 }

@@ -24,12 +24,17 @@
 extern std::map<mint, mongoc_client_t *> clientHandleMap;
 extern std::map<mint, mongoc_database_t *> databaseHandleMap;
 extern std::map<mint, mongoc_collection_t *> collectionHandleMap;
+extern std::map<mint, mongoc_cursor_t *> iteratorHandleMap;
 extern std::map<mint, mongoc_write_concern_t *> writeConcernHandleMap;
+extern std::map<mint, mongoc_write_concern_t *> writeConcernHandleMap;
+extern std::map<mint, bson_t *> bsonHandleMap;
 
 extern std::map<mint, mongoc_bulk_operation_t *>
     collectionBulkOperationHandleMap;
 
 extern char *returnCharArray;
+extern char *returnBSONJSON; // Used to parse bson to json. Special destructor
+extern std::string returnString;
 extern std::string errorString;
 
 ////////////////////////////////////////////////////////////////////////////////

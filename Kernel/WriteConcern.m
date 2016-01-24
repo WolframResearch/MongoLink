@@ -51,7 +51,7 @@ WriteConcernGetInfo = LibraryFunctionLoad[$MongoLinkLib, "WL_WriteConcernGetInfo
 
 Options[WriteConcernCreate] =
 {
-	"AcknowledgementLevel" -> Automatic,
+	"WriteConcern" -> Automatic,
 	"Journal" -> Automatic,
 	"Timeout" -> Automatic
 };
@@ -60,7 +60,7 @@ WriteConcernCreate[opts:OptionsPattern[]] := Module[
 	{handle, al, journal, timeout}
 	,
 	handle = CreateManagedLibraryExpression["MongoWriteConcern", MongoWriteConcern];
-	{al, journal, timeout} = OptionValue[{"AcknowledgementLevel", "Journal", "Timeout"}];
+	{al, journal, timeout} = OptionValue[{"WriteConcern", "Journal", "Timeout"}];
 (*	If[!MatchQ[opts, {_Integer, _String, _...}],*)
 	
 	(* Check if we need to change the mongoDB defaults *)

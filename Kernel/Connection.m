@@ -11,9 +11,9 @@ PackageExport["MongoClient"]
 PackageExport["MongoDatabase"]
 PackageExport["MongoCollection"]
 
-PackageExport["GetClient"]
-PackageExport["GetDatabase"]
-PackageExport["GetCollection"]
+PackageExport["ClientConnect"]
+PackageExport["DatabaseConnect"]
+PackageExport["CollectionConnect"]
 
 (******************************************************************************)
 
@@ -51,22 +51,22 @@ collectionHandleCreate = LibraryFunctionLoad[$MongoLinkLib, "WL_CollectionHandle
 
 (******************************************************************************)
 
-GetClient[uri_String] := Module[
+ClientConnect[uri_String] := Module[
 	{clientHandle, result},
 	clientHandle = CreateManagedLibraryExpression["MongoClient", MongoClient];
 	result = clientHandleCreate[ManagedLibraryExpressionID@clientHandle, uri];
 	If[LibraryFunctionFailureQ@result, 
-		MongoFailureMessage[GetClient]; 
+		MongoFailureMessage[ClientConnect]; 
 		Return@$Failed
 	];
 	clientHandle
 ]
 
-GetClient[] := GetClient["mongodb://localhost:27017"]
+ClientConnect[] := ClientConnect["mongodb://localhost:27017"]
 
 (******************************************************************************)
 
-GetDatabase[client_MongoClient, databaseName_String] := Module[
+DatabaseConnect[client_MongoClient, databaseName_String] := Module[
 	{databaseHandle, result},
 	databaseHandle = CreateManagedLibraryExpression["MongoDatabase", MongoDatabase];
 	result = databaseHandleCreate[
@@ -75,7 +75,7 @@ GetDatabase[client_MongoClient, databaseName_String] := Module[
 		databaseName
 	];
 	If[LibraryFunctionFailureQ@result, 
-		MongoFailureMessage[GetDatabase]; 
+		MongoFailureMessage[DatabaseConnect]; 
 		Return@$Failed
 	];
 	databaseHandle
@@ -84,7 +84,7 @@ GetDatabase[client_MongoClient, databaseName_String] := Module[
 
 (******************************************************************************)
 
-GetCollection[client_MongoClient, databaseName_String, collectionName_String] := Module[
+CollectionConnect[client_MongoClient, databaseName_String, collectionName_String] := Module[
 	{collectionHandle, result},
 	collectionHandle = CreateManagedLibraryExpression["MongoCollection", MongoCollection];
 	result = collectionHandleCreate[
@@ -94,7 +94,7 @@ GetCollection[client_MongoClient, databaseName_String, collectionName_String] :=
 		collectionName
 	];
 	If[LibraryFunctionFailureQ@result, 
-		MongoFailureMessage[GetCollection]; 
+		MongoFailureMessage[CollectionConnect]; 
 		Return@$Failed
 	];
 	collectionHandle
