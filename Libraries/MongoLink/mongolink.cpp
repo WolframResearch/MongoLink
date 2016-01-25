@@ -11,12 +11,16 @@
 #include <bson.h>
 
 // Source files
-#include "common.h"
-#include "iterator.h"
-#include "connection.h"
-#include "bulk_insert.h"
-#include "write_concern.h"
+
+#include "wl_common.h"
+#include "wl_iterator.h"
+#include "wl_bulk_insert.h"
+#include "wl_write_concern.h"
 #include "wl_bson.h"
+
+#include "wl_database.h"
+#include "wl_client.h"
+#include "wl_collection.h"
 
 /* Return the version of Library Link */
 EXTERN_C DLLEXPORT mint WolframLibrary_getVersion() {

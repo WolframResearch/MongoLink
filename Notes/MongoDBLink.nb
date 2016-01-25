@@ -10,10 +10,10 @@
 NotebookFileLineBreakTest
 NotebookFileLineBreakTest
 NotebookDataPosition[       158,          7]
-NotebookDataLength[     11832,        362]
-NotebookOptionsPosition[      9753,        285]
-NotebookOutlinePosition[     10147,        302]
-CellTagsIndexPosition[     10104,        299]
+NotebookDataLength[     10682,        347]
+NotebookOptionsPosition[      8677,        272]
+NotebookOutlinePosition[      9071,        289]
+CellTagsIndexPosition[      9028,        286]
 WindowFrame->Normal*)
 
 (* Beginning of Notebook Content *)
@@ -49,237 +49,224 @@ Cell[BoxData[{
 
 Cell[CellGroupData[{
 
-Cell[BoxData[{
- RowBox[{
-  RowBox[{"client", "=", 
-   RowBox[{"ClientConnect", "[", "]"}]}], ";"}], "\[IndentingNewLine]", 
- RowBox[{
-  RowBox[{"db", "=", 
-   RowBox[{"DatabaseConnect", "[", 
-    RowBox[{"client", ",", "\"\<MachineLearningData\>\""}], "]"}]}], 
-  ";"}], "\[IndentingNewLine]", 
- RowBox[{"collection", "=", 
-  RowBox[{"CollectionConnect", "[", 
-   RowBox[{
-   "client", ",", " ", "\"\<MachineLearningData\>\"", ",", " ", 
-    "\"\<Images\>\""}], "]"}]}], "\[IndentingNewLine]", 
- RowBox[{"CollectionCount", "@", 
-  "collection"}], "\[IndentingNewLine]"}], "Input",
- CellChangeTimes->{{3.662665862006757*^9, 3.662665880946851*^9}, {
-  3.662665913340291*^9, 3.662665915314776*^9}, {3.6626660134842453`*^9, 
-  3.662666048035946*^9}, {3.66266614154664*^9, 3.662666170811055*^9}, {
-  3.662666237684236*^9, 3.6626662378462143`*^9}}],
-
-Cell[BoxData[
- RowBox[{"MongoCollection", "[", "3", "]"}]], "Output",
- CellChangeTimes->{
-  3.6626658786385098`*^9, {3.662666042659387*^9, 3.662666048647854*^9}, 
-   3.662666090803475*^9, 3.662666139393371*^9, 3.6626661710792418`*^9, {
-   3.6626662209037447`*^9, 3.662666238471114*^9}}],
-
-Cell[BoxData["3"], "Output",
- CellChangeTimes->{
-  3.6626658786385098`*^9, {3.662666042659387*^9, 3.662666048647854*^9}, 
-   3.662666090803475*^9, 3.662666139393371*^9, 3.6626661710792418`*^9, {
-   3.6626662209037447`*^9, 3.662666238481584*^9}}]
-}, Open  ]],
-
-Cell[CellGroupData[{
-
 Cell[BoxData[""], "Input",
- CellChangeTimes->{{3.6626661755079937`*^9, 3.662666187026681*^9}, 
-   3.662666236687667*^9}],
-
-Cell[BoxData["3"], "Output",
- CellChangeTimes->{
-  3.662666177719043*^9, {3.66266621022298*^9, 3.662666222021331*^9}}]
-}, Open  ]],
-
-Cell[CellGroupData[{
-
-Cell[BoxData["client"], "Input",
- CellChangeTimes->{{3.6626660549398623`*^9, 3.662666056106268*^9}}],
+ CellChangeTimes->{{3.6627222763402*^9, 3.662722299130433*^9}, 
+   3.6627231721981897`*^9}],
 
 Cell[BoxData[
- RowBox[{"MongoLink`Connection`PackagePrivate`GetClient", 
-  "[", "\<\"mongodb://localhost:27017\"\>", "]"}]], "Output",
- CellChangeTimes->{3.66266605639076*^9, 3.662666101099955*^9}]
+ RowBox[{"MongoClient", "[", "1", "]"}]], "Output",
+ CellChangeTimes->{3.662722269014558*^9, 3.6627230745768223`*^9, 
+  3.6627231171505003`*^9, 3.662723152137635*^9}]
 }, Open  ]],
 
 Cell[CellGroupData[{
 
 Cell[BoxData[
- RowBox[{"b", "=", 
-  RowBox[{
-  "BSONCreate", "[", "\"\<{\\\"asdfiojaosdfij\\\":0}\>\"", "]"}]}]], "Input",
- CellChangeTimes->{{3.662662483353849*^9, 3.662662495706798*^9}, {
-  3.6626630146906843`*^9, 3.662663017290718*^9}, {3.662663738730715*^9, 
-  3.662663798650403*^9}}],
+ RowBox[{"ClientDatabaseNames", "@", "client"}]], "Input",
+ CellChangeTimes->{{3.662722325735855*^9, 3.6627223296586723`*^9}}],
 
 Cell[BoxData[
- RowBox[{"MongoBSON", "[", "6", "]"}]], "Output",
- CellChangeTimes->{
-  3.662662497633883*^9, {3.662662758917131*^9, 3.662662784134177*^9}, 
-   3.662662830095298*^9, 3.6626630055052853`*^9, {3.6626634822403393`*^9, 
-   3.6626634908479357`*^9}, 3.662663652272434*^9, 3.662663686675138*^9, 
-   3.66266374003841*^9, {3.662663770831658*^9, 3.6626637989738083`*^9}, 
-   3.6626657951187067`*^9}]
+ RowBox[{"{", "\<\"MachineLearningData\"\>", "}"}]], "Output",
+ CellChangeTimes->{3.662722330197709*^9, 3.662723118548354*^9}]
 }, Open  ]],
 
 Cell[CellGroupData[{
 
 Cell[BoxData[
- RowBox[{"BSONToJSON", "@", "b"}]], "Input"],
+ RowBox[{"data", "=", 
+  RowBox[{"DatabaseConnect", "[", 
+   RowBox[{"client", ",", "\"\<MachineLearningData\>\""}], "]"}]}]], "Input",
+ CellChangeTimes->{{3.662722305462976*^9, 3.662722342906413*^9}}],
 
-Cell[BoxData["\<\"{ \\\"asdfiojaosdfij\\\" : 0 }\"\>"], "Output",
- CellChangeTimes->{3.66266380493253*^9, 3.662665796930283*^9}]
+Cell[BoxData[
+ RowBox[{"MongoDatabase", "[", "1", "]"}]], "Output",
+ CellChangeTimes->{{3.662722317106439*^9, 3.6627223431200247`*^9}, 
+   3.662723120440764*^9}]
 }, Open  ]],
-
-Cell[BoxData[""], "Input",
- CellChangeTimes->{{3.662663498032346*^9, 3.662663502506564*^9}}],
 
 Cell[CellGroupData[{
 
 Cell[BoxData[
- RowBox[{"MongoGetLastError", "[", "]"}]], "Input",
- CellChangeTimes->{{3.662663549981676*^9, 3.662663553396193*^9}}],
-
-Cell[BoxData["\<\"None\"\>"], "Output",
- CellChangeTimes->{{3.662663550372801*^9, 3.6626635713493853`*^9}, 
-   3.6626636559217653`*^9}]
-}, Open  ]],
-
-Cell[CellGroupData[{
-
-Cell[BoxData[""], "Input",
- CellChangeTimes->{{3.662662791232471*^9, 3.6626627942202787`*^9}, 
-   3.662663803428748*^9}],
-
-Cell[BoxData["\<\"{ \\\"a\\\" : 1 }\"\>"], "Output",
- CellChangeTimes->{
-  3.662662794519907*^9, {3.66266283130297*^9, 3.6626628376583967`*^9}}]
-}, Open  ]],
-
-Cell[BoxData["$"], "Input",
- CellChangeTimes->{{3.662662599229179*^9, 3.6626626032102213`*^9}}],
-
-Cell[CellGroupData[{
-
-Cell[BoxData[
- RowBox[{"Developer`WriteRawJSONString", "[", 
-  RowBox[{"\"\<{{}\>\"", ",", 
-   RowBox[{"\"\<Compact\>\"", "\[Rule]", " ", "True"}]}], "]"}]], "Input",
- CellChangeTimes->{{3.662662535100142*^9, 3.662662553202817*^9}, 
-   3.6626625841885233`*^9, 3.662663518064192*^9, {3.662663730452839*^9, 
-   3.6626637336263313`*^9}}],
-
-Cell[BoxData["\<\"\\\"{{}\\\"\"\>"], "Output",
- CellChangeTimes->{3.662662553433823*^9, 3.662662585024898*^9, 
-  3.662663520212636*^9, 3.6626637347508383`*^9}]
-}, Open  ]],
-
-Cell[CellGroupData[{
-
-Cell[BoxData[{
- RowBox[{"t", "=", 
-  RowBox[{"WriteConcernCreate", "[", 
-   RowBox[{"\"\<Journal\>\"", "\[Rule]", " ", "True"}], 
-   "]"}]}], "\[IndentingNewLine]", 
- RowBox[{
-  RowBox[{"WriteConcernGetInfo", "[", 
-   RowBox[{"ManagedLibraryExpressionID", "@", "t"}], "]"}], "//", 
-  "AbsoluteTiming"}]}], "Input",
- CellChangeTimes->{{3.662555646361788*^9, 3.662555662283465*^9}, 
-   3.6626357328974237`*^9, {3.662636198732396*^9, 3.662636198874694*^9}, {
-   3.662636279428135*^9, 3.6626362795725927`*^9}, {3.662637188532386*^9, 
-   3.662637209178954*^9}, {3.6626498128058643`*^9, 3.662649822300274*^9}}],
-
-Cell[BoxData[
- RowBox[{"MongoWriteConcern", "[", "2", "]"}]], "Output",
- CellChangeTimes->{{3.662555647509924*^9, 3.662555670517005*^9}, 
-   3.662555713060194*^9, 3.662555750218175*^9, {3.6625558558413153`*^9, 
-   3.662555890652947*^9}, 3.662635733645183*^9, 3.66263619914515*^9, 
-   3.662636279851448*^9, {3.662636623075746*^9, 3.6626366315864162`*^9}, 
-   3.662636816686441*^9, 3.662637084953493*^9, 3.662637122150861*^9, {
-   3.6626372094028893`*^9, 3.662637214585574*^9}, 3.662649126117154*^9, {
-   3.662649475702695*^9, 3.662649480262158*^9}, {3.662649533476265*^9, 
-   3.6626495430795507`*^9}, 3.662649822464313*^9}],
+ RowBox[{"DatabaseCollectionNames", "@", "data"}]], "Input",
+ CellChangeTimes->{{3.662722361809332*^9, 3.66272236870647*^9}}],
 
 Cell[BoxData[
  RowBox[{"{", 
-  RowBox[{"0.000029`", ",", 
-   RowBox[{"\[LeftAssociation]", 
-    RowBox[{
-     RowBox[{"\<\"Journal\"\>", "\[Rule]", "True"}], ",", 
-     RowBox[{"\<\"Timeout\"\>", "\[Rule]", "0"}], ",", 
-     RowBox[{"\<\"WriteConcern\"\>", "\[Rule]", 
-      RowBox[{"-", "2"}]}], ",", 
-     RowBox[{"\<\"Majority\"\>", "\[Rule]", "False"}]}], 
-    "\[RightAssociation]"}]}], "}"}]], "Output",
- CellChangeTimes->{{3.662555647509924*^9, 3.662555670517005*^9}, 
-   3.662555713060194*^9, 3.662555750218175*^9, {3.6625558558413153`*^9, 
-   3.662555890652947*^9}, 3.662635733645183*^9, 3.66263619914515*^9, 
-   3.662636279851448*^9, {3.662636623075746*^9, 3.6626366315864162`*^9}, 
-   3.662636816686441*^9, 3.662637084953493*^9, 3.662637122150861*^9, {
-   3.6626372094028893`*^9, 3.662637214585574*^9}, 3.662649126117154*^9, {
-   3.662649475702695*^9, 3.662649480262158*^9}, {3.662649533476265*^9, 
-   3.6626495430795507`*^9}, 3.662649822470068*^9}]
+  RowBox[{"\<\"Animals\"\>", ",", "\<\"Images\"\>", ",", "\<\"Sound\"\>", 
+   ",", "\<\"Videos\"\>", ",", "\<\"system.indexes\"\>"}], "}"}]], "Output",
+ CellChangeTimes->{3.6627223689858103`*^9}]
 }, Open  ]],
 
-Cell[BoxData[""], "Input",
- CellChangeTimes->{{3.662658926609226*^9, 3.662658927890826*^9}}],
+Cell[BoxData[{
+ RowBox[{"client", "=", 
+  RowBox[{"ClientConnect", "[", "]"}]}], "\[IndentingNewLine]", 
+ RowBox[{"col", "=", 
+  RowBox[{"CollectionConnect", "[", 
+   RowBox[{
+   "client", ",", "\"\<MachineLearningData\>\"", ",", " ", "\"\<Images\>\""}],
+    "]"}]}], "\[IndentingNewLine]", 
+ RowBox[{"iter", "=", 
+  RowBox[{"CollectionFind", "[", "col", "]"}]}]}], "Input",
+ CellChangeTimes->{{3.66272316980401*^9, 3.662723174356792*^9}}],
 
 Cell[CellGroupData[{
 
-Cell[BoxData["1"], "Input",
- CellChangeTimes->{3.662662066722567*^9}],
+Cell[BoxData[""], "Input",
+ CellChangeTimes->{{3.6627225786112223`*^9, 3.662722633754538*^9}, 
+   3.662723168847571*^9}],
 
-Cell[BoxData["1"], "Output",
- CellChangeTimes->{3.66266206921135*^9}]
+Cell[BoxData["0"], "Print",
+ CellChangeTimes->{3.662722635664163*^9, 3.6627226729545717`*^9, 
+  3.662723080294779*^9, 3.662723126382654*^9}],
+
+Cell[BoxData[
+ RowBox[{"MongoIterator", "[", "1", "]"}]], "Output",
+ CellChangeTimes->{3.662722635670982*^9, 3.6627226729623537`*^9, 
+  3.662723080301733*^9, 3.662723126389732*^9}]
 }, Open  ]],
 
 Cell[CellGroupData[{
 
 Cell[BoxData[
- RowBox[{"Developer`WriteRawJSONString", "[", 
-  RowBox[{
-   RowBox[{"<|", 
-    RowBox[{"\"\<s\>\"", "\[Rule]", " ", "2"}], "|>"}], ",", 
-   RowBox[{"\"\<Compact\>\"", "\[Rule]", " ", "True"}]}], "]"}]], "Input",
- CellChangeTimes->{{3.6626620588982477`*^9, 3.662662096728633*^9}}],
+ RowBox[{"iter", "[", "\"\<HasNext\>\"", "]"}]], "Input",
+ CellChangeTimes->{{3.6627226420326157`*^9, 3.662722643345429*^9}, {
+  3.662722676354432*^9, 3.662722679386808*^9}, {3.662723020084449*^9, 
+  3.662723026898625*^9}}],
 
-Cell[BoxData["\<\"{\\\"s\\\":2}\"\>"], "Output",
- CellChangeTimes->{{3.662662091155188*^9, 3.662662096873569*^9}}]
+Cell[BoxData["True"], "Output",
+ CellChangeTimes->{{3.662722644020843*^9, 3.6627226796704693`*^9}, {
+   3.662723020940378*^9, 3.662723027433936*^9}, 3.662723128414015*^9}]
 }, Open  ]],
 
-Cell[BoxData["Quit"], "Input",
- CellChangeTimes->{{3.6626622639097643`*^9, 3.662662264307111*^9}}],
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"iter", "[", "\"\<HasNext\>\"", "]"}]], "Input",
+ CellChangeTimes->{{3.6627226460427523`*^9, 3.662722649490574*^9}}],
+
+Cell[BoxData["True"], "Output",
+ CellChangeTimes->{3.662722649763268*^9}]
+}, Open  ]],
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"PacletDirectoryAdd", "[", "\"\<~/git/GeneralUtilities\>\"", "]"}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"Get", "@", "\"\<GeneralUtilities`\>\""}], ";"}]}], "Input",
+ CellChangeTimes->{{3.662722760210816*^9, 3.66272277301223*^9}}],
 
 Cell[BoxData[
  RowBox[{
-  RowBox[{"Temp", "[", 
-   RowBox[{"a", "/;", " ", 
-    RowBox[{"(", 
+  RowBox[{
+   RowBox[{"CollectionFind2", "[", "args___", "]"}], " ", ":=", " ", 
+   RowBox[{"Block", "[", 
+    RowBox[{
+     RowBox[{"{", "miter", "}"}], ",", "\n", "\t", 
      RowBox[{
-      RowBox[{"AssociationQ", "@", "a"}], " ", "||", " ", 
-      RowBox[{"StringQ", "@", "a"}]}], ")"}]}], "]"}], ":=", 
-  RowBox[{"Print", "@", "a"}]}]], "Input",
- CellChangeTimes->{{3.662662136683092*^9, 3.662662144418314*^9}, {
-   3.662662184499978*^9, 3.66266222403642*^9}, 3.6626622661808367`*^9}],
+      RowBox[{"miter", " ", "=", " ", 
+       RowBox[{"CollectionFind", "[", "args", "]"}]}], ";", "\n", "\t", 
+      RowBox[{"If", "[", 
+       RowBox[{
+        RowBox[{
+         RowBox[{"Head", "[", "miter", "]"}], " ", "=!=", " ", 
+         "MongoIterator"}], ",", " ", 
+        RowBox[{"Return", "[", "$Failed", "]"}]}], "]"}], ";", "\n", "\t", 
+      RowBox[{"NewIterator", "[", "\n", "\t\t", 
+       RowBox[{"MongoIterator", ",", " ", "\n", "\t\t", 
+        RowBox[{"{", 
+         RowBox[{"iter", " ", "=", " ", "miter"}], "}"}], ",", " ", "\n", 
+        "\t\t", 
+        RowBox[{"If", "[", 
+         RowBox[{
+          RowBox[{"!", 
+           RowBox[{"iter", "[", "\"\<HasNext\>\"", "]"}]}], ",", " ", 
+          "IteratorExhausted", ",", " ", "\n", "\t\t\t", 
+          RowBox[{"iter", "[", "]"}]}], "\n", "\t\t", "]"}]}], "\n", "\t", 
+       "]"}]}]}], "\n", "]"}]}], ";"}]], "Code",
+ CellChangeTimes->{{3.662722779213225*^9, 3.662722880186873*^9}}],
 
 Cell[CellGroupData[{
 
 Cell[BoxData[
- RowBox[{"Temp", "[", 
-  RowBox[{"<|", 
-   RowBox[{"\"\<aosidjf\>\"", "\[Rule]", " ", "2"}], "|>"}], "]"}]], "Input",
- CellChangeTimes->{{3.662662225650228*^9, 3.6626622452267637`*^9}}],
+ RowBox[{"it", "=", 
+  RowBox[{"CollectionFind2", "[", "col", "]"}]}]], "Input",
+ CellChangeTimes->{{3.662722885252486*^9, 3.662722900994206*^9}}],
+
+Cell[BoxData["0"], "Print",
+ CellChangeTimes->{{3.662722901272511*^9, 3.662722930751524*^9}, 
+   3.662722974136044*^9}],
 
 Cell[BoxData[
- RowBox[{"\[LeftAssociation]", 
-  RowBox[{"\<\"aosidjf\"\>", "\[Rule]", "2"}], 
-  "\[RightAssociation]"}]], "Print",
- CellChangeTimes->{{3.6626622319261217`*^9, 3.662662245411518*^9}}]
+ TagBox[GridBox[{
+    {
+     StyleBox["MongoIterator", "Text",
+      StripOnInput->False], "\[SpanFromLeft]"}
+   },
+   AutoDelete->False,
+   FrameStyle->GrayLevel[0.85],
+   GridBoxAlignment->{"Columns" -> {{Left}}},
+   GridBoxDividers->{"Columns" -> {{True}}, "Rows" -> {{True}}},
+   GridBoxItemSize->{"Columns" -> {{Automatic}}, "Rows" -> {{Automatic}}},
+   GridBoxItemStyle->{"Columns" -> {"Text", "Output"}},
+   GridBoxSpacings->{"Columns" -> {{1}}, "Rows" -> {{1}}}],
+  "Grid"]], "Output",
+ CellChangeTimes->{{3.6627229012826557`*^9, 3.662722930763361*^9}, 
+   3.662722974144792*^9}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"InputForm", "[", "it", "]"}]], "Input",
+ CellChangeTimes->{{3.6627229325995493`*^9, 3.66272293403496*^9}}],
+
+Cell["\<\
+Iterator[MongoIterator, If[ !Iterators`iter$5[\"HasNext\"], IteratorExhausted, 
+  Iterators`iter$5[]], None]\
+\>", "Output",
+ CellChangeTimes->{3.662722934212389*^9, 3.6627229746717367`*^9}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"Iterators`iter$5", "[", "\"\<HasNext\>\"", "]"}]], "Input",
+ CellChangeTimes->{{3.662722979824287*^9, 3.6627229798262167`*^9}}],
+
+Cell[BoxData["True"], "Output",
+ CellChangeTimes->{{3.66272298107969*^9, 3.6627229837991333`*^9}}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"Read", "[", "it", "]"}]], "Input",
+ CellChangeTimes->{{3.662722907366169*^9, 3.6627229112079563`*^9}, {
+  3.66272296314675*^9, 3.662722963548345*^9}}],
+
+Cell[BoxData["$Failed"], "Output",
+ CellChangeTimes->{
+  3.662722916502555*^9, {3.662722963861623*^9, 3.662722969107501*^9}}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"Options", "@", "CollectionFind"}]], "Input",
+ CellChangeTimes->{{3.662722603995804*^9, 3.6627226050025597`*^9}}],
+
+Cell[BoxData[
+ RowBox[{"{", 
+  RowBox[{
+   RowBox[{"\<\"Query\"\>", "\[Rule]", 
+    RowBox[{"\[LeftAssociation]", "\[RightAssociation]"}]}], ",", 
+   RowBox[{"\<\"Fields\"\>", "\[Rule]", 
+    RowBox[{"\[LeftAssociation]", "\[RightAssociation]"}]}], ",", 
+   RowBox[{"\<\"BatchSize\"\>", "\[Rule]", "Automatic"}], ",", 
+   RowBox[{"\<\"Skip\"\>", "\[Rule]", "Automatic"}], ",", 
+   RowBox[{"\<\"Limit\"\>", "\[Rule]", "Automatic"}]}], "}"}]], "Output",
+ CellChangeTimes->{3.662722605296446*^9}]
 }, Open  ]]
 }, Open  ]]
 },
@@ -309,59 +296,57 @@ Cell[908, 31, 189, 3, 46, "Input"],
 Cell[1100, 36, 95, 1, 28, "Input"],
 Cell[1198, 39, 314, 8, 66, "Code"],
 Cell[CellGroupData[{
-Cell[1537, 51, 842, 19, 97, "Input"],
-Cell[2382, 72, 286, 5, 28, "Output"],
-Cell[2671, 79, 245, 4, 28, "Output"]
+Cell[1537, 51, 118, 2, 28, "Input"],
+Cell[1658, 55, 180, 3, 28, "Output"]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[2953, 88, 120, 2, 28, "Input"],
-Cell[3076, 92, 118, 2, 28, "Output"]
+Cell[1875, 63, 140, 2, 28, "Input"],
+Cell[2018, 67, 140, 2, 28, "Output"]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[3231, 99, 100, 1, 28, "Input"],
-Cell[3334, 102, 197, 3, 28, "Output"]
+Cell[2195, 74, 215, 4, 28, "Input"],
+Cell[2413, 80, 161, 3, 28, "Output"]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[3568, 110, 288, 6, 28, "Input"],
-Cell[3859, 118, 403, 7, 28, "Output"]
+Cell[2611, 88, 139, 2, 28, "Input"],
+Cell[2753, 92, 224, 4, 28, "Output"]
+}, Open  ]],
+Cell[2992, 99, 439, 10, 63, "Input"],
+Cell[CellGroupData[{
+Cell[3456, 113, 120, 2, 28, "Input"],
+Cell[3579, 117, 140, 2, 21, "Print"],
+Cell[3722, 121, 180, 3, 28, "Output"]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[4299, 130, 58, 1, 28, "Input"],
-Cell[4360, 133, 128, 1, 28, "Output"]
-}, Open  ]],
-Cell[4503, 137, 92, 1, 28, "Input"],
-Cell[CellGroupData[{
-Cell[4620, 142, 131, 2, 28, "Input"],
-Cell[4754, 146, 135, 2, 28, "Output"]
+Cell[3939, 129, 237, 4, 28, "Input"],
+Cell[4179, 135, 171, 2, 28, "Output"]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[4926, 153, 120, 2, 28, "Input"],
-Cell[5049, 157, 144, 2, 28, "Output"]
+Cell[4387, 142, 139, 2, 28, "Input"],
+Cell[4529, 146, 73, 1, 28, "Output"]
 }, Open  ]],
-Cell[5208, 162, 95, 1, 28, "Input"],
+Cell[4617, 150, 282, 6, 46, "Input"],
+Cell[4902, 158, 1169, 28, 205, "Code"],
 Cell[CellGroupData[{
-Cell[5328, 167, 334, 6, 28, "Input"],
-Cell[5665, 175, 159, 2, 28, "Output"]
-}, Open  ]],
-Cell[CellGroupData[{
-Cell[5861, 182, 604, 12, 46, "Input"],
-Cell[6468, 196, 622, 9, 28, "Output"],
-Cell[7093, 207, 960, 18, 28, "Output"]
-}, Open  ]],
-Cell[8068, 228, 92, 1, 28, "Input"],
-Cell[CellGroupData[{
-Cell[8185, 233, 69, 1, 28, "Input"],
-Cell[8257, 236, 69, 1, 28, "Output"]
+Cell[6096, 190, 160, 3, 28, "Input"],
+Cell[6259, 195, 119, 2, 21, "Print"],
+Cell[6381, 199, 601, 15, 47, "Output"]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[8363, 242, 294, 6, 28, "Input"],
-Cell[8660, 250, 114, 1, 28, "Output"]
+Cell[7019, 219, 130, 2, 28, "Input"],
+Cell[7152, 223, 200, 4, 55, "Output"]
 }, Open  ]],
-Cell[8789, 254, 98, 1, 28, "Input"],
-Cell[8890, 257, 410, 10, 28, "Input"],
 Cell[CellGroupData[{
-Cell[9325, 271, 199, 4, 28, "Input"],
-Cell[9527, 277, 198, 4, 22, "Print"]
+Cell[7389, 232, 151, 2, 28, "Input"],
+Cell[7543, 236, 98, 1, 28, "Output"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[7678, 242, 174, 3, 28, "Input"],
+Cell[7855, 247, 125, 2, 28, "Output"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[8017, 254, 136, 2, 28, "Input"],
+Cell[8156, 258, 493, 10, 28, "Output"]
 }, Open  ]]
 }, Open  ]]
 }

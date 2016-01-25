@@ -2,7 +2,7 @@
 // All common functions + global variables live here
 ////////////////////////////////////////////////////////////////////////////////
 
-#include "common.h"
+#include "wl_common.h"
 
 // Global handle Map Variables
 std::map<mint, mongoc_client_t *> clientHandleMap;

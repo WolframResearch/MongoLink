@@ -10,10 +10,10 @@
 NotebookFileLineBreakTest
 NotebookFileLineBreakTest
 NotebookDataPosition[       158,          7]
-NotebookDataLength[     22492,        429]
-NotebookOptionsPosition[     21833,        401]
-NotebookOutlinePosition[     22190,        417]
-CellTagsIndexPosition[     22147,        414]
+NotebookDataLength[     26224,        498]
+NotebookOptionsPosition[     25376,        464]
+NotebookOutlinePosition[     25733,        480]
+CellTagsIndexPosition[     25690,        477]
 WindowFrame->Normal*)
 
 (* Beginning of Notebook Content *)
@@ -27,6 +27,9 @@ Cell["MongoLink", "Title",
 Cell["This is a build script for MXNetLink.", "Text",
  CellChangeTimes->{{3.659860197165052*^9, 3.6598602101290007`*^9}, 
    3.6598602528829107`*^9, {3.659860302235612*^9, 3.6598603137771482`*^9}}],
+
+Cell[BoxData["Boole"], "Input",
+ CellChangeTimes->{{3.662714760095502*^9, 3.6627147615943737`*^9}}],
 
 Cell[BoxData["Quit"], "Input",
  CellChangeTimes->{{3.662111426700416*^9, 3.662111427106715*^9}}],
@@ -85,22 +88,15 @@ Cell[BoxData[{
       RowBox[{"NotebookDirectory", "[", "]"}], ",", " ", 
       "\"\<MongoLink\>\""}], "}"}], "]"}]}], ";"}], "\n", 
  RowBox[{
-  RowBox[{"$WLSourceNames", " ", "=", " ", 
-   RowBox[{"{", "\n", "\t", 
-    RowBox[{
-    "\"\<mongolink.cpp\>\"", ",", " ", "\"\<common.cpp\>\"", ",", " ", 
-     "\"\<connection.cpp\>\"", ",", " ", "\"\<bulk_insert.cpp\>\"", ",", " ", 
-     "\n", "\t", "\"\<write_concern.cpp\>\"", ",", " ", "\"\<wl_bson.cpp\>\"",
-      ",", " ", "\"\<collection.cpp\>\"", ",", " ", "\"\<iterator.cpp\>\""}], 
-    "\n", "}"}]}], ";"}], "\n", 
- RowBox[{
   RowBox[{"$WLSource", " ", "=", " ", 
-   RowBox[{
-    RowBox[{
-     RowBox[{"FileNameJoin", "[", 
-      RowBox[{"{", 
-       RowBox[{"$CSourceDir", ",", " ", "#"}], "}"}], "]"}], "&"}], " ", "/@",
-     " ", "$WLSourceNames"}]}], ";"}], "\n", 
+   RowBox[{"FileNames", "[", 
+    RowBox[{"\"\<*.cpp\>\"", ",", " ", 
+     RowBox[{"{", 
+      RowBox[{"FileNameJoin", "[", 
+       RowBox[{"{", 
+        RowBox[{
+         RowBox[{"NotebookDirectory", "[", "]"}], ",", " ", 
+         "\"\<MongoLink\>\""}], "}"}], "]"}], "}"}]}], "]"}]}], ";"}], "\n", 
  RowBox[{
   RowBox[{
    RowBox[{"$WLInclude", " ", "=", " ", 
@@ -281,9 +277,20 @@ Cell[BoxData[{
    3.662659095662263*^9, 3.6626591239677067`*^9}, {3.662659369935244*^9, 
    3.66265937099632*^9}, {3.6626604464931917`*^9, 3.6626604776684237`*^9}, {
    3.6626652235496597`*^9, 3.6626652265407343`*^9}, {3.6626667936058483`*^9, 
-   3.6626667965086718`*^9}}],
+   3.6626667965086718`*^9}, {3.662715992131523*^9, 3.662716014907791*^9}, {
+   3.6627161260222893`*^9, 3.662716150411756*^9}, {3.662717075503785*^9, 
+   3.662717080212697*^9}}],
 
-Cell[BoxData["\<\"\"\>"], "Print",
+Cell[BoxData["\<\"/Users/sebastianb/git/mongolink/Libraries/MongoLink/\
+mongolink.cpp:39:48: error: use of undeclared identifier \
+'manage_instance_mongocollection'; did you mean \
+'manage_instance_mongoclient'?\\n                                             \
+  manage_instance_mongocollection);\\n                                        \
+       ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\\n                                     \
+          manage_instance_mongoclient\\n/Users/sebastianb/git/mongolink/\
+Libraries/MongoLink/wl_client.h:15:16: note: 'manage_instance_mongoclient' \
+declared here\\nDLLEXPORT void manage_instance_mongoclient(WolframLibraryData \
+libData,\\n               ^\\n1 error generated.\"\>"], "Print",
  CellChangeTimes->{{3.66263336737523*^9, 3.662633393092606*^9}, 
    3.662633444125705*^9, 3.6626335179708776`*^9, {3.66263359561965*^9, 
    3.662633621337179*^9}, {3.662633703408779*^9, 3.662633782758203*^9}, 
@@ -312,10 +319,22 @@ Cell[BoxData["\<\"\"\>"], "Print",
    3.6626626949637423`*^9}, 3.6626627437264977`*^9, 3.662662825027402*^9, 
    3.6626631324651403`*^9, 3.662663470340835*^9, {3.662663646767352*^9, 
    3.662663675569599*^9}, {3.662665247631125*^9, 3.662665256935285*^9}, {
-   3.662665341488901*^9, 3.662665349872369*^9}, 3.662665426418619*^9}],
+   3.662665341488901*^9, 3.662665349872369*^9}, 3.662665426418619*^9, {
+   3.662667208001848*^9, 3.662667232225009*^9}, {3.662667423296207*^9, 
+   3.662667437539929*^9}, {3.662706330503046*^9, 3.6627063906493692`*^9}, 
+   3.662706486535877*^9, 3.662707058203354*^9, 3.6627071007567177`*^9, {
+   3.662707132715034*^9, 3.662707143831168*^9}, 3.6627072131997547`*^9, 
+   3.662707249747991*^9, 3.6627074545974293`*^9, {3.662707528904635*^9, 
+   3.6627075456315403`*^9}, 3.662707616194417*^9, 3.6627138566189957`*^9, {
+   3.6627142828085613`*^9, 3.662714304064064*^9}, 3.6627159653497562`*^9, 
+   3.6627160242088346`*^9, {3.662716077958209*^9, 3.662716146114526*^9}, 
+   3.6627162063126707`*^9, 3.662716301385703*^9, {3.662716426736512*^9, 
+   3.662716439365972*^9}, {3.6627164864720716`*^9, 3.662716505342454*^9}, 
+   3.662716538023904*^9, {3.6627166399476423`*^9, 3.66271665593466*^9}, {
+   3.662717084923305*^9, 3.6627171122*^9}, {3.662717146099276*^9, 
+   3.6627171657976923`*^9}}],
 
-Cell[BoxData["\<\"/Users/sebastianb/Library/Mathematica/SystemFiles/\
-LibraryResources/MacOSX-x86-64/MongoLink.dylib\"\>"], "Output",
+Cell[BoxData["$Failed"], "Output",
  CellChangeTimes->{
   3.662411805264544*^9, {3.662411849054419*^9, 3.662411874142655*^9}, 
    3.662411926286832*^9, 3.662411983760188*^9, 3.662412039436596*^9, 
@@ -392,8 +411,52 @@ LibraryResources/MacOSX-x86-64/MongoLink.dylib\"\>"], "Output",
    3.6626628250497103`*^9, 3.662663132486644*^9, 3.662663470365492*^9, {
    3.662663646778954*^9, 3.6626636755798607`*^9}, {3.662665247778864*^9, 
    3.662665256943954*^9}, {3.662665341676141*^9, 3.66266534998066*^9}, 
-   3.6626654264275103`*^9}]
+   3.6626654264275103`*^9, {3.66266720830002*^9, 3.6626672325242987`*^9}, {
+   3.662667423388542*^9, 3.6626674375479527`*^9}, {3.662706330611854*^9, 
+   3.662706390753707*^9}, 3.6627064865456142`*^9, 3.662707058390663*^9, 
+   3.662707100935012*^9, {3.662707132894998*^9, 3.6627071440083714`*^9}, 
+   3.662707213374796*^9, 3.662707249837557*^9, 3.662707454728479*^9, {
+   3.662707528913807*^9, 3.662707545639629*^9}, 3.662707616202279*^9, 
+   3.662713856934875*^9, {3.662714282997621*^9, 3.662714304072198*^9}, 
+   3.662715965525454*^9, 3.662716024380766*^9, {3.6627160781421003`*^9, 
+   3.662716146298929*^9}, 3.66271620656739*^9, 3.662716301560796*^9, {
+   3.66271642674476*^9, 3.662716439650292*^9}, {3.662716486662537*^9, 
+   3.662716505526822*^9}, 3.662716538210926*^9, {3.6627166401215773`*^9, 
+   3.6627166561134653`*^9}, {3.662717085233946*^9, 3.662717112387445*^9}, {
+   3.662717146381371*^9, 3.662717165890684*^9}}]
 }, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[""], "Input",
+ CellChangeTimes->{{3.662717041332588*^9, 3.6627170692384357`*^9}}],
+
+Cell[BoxData[
+ RowBox[{"{", 
+  RowBox[{"\<\"/Users/sebastianb/git/mongolink/Libraries/MongoLink/mongolink.\
+cpp\"\>", 
+   ",", "\<\"/Users/sebastianb/git/mongolink/Libraries/MongoLink/wl_bson.cpp\"\
+\>", ",", \
+"\<\"/Users/sebastianb/git/mongolink/Libraries/MongoLink/wl_bulk_insert.cpp\"\
+\>", ",", \
+"\<\"/Users/sebastianb/git/mongolink/Libraries/MongoLink/wl_client.cpp\"\>", 
+   ",", "\<\"/Users/sebastianb/git/mongolink/Libraries/MongoLink/wl_\
+collection.cpp\"\>", 
+   ",", "\<\"/Users/sebastianb/git/mongolink/Libraries/MongoLink/wl_common.\
+cpp\"\>", 
+   ",", "\<\"/Users/sebastianb/git/mongolink/Libraries/MongoLink/wl_\
+connection.cpp\"\>", 
+   ",", "\<\"/Users/sebastianb/git/mongolink/Libraries/MongoLink/wl_database.\
+cpp\"\>", 
+   ",", "\<\"/Users/sebastianb/git/mongolink/Libraries/MongoLink/wl_iterator.\
+cpp\"\>", 
+   ",", "\<\"/Users/sebastianb/git/mongolink/Libraries/MongoLink/wl_write_\
+concern.cpp\"\>"}], "}"}]], "Output",
+ CellChangeTimes->{{3.662717064092576*^9, 3.662717066944738*^9}}]
+}, Open  ]],
+
+Cell[BoxData["Quit"], "Input",
+ CellChangeTimes->{{3.662716197573897*^9, 3.662716198120974*^9}}],
 
 Cell[BoxData["LibraryLink"], "Input",
  CellChangeTimes->{{3.662661038023727*^9, 3.662661039298491*^9}}]
@@ -419,17 +482,23 @@ Notebook[{
 Cell[CellGroupData[{
 Cell[580, 22, 141, 2, 92, "Title"],
 Cell[724, 26, 197, 2, 30, "Text"],
-Cell[924, 30, 96, 1, 28, "Input"],
+Cell[924, 30, 99, 1, 28, "Input"],
+Cell[1026, 33, 96, 1, 28, "Input"],
 Cell[CellGroupData[{
-Cell[1045, 35, 178, 5, 28, "Input"],
-Cell[1226, 42, 132, 2, 28, "Output"]
+Cell[1147, 38, 178, 5, 28, "Input"],
+Cell[1328, 45, 132, 2, 28, "Output"]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[1395, 49, 12516, 234, 886, "Code"],
-Cell[13914, 285, 2137, 29, 21, "Print"],
-Cell[16054, 316, 5645, 78, 28, "Output"]
+Cell[1497, 52, 12323, 229, 824, "Code"],
+Cell[13823, 283, 3729, 51, 150, "Print"],
+Cell[17555, 336, 6443, 89, 28, "Output"]
 }, Open  ]],
-Cell[21714, 397, 103, 1, 28, "Input"]
+Cell[CellGroupData[{
+Cell[24035, 430, 94, 1, 28, "Input"],
+Cell[24132, 433, 1011, 21, 114, "Output"]
+}, Open  ]],
+Cell[25158, 457, 96, 1, 28, "Input"],
+Cell[25257, 460, 103, 1, 28, "Input"]
 }, Open  ]]
 }
 ]

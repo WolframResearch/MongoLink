@@ -16,7 +16,6 @@ PackageExport["BSONToJSON"]
 
 (****** Load Library Functions ******)
 
-
 createBSONfromJSON = LibraryFunctionLoad[$MongoLinkLib, "WL_CreateBSONfromJSON", 
 	{
 		Integer,					(* bson handle *)
@@ -32,8 +31,6 @@ bsonAsJSON = LibraryFunctionLoad[$MongoLinkLib, "WL_bsonAsJSON",
 	}, 
 	"UTF8String"				(* json *)	
 ]	
-
-
 
 (******************************************************************************)
 
@@ -54,7 +51,6 @@ BSONCreate[doc_ /; (AssociationQ@doc || StringQ@doc)] := Module[
 	];
 	bsonHandle
 ]
-
 
 (******************************************************************************)
 

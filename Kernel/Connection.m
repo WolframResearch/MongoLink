@@ -7,13 +7,7 @@ Connection: connection API to create handles to client, database + collection
 Package["MongoLink`"]
 
 (*** Package Exports ***)
-PackageExport["MongoClient"]
-PackageExport["MongoDatabase"]
-PackageExport["MongoCollection"]
 
-PackageExport["ClientConnect"]
-PackageExport["DatabaseConnect"]
-PackageExport["CollectionConnect"]
 
 (******************************************************************************)
 
