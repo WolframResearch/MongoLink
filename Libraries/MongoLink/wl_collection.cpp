@@ -19,6 +19,20 @@ DLLEXPORT void manage_instance_mongocollection(WolframLibraryData libData,
 ////////////////////////////////////////////////////////////////////////////////
 
 // Collection handle creation
+EXTERN_C DLLEXPORT int WL_CollectionGetName(WolframLibraryData libData,
+                                            mint Argc, MArgument *Args,
+                                            MArgument Res) {
+
+  auto collection = collectionHandleMap[MArgument_getInteger(Args[0])];
+  // Set global returnString to name
+  // Api: http://api.mongodb.org/c/current/mongoc_collection_get_name.html
+  returnString = mongoc_collection_get_name(collection);
+
+  MArgument_setUTF8String(Res, const_cast<char *>(returnString.c_str()));
+  return LIBRARY_NO_ERROR;
+}
+
+// Collection handle creation
 EXTERN_C DLLEXPORT int WL_CollectionHandleCreate(WolframLibraryData libData,
                                                  mint Argc, MArgument *Args,
                                                  MArgument Res) {
@@ -28,7 +42,8 @@ EXTERN_C DLLEXPORT int WL_CollectionHandleCreate(WolframLibraryData libData,
   char *collectionName = MArgument_getUTF8String(Args[3]);
 
   // Create collection handle, append to collectionHandleMap if successfully
-  // created
+  // created.
+  // API: http://api.mongodb.org/c/current/mongoc_client_get_collection.html
   auto collection = mongoc_client_get_collection(
       clientHandleMap[client_handle_key], databaseName, collectionName);
 

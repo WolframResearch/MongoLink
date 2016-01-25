@@ -5,6 +5,7 @@ BSON: create BSON objects from either JSON or associations
 *******************************************************************************)
 
 Package["MongoLink`"]
+$MongoLinkLib = FindLibrary["MongoLink"];
 
 (*** Package Exports ***)
 PackageExport["MongoBSON"]
@@ -62,7 +63,6 @@ BSONToJSON[bson_MongoBSON] := Module[
 		MongoFailureMessage[BSONToJSON]; 
 		Return@$Failed
 	];
-	
 	result
 ]
 

@@ -16,6 +16,10 @@
 DLLEXPORT void manage_instance_mongocollection(WolframLibraryData libData,
                                                mbool mode, mint id);
 
+EXTERN_C DLLEXPORT int WL_CollectionGetName(WolframLibraryData libData,
+                                            mint Argc, MArgument *Args,
+                                            MArgument Res);
+
 EXTERN_C DLLEXPORT int WL_CollectionHandleCreate(WolframLibraryData libData,
                                                  mint Argc, MArgument *Args,
                                                  MArgument Res);

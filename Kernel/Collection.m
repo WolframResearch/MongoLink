@@ -5,6 +5,8 @@ Collection level functions
 *******************************************************************************)
 
 Package["MongoLink`"]
+$MongoLinkLib = FindLibrary["MongoLink"];
+
 
 (*** Package Exports ***)
 PackageExport["MongoCollection"]
@@ -12,6 +14,7 @@ PackageExport["MongoCollection"]
 PackageExport["CollectionConnect"]
 PackageExport["CollectionCount"]
 PackageExport["CollectionFind"]
+PackageExport["CollectionName"]
 
 (******************************************************************************)
 
@@ -48,6 +51,25 @@ mongoCollectionFind = LibraryFunctionLoad[$MongoLinkLib, "WL_MongoCollectionFind
 	}, 
 	"Void"				
 ]	
+
+mongoCollectionName = LibraryFunctionLoad[$MongoLinkLib, "WL_CollectionGetName", 
+	{
+		Integer			(* collection handle *)
+	}, 
+	"UTF8String"		(* name *)						
+]	
+
+(******************************************************************************)
+
+CollectionName[collection_MongoCollection] := Module[
+	{result},
+	result = mongoCollectionName[ManagedLibraryExpressionID@collection];
+	If[LibraryFunctionFailureQ@result, 
+		MongoFailureMessage[CollectionConnect]; 
+		Return@$Failed
+	];
+	result
+]
 
 (******************************************************************************)
 
@@ -117,8 +139,6 @@ CollectionFind[collection_MongoCollection, opts:OptionsPattern[]] := Module[
 	fields = BSONCreate@fields;
 	If[(query === $Failed) || (fields === $Failed), Return@$Failed];
 	
-	Print@skip;
-	
 	result = mongoCollectionFind[
 		ManagedLibraryExpressionID@collection, 
 		skip, 
@@ -134,7 +154,13 @@ CollectionFind[collection_MongoCollection, opts:OptionsPattern[]] := Module[
 		Return@$Failed
 	];
 	(* Return iterator object *)
-	iteratorHandle
+	iteratorHandle	
 ]
 
+
+(*	If[Head[iteratorHandle] =!= MongoIterator, Return[$Failed]];
+	NewIterator[
+		MongoIterator, 
+		{iter = iteratorHandle}, 
+		Replace[iter[], $Failed :> IteratorExhausted]*)
 

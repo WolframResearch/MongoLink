@@ -15,6 +15,19 @@ DLLEXPORT void manage_instance_mongodatabase(WolframLibraryData libData,
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+EXTERN_C DLLEXPORT int WL_DatabaseGetName(WolframLibraryData libData, mint Argc,
+                                          MArgument *Args, MArgument Res) {
+
+  auto database = databaseHandleMap[MArgument_getInteger(Args[0])];
+  // Set global returnString to name
+  // Api: http://api.mongodb.org/c/current/mongoc_database_get_name.html
+  returnString = mongoc_database_get_name(database);
+
+  MArgument_setUTF8String(Res, const_cast<char *>(returnString.c_str()));
+  return LIBRARY_NO_ERROR;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 // Database handle creation
 EXTERN_C DLLEXPORT int WL_DatabaseHandleCreate(WolframLibraryData libData,
                                                mint Argc, MArgument *Args,
@@ -78,5 +91,33 @@ EXTERN_C DLLEXPORT int WL_GetCollectionNames(WolframLibraryData libData,
   // Free string array
   bson_strfreev(strv);
   // Return
+  return LIBRARY_NO_ERROR;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+EXTERN_C DLLEXPORT int WL_DatabaseCreateCollection(WolframLibraryData libData,
+                                                   mint Argc, MArgument *Args,
+                                                   MArgument Res) {
+
+  auto database = databaseHandleMap[MArgument_getInteger(Args[0])];
+  char *collectionName = MArgument_getUTF8String(Args[1]);
+  auto options = bsonHandleMap[MArgument_getInteger(Args[2])];
+
+  auto output_collection_key = MArgument_getInteger(Args[3]);
+  // API:
+  // http://api.mongodb.org/c/current/mongoc_database_create_collection.html
+  bson_error_t error;
+  auto collection = mongoc_database_create_collection(database, collectionName,
+                                                      options, &error);
+  // check for error
+  if (!collection) {
+    errorString = error.message;
+    return LIBRARY_FUNCTION_ERROR;
+  }
+
+  collectionHandleMap[output_collection_key] = collection;
+
+  // Disown string
+  libData->UTF8String_disown(collectionName);
   return LIBRARY_NO_ERROR;
 }

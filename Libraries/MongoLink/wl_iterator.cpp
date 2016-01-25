@@ -10,6 +10,7 @@ DLLEXPORT void manage_instance_mongoiterator(WolframLibraryData libData,
                                              mbool mode, mint id) {
   // Destruction
   if ((mode != 0) && (iteratorHandleMap.count(id) > 0)) {
+    // API: http://api.mongodb.org/c/current/mongoc_cursor_destroy.html
     mongoc_cursor_destroy(iteratorHandleMap[id]);
     iteratorHandleMap.erase(id);
   }

@@ -16,12 +16,20 @@
 extern DLLEXPORT void manage_instance_mongodatabase(WolframLibraryData libData,
                                                     mbool mode, mint id);
 
+EXTERN_C DLLEXPORT int WL_DatabaseGetName(WolframLibraryData libData, mint Argc,
+                                          MArgument *Args, MArgument Res);
+
 EXTERN_C DLLEXPORT int WL_DatabaseHandleCreate(WolframLibraryData libData,
                                                mint Argc, MArgument *Args,
                                                MArgument Res);
 
 EXTERN_C DLLEXPORT int WL_GetCollectionNames(WolframLibraryData libData,
                                              MLINK mlp);
+
+EXTERN_C DLLEXPORT int WL_DatabaseCreateCollection(WolframLibraryData libData,
+                                                   mint Argc, MArgument *Args,
+                                                   MArgument Res);
+
 ////////////////////////////////////////////////////////////////////////////////
 
 #endif
