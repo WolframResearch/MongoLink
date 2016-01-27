@@ -11,10 +11,9 @@
 #include <bson.h>
 
 // Source files
-
 #include "wl_common.h"
 #include "wl_iterator.h"
-#include "wl_bulk_insert.h"
+#include "wl_bulk_operation.h"
 #include "wl_write_concern.h"
 #include "wl_bson.h"
 
@@ -38,8 +37,7 @@ EXTERN_C DLLEXPORT int WolframLibrary_initialize(WolframLibraryData libData) {
   (*libData->registerLibraryExpressionManager)("MongoCollection",
                                                manage_instance_mongocollection);
   (*libData->registerLibraryExpressionManager)(
-      "MongoCollectionBulkOperation",
-      manage_instance_mongocollectionbulkoperation);
+      "MongoBulkOperation", manage_instance_mongobulkoperation);
   (*libData->registerLibraryExpressionManager)(
       "MongoWriteConcern", manage_instance_mongowriteconcern);
   (*libData->registerLibraryExpressionManager)("MongoBSON",
@@ -57,8 +55,7 @@ WolframLibrary_uninitialize(WolframLibraryData libData) {
   (*libData->unregisterLibraryExpressionManager)("MongoClient");
   (*libData->unregisterLibraryExpressionManager)("MongoDatabase");
   (*libData->unregisterLibraryExpressionManager)("MongoCollection");
-  (*libData->unregisterLibraryExpressionManager)(
-      "MongoCollectionBulkOperation");
+  (*libData->unregisterLibraryExpressionManager)("MongoBulkOperation");
   (*libData->unregisterLibraryExpressionManager)("MongoWriteConcern");
   (*libData->unregisterLibraryExpressionManager)("MongoBSON");
   (*libData->unregisterLibraryExpressionManager)("MongoIterator");

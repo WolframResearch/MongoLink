@@ -26,6 +26,15 @@ MongoGetLastError = LibraryFunctionLoad[$MongoLinkLib, "WL_MongoGetLastError",
 	}, 
 	"UTF8String"						
 	]	
+
+(******************************************************************************)
+(****** Load Library Functions ******)
+
+MongoEnableLogging = LibraryFunctionLoad[$MongoLinkLib, "WL_EnableLogging", 
+	{
+	}, 
+	"Void"						
+	]	
 	
 (******************************************************************************)
 

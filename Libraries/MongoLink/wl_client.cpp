@@ -36,7 +36,7 @@ EXTERN_C DLLEXPORT int WL_ClientHandleCreate(WolframLibraryData libData,
   return LIBRARY_NO_ERROR;
 }
 
-////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////
 EXTERN_C DLLEXPORT int WL_GetDatabaseNames(WolframLibraryData libData,
                                            MLINK mlp) {
   // Load database handle
@@ -57,8 +57,9 @@ EXTERN_C DLLEXPORT int WL_GetDatabaseNames(WolframLibraryData libData,
   char **strv;
   int length = 0;
   if ((strv = mongoc_client_get_database_names(client, &error))) {
-    for (int i = 0; strv[i]; i++)
+    for (int i = 0; strv[i]; i++) {
       ++length; // need to know length to initialize output list
+    }
   } else {
     errorString = error.message;
     return LIBRARY_FUNCTION_ERROR;
@@ -75,5 +76,32 @@ EXTERN_C DLLEXPORT int WL_GetDatabaseNames(WolframLibraryData libData,
   // Free string array
   bson_strfreev(strv);
   // Return
+  return LIBRARY_NO_ERROR;
+}
+
+////////////////////////////////////////////////////////////////////////////
+EXTERN_C DLLEXPORT int WL_ClientGetCollection(WolframLibraryData libData,
+                                              mint Argc, MArgument *Args,
+                                              MArgument Res) {
+  int client_handle_key = MArgument_getInteger(Args[0]);
+  int collection_handle_key = MArgument_getInteger(Args[1]);
+  char *databaseName = MArgument_getUTF8String(Args[2]);
+  char *collectionName = MArgument_getUTF8String(Args[3]);
+
+  // Create collection handle, append to collectionHandleMap if successfully
+  // created.
+  // API: http://api.mongodb.org/c/current/mongoc_client_get_collection.html
+  auto collection = mongoc_client_get_collection(
+      clientHandleMap[client_handle_key], databaseName, collectionName);
+
+  if (!collection) {
+    errorString = "Cannot connect to collection.";
+    return LIBRARY_FUNCTION_ERROR;
+  }
+  collectionHandleMap[collection_handle_key] = collection;
+
+  // Disown strings
+  libData->UTF8String_disown(databaseName);
+  libData->UTF8String_disown(collectionName);
   return LIBRARY_NO_ERROR;
 }

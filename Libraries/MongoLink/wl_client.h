@@ -19,6 +19,13 @@ EXTERN_C DLLEXPORT int WL_ClientHandleCreate(WolframLibraryData libData,
                                              mint Argc, MArgument *Args,
                                              MArgument Res);
 
+EXTERN_C DLLEXPORT int WL_GetDatabaseNames(WolframLibraryData libData,
+                                           MLINK mlp);
+
+EXTERN_C DLLEXPORT int WL_ClientGetCollection(WolframLibraryData libData,
+                                              mint Argc, MArgument *Args,
+                                              MArgument Res);
+
 ////////////////////////////////////////////////////////////////////////////////
 
 #endif

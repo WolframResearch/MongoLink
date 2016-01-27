@@ -32,6 +32,10 @@ EXTERN_C DLLEXPORT int WL_MongoCollectionFind(WolframLibraryData libData,
                                               mint Argc, MArgument *Args,
                                               MArgument Res);
 
+EXTERN_C DLLEXPORT int
+WL_MongoCollectionCreateBulkOp(WolframLibraryData libData, mint Argc,
+                               MArgument *Args, MArgument Res);
+
 ////////////////////////////////////////////////////////////////////////////////
 
 #endif

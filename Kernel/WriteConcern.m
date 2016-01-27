@@ -6,7 +6,6 @@ Note: we guarantee that we will always use MongoDB's defaults for this
 *******************************************************************************)
 
 Package["MongoLink`"]
-$MongoLinkLib = FindLibrary["MongoLink"];
 
 (*** Package Exports ***)
 

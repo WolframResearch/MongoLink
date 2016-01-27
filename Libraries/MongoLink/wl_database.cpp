@@ -121,3 +121,27 @@ EXTERN_C DLLEXPORT int WL_DatabaseCreateCollection(WolframLibraryData libData,
   libData->UTF8String_disown(collectionName);
   return LIBRARY_NO_ERROR;
 }
+
+////////////////////////////////////////////////////////////////////////////
+EXTERN_C DLLEXPORT int WL_DatabaseGetCollection(WolframLibraryData libData,
+                                                mint Argc, MArgument *Args,
+                                                MArgument Res) {
+  auto database = databaseHandleMap[MArgument_getInteger(Args[0])];
+  int collection_handle_key = MArgument_getInteger(Args[1]);
+  char *collectionName = MArgument_getUTF8String(Args[2]);
+
+  // Create collection handle, append to collectionHandleMap if successfully
+  // created.
+  // API: http://api.mongodb.org/c/current/mongoc_database_get_collection.html
+  auto collection = mongoc_database_get_collection(database, collectionName);
+
+  if (!collection) {
+    errorString = "Cannot connect to collection.";
+    return LIBRARY_FUNCTION_ERROR;
+  }
+  collectionHandleMap[collection_handle_key] = collection;
+
+  // Disown strings
+  libData->UTF8String_disown(collectionName);
+  return LIBRARY_NO_ERROR;
+}

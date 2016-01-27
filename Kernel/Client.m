@@ -5,7 +5,6 @@ Client level functions
 *******************************************************************************)
 
 Package["MongoLink`"]
-$MongoLinkLib = FindLibrary["MongoLink"];
 
 (*** Package Exports ***)
 PackageExport["MongoClient"]

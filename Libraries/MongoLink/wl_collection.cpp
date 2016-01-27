@@ -32,33 +32,6 @@ EXTERN_C DLLEXPORT int WL_CollectionGetName(WolframLibraryData libData,
   return LIBRARY_NO_ERROR;
 }
 
-// Collection handle creation
-EXTERN_C DLLEXPORT int WL_CollectionHandleCreate(WolframLibraryData libData,
-                                                 mint Argc, MArgument *Args,
-                                                 MArgument Res) {
-  int client_handle_key = MArgument_getInteger(Args[0]);
-  int collection_handle_key = MArgument_getInteger(Args[1]);
-  char *databaseName = MArgument_getUTF8String(Args[2]);
-  char *collectionName = MArgument_getUTF8String(Args[3]);
-
-  // Create collection handle, append to collectionHandleMap if successfully
-  // created.
-  // API: http://api.mongodb.org/c/current/mongoc_client_get_collection.html
-  auto collection = mongoc_client_get_collection(
-      clientHandleMap[client_handle_key], databaseName, collectionName);
-
-  if (!collection) {
-    errorString = "Cannot connect to collection.";
-    return LIBRARY_FUNCTION_ERROR;
-  }
-  collectionHandleMap[collection_handle_key] = collection;
-
-  // Disown strings
-  libData->UTF8String_disown(databaseName);
-  libData->UTF8String_disown(collectionName);
-  return LIBRARY_NO_ERROR;
-}
-
 ////////////////////////////////////////////////////////////////////////////////
 
 EXTERN_C DLLEXPORT int WL_MongoCollectionCount(WolframLibraryData libData,
@@ -110,3 +83,45 @@ EXTERN_C DLLEXPORT int WL_MongoCollectionFind(WolframLibraryData libData,
 
   return LIBRARY_NO_ERROR;
 }
+
+////////////////////////////////////////////////////////////////////////////////
+EXTERN_C DLLEXPORT int
+WL_MongoCollectionCreateBulkOp(WolframLibraryData libData, mint Argc,
+                               MArgument *Args, MArgument Res) {
+  // Inputs
+  auto collection = collectionHandleMap[MArgument_getInteger(Args[0])];
+  bool ordered = MArgument_getInteger(Args[1]);
+  auto writeconcern = writeConcernHandleMap[MArgument_getInteger(Args[2])];
+
+  mint output_bulk_key = MArgument_getInteger(Args[3]);
+
+  // API:
+  // http://api.mongodb.org/c/current/mongoc_collection_create_bulk_operation.html
+  bulkOperationHandleMap[output_bulk_key] =
+      mongoc_collection_create_bulk_operation(collection, ordered, NULL);
+
+  return LIBRARY_NO_ERROR;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+// EXTERN_C DLLEXPORT int WL_MongoCollectionRemove(WolframLibraryData libData,
+//                                                 mint Argc, MArgument *Args,
+//                                                 MArgument Res) {
+//   // Inputs
+//   auto collection = collectionHandleMap[MArgument_getInteger(Args[0])];
+//   auto selector = bsonHandleMap[MArgument_getInteger(Args[1])];
+//   auto write_concern = writeConcernHandleMap[MArgument_getInteger(Args[2])];
+//
+//   mint output_bulk_key = MArgument_getInteger(Args[3]);
+//
+//   // API:
+//   // http://api.mongodb.org/c/current/mongoc_collection_remove.html
+//   if(!mongoc_collection_remove(
+//       collection, NULL,
+//       const bson_t *selector, const mongoc_write_concern_t *write_concern,
+//       bson_error_t *error);
+//   (collection, ordered, NULL);
+//
+//   return LIBRARY_NO_ERROR;
+// }

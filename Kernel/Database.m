@@ -5,7 +5,6 @@ Database level functions
 *******************************************************************************)
 
 Package["MongoLink`"]
-$MongoLinkLib = FindLibrary["MongoLink"];
 
 (*** Package Exports ***)
 PackageExport["MongoDatabase"]

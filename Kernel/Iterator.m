@@ -5,7 +5,6 @@ Mongo Document Iterator Interface
 *******************************************************************************)
 
 Package["MongoLink`"]
-$MongoLinkLib = FindLibrary["MongoLink"];
 
 (*** Package Exports ***)
 PackageExport["MongoIterator"]

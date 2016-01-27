@@ -5,7 +5,6 @@ BSON: create BSON objects from either JSON or associations
 *******************************************************************************)
 
 Package["MongoLink`"]
-$MongoLinkLib = FindLibrary["MongoLink"];
 
 (*** Package Exports ***)
 PackageExport["MongoBSON"]
@@ -36,11 +35,11 @@ bsonAsJSON = LibraryFunctionLoad[$MongoLinkLib, "WL_bsonAsJSON",
 (******************************************************************************)
 
 BSONCreate[doc_ /; (AssociationQ@doc || StringQ@doc)] := Module[
-	{bsonHandle, result},
+	{bsonHandle, result, json},
 	bsonHandle = CreateManagedLibraryExpression["MongoBSON", MongoBSON];
 	result = If[AssociationQ@doc, 	
 		 json = Developer`WriteRawJSONString[doc, "Compact" -> True];
-		 If[json === $Failed, Return@$Failed];
+		 If[FailureQ@json, Return@json];
 		 createBSONfromJSON[ManagedLibraryExpressionID@bsonHandle, json]
 		 ,
 		 createBSONfromJSON[ManagedLibraryExpressionID@bsonHandle, doc]
