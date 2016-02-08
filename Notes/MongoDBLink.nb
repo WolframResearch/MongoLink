@@ -10,10 +10,10 @@
 NotebookFileLineBreakTest
 NotebookFileLineBreakTest
 NotebookDataPosition[       158,          7]
-NotebookDataLength[     36707,        934]
-NotebookOptionsPosition[     33666,        826]
-NotebookOutlinePosition[     34092,        844]
-CellTagsIndexPosition[     34049,        841]
+NotebookDataLength[     82876,       2230]
+NotebookOptionsPosition[     75776,       1993]
+NotebookOutlinePosition[     76204,       2011]
+CellTagsIndexPosition[     76161,       2008]
 WindowFrame->Normal*)
 
 (* Beginning of Notebook Content *)
@@ -22,9 +22,6 @@ Notebook[{
 Cell[CellGroupData[{
 Cell["MongoDB Link Examples", "Title",
  CellChangeTimes->{{3.662457973465026*^9, 3.662457976663933*^9}}],
-
-Cell[BoxData["Quit"], "Input",
- CellChangeTimes->{{3.662730317771998*^9, 3.662730318318737*^9}}],
 
 Cell[TextData[{
  StyleBox["NOTE",
@@ -44,11 +41,11 @@ Cell[BoxData[{
   "PacletDirectoryAdd", "[", "\"\</Users/sebastianb/git/GeneralUtilities\>\"",
     "]"}], ";"}], "\n", 
  RowBox[{"<<", "GeneralUtilities`"}], "\n", 
- RowBox[{"<<", "MongoLink`"}], "\n"}], "Code",
+ RowBox[{"<<", "MongoLink`"}]}], "Code",
  CellChangeTimes->{
   3.66245811514736*^9, 3.66245822137041*^9, 3.662458761168262*^9, {
    3.662829330665616*^9, 3.662829368513699*^9}, {3.662879130438497*^9, 
-   3.662879131620132*^9}, 3.66287929213955*^9}],
+   3.662879131620132*^9}, 3.66287929213955*^9, 3.6628824719087467`*^9}],
 
 Cell[CellGroupData[{
 
@@ -56,14 +53,737 @@ Cell["Tutorial:", "Subchapter",
  CellChangeTimes->{{3.6627301212516003`*^9, 3.662730122026401*^9}, {
    3.662730326028225*^9, 3.662730331794251*^9}, 3.662791848691955*^9}],
 
-Cell["Connect to local server + see which databases are available:", "Text",
- CellChangeTimes->{{3.662730126129982*^9, 3.662730132618113*^9}, {
-  3.662791852419753*^9, 3.662791860761951*^9}}],
+Cell[CellGroupData[{
+
+Cell["Simple Read example from remote MongoDB server", "Section",
+ CellChangeTimes->{{3.6639351882803707`*^9, 3.663935192379632*^9}, {
+  3.6639370001849937`*^9, 3.663937005865493*^9}}],
+
+Cell["\<\
+The following will connect to our ML groups MongoDB Machine Learning database \
+using a read-only account (username: reader, password: argGroup):\
+\>", "Text",
+ CellChangeTimes->{{3.6639352174086027`*^9, 3.663935254880625*^9}, {
+  3.663935315019608*^9, 3.663935317954569*^9}, {3.6639357221054153`*^9, 
+  3.663935728632757*^9}}],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"client", "=", 
+   RowBox[{
+   "ClientConnect", "[", 
+    "\"\<mongodb://reader:argGroup@arg-ml-0.wolfram-arg.9431.mongodbdns.com:\
+27000/MachineLearningData\>\"", "]"}]}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{"db", "=", 
+  RowBox[{"DatabaseConnect", "[", 
+   RowBox[{"client", ",", "\"\<MachineLearningData\>\""}], "]"}]}]}], "Input",\
+
+ CellChangeTimes->{{3.663935210725608*^9, 3.66393524092903*^9}, {
+  3.663935325409074*^9, 3.6639353288325863`*^9}, {3.663935693473668*^9, 
+  3.663935704245141*^9}, {3.663935850745879*^9, 3.663935857009008*^9}, {
+  3.66393613909967*^9, 3.663936149603566*^9}}],
+
+Cell[BoxData[
+ RowBox[{"MongoDatabase", "[", "12", "]"}]], "Output",
+ CellChangeTimes->{
+  3.663935330875663*^9, {3.6639357057573643`*^9, 3.663935731323847*^9}, {
+   3.663935794124486*^9, 3.6639357994115343`*^9}, {3.6639358448547363`*^9, 
+   3.663935859514244*^9}, {3.663936125501636*^9, 3.663936160904751*^9}}]
+}, Open  ]],
+
+Cell["\<\
+MongoDB is very simple, and very similar to Dataset:Lets list all available \
+Collections:\
+\>", "Text",
+ CellChangeTimes->{{3.663935404801094*^9, 3.663935560770111*^9}, {
+  3.663936183761201*^9, 3.663936218648447*^9}}],
+
+Cell[CellGroupData[{
+
+Cell["A collection of Dataset\[CloseCurlyQuote]s", "Item",
+ CellChangeTimes->{{3.66393623903274*^9, 3.663936267139926*^9}}],
+
+Cell["MongoDB: Database", "Subitem",
+ CellChangeTimes->{{3.66393623903274*^9, 3.6639362741410503`*^9}}],
+
+Cell["A Dataset:", "Item",
+ CellChangeTimes->{{3.66393623903274*^9, 3.6639362824931507`*^9}}],
+
+Cell["MongoDB: Collection", "Subitem",
+ CellChangeTimes->{{3.66393623903274*^9, 3.663936292678946*^9}}],
+
+Cell["Association", "Item",
+ CellChangeTimes->{{3.66393623903274*^9, 3.663936319211852*^9}}],
+
+Cell["MongoDB: Document", "Subitem",
+ CellChangeTimes->{{3.66393623903274*^9, 3.663936325112817*^9}}]
+}, Open  ]],
+
+Cell["Lets list all Collections in the machine learning Database:", "Text",
+ CellChangeTimes->{{3.663936329497148*^9, 3.663936349816515*^9}}],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"DatabaseCollectionNames", "@", "db"}]], "Input",
+ CellChangeTimes->{{3.663935398378537*^9, 3.663935398380158*^9}}],
+
+Cell[BoxData[
+ RowBox[{"{", 
+  RowBox[{"\<\"Titanic.metadata\"\>", ",", "\<\"Test.metadata\"\>", 
+   ",", "\<\"Test.data\"\>", ",", "\<\"Titanic.data\"\>"}], "}"}]], "Output",
+ CellChangeTimes->{
+  3.663935399081271*^9, 3.663935563434433*^9, 3.663935739860067*^9, 
+   3.663935804436524*^9, 3.663935867478796*^9, {3.663936130545953*^9, 
+   3.663936166345682*^9}, 3.663936352658247*^9}]
+}, Open  ]],
+
+Cell["\<\
+Lets connect to, and then read from, the Titanic.data Collection:\
+\>", "Text",
+ CellChangeTimes->{{3.663936357344297*^9, 3.6639364154803047`*^9}}],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[{
+ RowBox[{"coll", "=", 
+  RowBox[{"CollectionConnect", "[", 
+   RowBox[{"db", ",", "\"\<Titanic.data\>\""}], 
+   "]"}]}], "\[IndentingNewLine]", 
+ RowBox[{"iter", "=", 
+  RowBox[{"CollectionFind", "[", "coll", "]"}]}]}], "Input",
+ CellChangeTimes->{{3.663936407409498*^9, 3.663936424330064*^9}, {
+  3.663936490330765*^9, 3.663936490633041*^9}}],
+
+Cell[BoxData[
+ RowBox[{"MongoCollection", "[", "6", "]"}]], "Output",
+ CellChangeTimes->{3.6639364254683943`*^9, 3.663936492138516*^9, 
+  3.663936544676702*^9, 3.663936869694092*^9}],
+
+Cell[BoxData[
+ TagBox[GridBox[{
+    {
+     StyleBox["MongoIterator", "Text",
+      StripOnInput->False], "\[SpanFromLeft]"}
+   },
+   AutoDelete->False,
+   FrameStyle->GrayLevel[0.85],
+   GridBoxAlignment->{"Columns" -> {{Left}}},
+   GridBoxDividers->{"Columns" -> {{True}}, "Rows" -> {{True}}},
+   GridBoxItemSize->{"Columns" -> {{Automatic}}, "Rows" -> {{Automatic}}},
+   GridBoxItemStyle->{"Columns" -> {"Text", "Output"}},
+   GridBoxSpacings->{"Columns" -> {{1}}, "Rows" -> {{1}}}],
+  "Grid"]], "Output",
+ CellChangeTimes->{3.6639364254683943`*^9, 3.663936492138516*^9, 
+  3.663936544676702*^9, 3.663936869700674*^9}]
+}, Open  ]],
+
+Cell["\<\
+This returns a MongoDB iterator object. We can ask the iterator to hand us \
+the next examples:\
+\>", "Text",
+ CellChangeTimes->{{3.663936428960484*^9, 3.6639364550164967`*^9}, {
+  3.663936584650736*^9, 3.663936601073799*^9}}],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[{
+ RowBox[{"Read", "@", "iter"}], "\[IndentingNewLine]", 
+ RowBox[{"Read", "@", "iter"}]}], "Input",
+ CellChangeTimes->{{3.663936458683189*^9, 3.663936460208531*^9}, {
+  3.663936498682351*^9, 3.663936498791379*^9}}],
+
+Cell[BoxData[
+ RowBox[{"\[LeftAssociation]", 
+  RowBox[{
+   RowBox[{"\<\"_id\"\>", "\[Rule]", 
+    RowBox[{"MongoObjectID", "[", "\<\"56b88a74d682ee08887278df\"\>", "]"}]}],
+    ",", 
+   RowBox[{"\<\"class\"\>", "\[Rule]", "\<\"1st\"\>"}], ",", 
+   RowBox[{"\<\"age\"\>", "\[Rule]", "29"}], ",", 
+   RowBox[{"\<\"sex\"\>", "\[Rule]", "\<\"female\"\>"}], ",", 
+   RowBox[{"\<\"survived\"\>", "\[Rule]", "True"}]}], 
+  "\[RightAssociation]"}]], "Output",
+ CellChangeTimes->{
+  3.663936460525182*^9, {3.663936493976782*^9, 3.663936499056484*^9}, 
+   3.6639365458971453`*^9, 3.663936871424738*^9}],
+
+Cell[BoxData[
+ RowBox[{"\[LeftAssociation]", 
+  RowBox[{
+   RowBox[{"\<\"_id\"\>", "\[Rule]", 
+    RowBox[{"MongoObjectID", "[", "\<\"56b88a74d682ee08887278e0\"\>", "]"}]}],
+    ",", 
+   RowBox[{"\<\"class\"\>", "\[Rule]", "\<\"1st\"\>"}], ",", 
+   RowBox[{"\<\"age\"\>", "\[Rule]", "1"}], ",", 
+   RowBox[{"\<\"sex\"\>", "\[Rule]", "\<\"male\"\>"}], ",", 
+   RowBox[{"\<\"survived\"\>", "\[Rule]", "True"}]}], 
+  "\[RightAssociation]"}]], "Output",
+ CellChangeTimes->{
+  3.663936460525182*^9, {3.663936493976782*^9, 3.663936499056484*^9}, 
+   3.6639365458971453`*^9, 3.663936871430554*^9}]
+}, Open  ]],
+
+Cell["\<\
+To read all the examples at once (not reccommended for very large datasets!) \
+and convert to WL Dataset:\
+\>", "Text",
+ CellChangeTimes->{{3.663936504826364*^9, 3.6639365367368307`*^9}}],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"titanicDataset", "=", 
+  RowBox[{"Dataset", "@", 
+   RowBox[{"ReadList", "@", "iter"}]}]}]], "Input",
+ CellChangeTimes->{{3.663936520291259*^9, 3.6639365399685783`*^9}, {
+  3.6639368589051113`*^9, 3.663936866057249*^9}}],
+
+Cell[BoxData[
+ TagBox[
+  TemplateBox[{GridBox[{{
+       StyleBox["\"_id\"", 
+        GrayLevel[0.3]], 
+       StyleBox["\"class\"", 
+        GrayLevel[0.3]], 
+       StyleBox["\"age\"", 
+        GrayLevel[0.3]], 
+       StyleBox["\"sex\"", 
+        GrayLevel[0.3]], 
+       StyleBox["\"survived\"", 
+        GrayLevel[0.3]]}, {
+       InterpretationBox[
+        TagBox[
+         RowBox[{"MongoObjectID", "[", "\"56b88a74d682ee08887278e1\"", "]"}], 
+         Short[#, 5]& ], 
+        MongoLink`MongoObjectID["56b88a74d682ee08887278e1"]], 
+       InterpretationBox[
+        StyleBox["\"1st\"", 
+         GrayLevel[0.45]], "1st"], 
+       InterpretationBox[
+        TagBox["2", Short[#, 5]& ], 2], 
+       InterpretationBox[
+        StyleBox["\"female\"", 
+         GrayLevel[0.45]], "female"], 
+       InterpretationBox["False", False]}, {
+       InterpretationBox[
+        TagBox[
+         RowBox[{"MongoObjectID", "[", "\"56b88a74d682ee08887278e2\"", "]"}], 
+         Short[#, 5]& ], 
+        MongoLink`MongoObjectID["56b88a74d682ee08887278e2"]], 
+       InterpretationBox[
+        StyleBox["\"1st\"", 
+         GrayLevel[0.45]], "1st"], 
+       InterpretationBox[
+        TagBox["30", Short[#, 5]& ], 30], 
+       InterpretationBox[
+        StyleBox["\"male\"", 
+         GrayLevel[0.45]], "male"], 
+       InterpretationBox["False", False]}, {
+       InterpretationBox[
+        TagBox[
+         RowBox[{"MongoObjectID", "[", "\"56b88a74d682ee08887278e3\"", "]"}], 
+         Short[#, 5]& ], 
+        MongoLink`MongoObjectID["56b88a74d682ee08887278e3"]], 
+       InterpretationBox[
+        StyleBox["\"1st\"", 
+         GrayLevel[0.45]], "1st"], 
+       InterpretationBox[
+        TagBox["25", Short[#, 5]& ], 25], 
+       InterpretationBox[
+        StyleBox["\"female\"", 
+         GrayLevel[0.45]], "female"], 
+       InterpretationBox["False", False]}, {
+       InterpretationBox[
+        TagBox[
+         RowBox[{"MongoObjectID", "[", "\"56b88a74d682ee08887278e4\"", "]"}], 
+         Short[#, 5]& ], 
+        MongoLink`MongoObjectID["56b88a74d682ee08887278e4"]], 
+       InterpretationBox[
+        StyleBox["\"1st\"", 
+         GrayLevel[0.45]], "1st"], 
+       InterpretationBox[
+        TagBox["48", Short[#, 5]& ], 48], 
+       InterpretationBox[
+        StyleBox["\"male\"", 
+         GrayLevel[0.45]], "male"], 
+       InterpretationBox["True", True]}, {
+       InterpretationBox[
+        TagBox[
+         RowBox[{"MongoObjectID", "[", "\"56b88a74d682ee08887278e5\"", "]"}], 
+         Short[#, 5]& ], 
+        MongoLink`MongoObjectID["56b88a74d682ee08887278e5"]], 
+       InterpretationBox[
+        StyleBox["\"1st\"", 
+         GrayLevel[0.45]], "1st"], 
+       InterpretationBox[
+        TagBox["63", Short[#, 5]& ], 63], 
+       InterpretationBox[
+        StyleBox["\"female\"", 
+         GrayLevel[0.45]], "female"], 
+       InterpretationBox["True", True]}, {
+       InterpretationBox[
+        TagBox[
+         RowBox[{"MongoObjectID", "[", "\"56b88a74d682ee08887278e6\"", "]"}], 
+         Short[#, 5]& ], 
+        MongoLink`MongoObjectID["56b88a74d682ee08887278e6"]], 
+       InterpretationBox[
+        StyleBox["\"1st\"", 
+         GrayLevel[0.45]], "1st"], 
+       InterpretationBox[
+        TagBox["39", Short[#, 5]& ], 39], 
+       InterpretationBox[
+        StyleBox["\"male\"", 
+         GrayLevel[0.45]], "male"], 
+       InterpretationBox["False", False]}, {
+       InterpretationBox[
+        TagBox[
+         RowBox[{"MongoObjectID", "[", "\"56b88a74d682ee08887278e7\"", "]"}], 
+         Short[#, 5]& ], 
+        MongoLink`MongoObjectID["56b88a74d682ee08887278e7"]], 
+       InterpretationBox[
+        StyleBox["\"1st\"", 
+         GrayLevel[0.45]], "1st"], 
+       InterpretationBox[
+        TagBox["53", Short[#, 5]& ], 53], 
+       InterpretationBox[
+        StyleBox["\"female\"", 
+         GrayLevel[0.45]], "female"], 
+       InterpretationBox["True", True]}, {
+       InterpretationBox[
+        TagBox[
+         RowBox[{"MongoObjectID", "[", "\"56b88a74d682ee08887278e8\"", "]"}], 
+         Short[#, 5]& ], 
+        MongoLink`MongoObjectID["56b88a74d682ee08887278e8"]], 
+       InterpretationBox[
+        StyleBox["\"1st\"", 
+         GrayLevel[0.45]], "1st"], 
+       InterpretationBox[
+        TagBox["71", Short[#, 5]& ], 71], 
+       InterpretationBox[
+        StyleBox["\"male\"", 
+         GrayLevel[0.45]], "male"], 
+       InterpretationBox["False", False]}, {
+       InterpretationBox[
+        TagBox[
+         RowBox[{"MongoObjectID", "[", "\"56b88a74d682ee08887278e9\"", "]"}], 
+         Short[#, 5]& ], 
+        MongoLink`MongoObjectID["56b88a74d682ee08887278e9"]], 
+       InterpretationBox[
+        StyleBox["\"1st\"", 
+         GrayLevel[0.45]], "1st"], 
+       InterpretationBox[
+        TagBox["47", Short[#, 5]& ], 47], 
+       InterpretationBox[
+        StyleBox["\"male\"", 
+         GrayLevel[0.45]], "male"], 
+       InterpretationBox["False", False]}, {
+       InterpretationBox[
+        TagBox[
+         RowBox[{"MongoObjectID", "[", "\"56b88a74d682ee08887278ea\"", "]"}], 
+         Short[#, 5]& ], 
+        MongoLink`MongoObjectID["56b88a74d682ee08887278ea"]], 
+       InterpretationBox[
+        StyleBox["\"1st\"", 
+         GrayLevel[0.45]], "1st"], 
+       InterpretationBox[
+        TagBox["18", Short[#, 5]& ], 18], 
+       InterpretationBox[
+        StyleBox["\"female\"", 
+         GrayLevel[0.45]], "female"], 
+       InterpretationBox["True", True]}, {
+       InterpretationBox[
+        TagBox[
+         RowBox[{"MongoObjectID", "[", "\"56b88a74d682ee08887278eb\"", "]"}], 
+         Short[#, 5]& ], 
+        MongoLink`MongoObjectID["56b88a74d682ee08887278eb"]], 
+       InterpretationBox[
+        StyleBox["\"1st\"", 
+         GrayLevel[0.45]], "1st"], 
+       InterpretationBox[
+        TagBox["24", Short[#, 5]& ], 24], 
+       InterpretationBox[
+        StyleBox["\"female\"", 
+         GrayLevel[0.45]], "female"], 
+       InterpretationBox["True", True]}, {
+       InterpretationBox[
+        TagBox[
+         RowBox[{"MongoObjectID", "[", "\"56b88a74d682ee08887278ec\"", "]"}], 
+         Short[#, 5]& ], 
+        MongoLink`MongoObjectID["56b88a74d682ee08887278ec"]], 
+       InterpretationBox[
+        StyleBox["\"1st\"", 
+         GrayLevel[0.45]], "1st"], 
+       InterpretationBox[
+        TagBox["26", Short[#, 5]& ], 26], 
+       InterpretationBox[
+        StyleBox["\"female\"", 
+         GrayLevel[0.45]], "female"], 
+       InterpretationBox["True", True]}, {
+       InterpretationBox[
+        TagBox[
+         RowBox[{"MongoObjectID", "[", "\"56b88a74d682ee08887278ed\"", "]"}], 
+         Short[#, 5]& ], 
+        MongoLink`MongoObjectID["56b88a74d682ee08887278ed"]], 
+       InterpretationBox[
+        StyleBox["\"1st\"", 
+         GrayLevel[0.45]], "1st"], 
+       InterpretationBox[
+        TagBox["80", Short[#, 5]& ], 80], 
+       InterpretationBox[
+        StyleBox["\"male\"", 
+         GrayLevel[0.45]], "male"], 
+       InterpretationBox["True", True]}, {
+       InterpretationBox[
+        TagBox[
+         RowBox[{"MongoObjectID", "[", "\"56b88a74d682ee08887278ee\"", "]"}], 
+         Short[#, 5]& ], 
+        MongoLink`MongoObjectID["56b88a74d682ee08887278ee"]], 
+       InterpretationBox[
+        StyleBox["\"1st\"", 
+         GrayLevel[0.45]], "1st"], 
+       InterpretationBox[
+        TagBox["Null", Short[#, 5]& ], Null], 
+       InterpretationBox[
+        StyleBox["\"male\"", 
+         GrayLevel[0.45]], "male"], 
+       InterpretationBox["False", False]}, {
+       InterpretationBox[
+        TagBox[
+         RowBox[{"MongoObjectID", "[", "\"56b88a74d682ee08887278ef\"", "]"}], 
+         Short[#, 5]& ], 
+        MongoLink`MongoObjectID["56b88a74d682ee08887278ef"]], 
+       InterpretationBox[
+        StyleBox["\"1st\"", 
+         GrayLevel[0.45]], "1st"], 
+       InterpretationBox[
+        TagBox["24", Short[#, 5]& ], 24], 
+       InterpretationBox[
+        StyleBox["\"male\"", 
+         GrayLevel[0.45]], "male"], 
+       InterpretationBox["False", False]}, {
+       InterpretationBox[
+        TagBox[
+         RowBox[{"MongoObjectID", "[", "\"56b88a74d682ee08887278f0\"", "]"}], 
+         Short[#, 5]& ], 
+        MongoLink`MongoObjectID["56b88a74d682ee08887278f0"]], 
+       InterpretationBox[
+        StyleBox["\"1st\"", 
+         GrayLevel[0.45]], "1st"], 
+       InterpretationBox[
+        TagBox["50", Short[#, 5]& ], 50], 
+       InterpretationBox[
+        StyleBox["\"female\"", 
+         GrayLevel[0.45]], "female"], 
+       InterpretationBox["True", True]}, {
+       ItemBox[
+        UnderscriptBox["\[VerticalEllipsis]", 
+         StyleBox["1291", 
+          GrayLevel[0.5]]], Alignment -> {Center, Bottom}, Background -> 
+        RGBColor[0.985, 0.98, 0.973]], "\[SpanFromLeft]", "\[SpanFromLeft]", 
+       "\[SpanFromLeft]", "\[SpanFromLeft]"}, {
+       ItemBox[
+        RowBox[{"2 levels", 
+          AdjustmentBox[" | ", BoxBaselineShift -> -0.3], 
+          RowBox[{"1307", "rows"}]}], 
+        BaseStyle -> {
+         FontFamily -> "Helvetica", FontSize -> 10, FontColor -> 
+          GrayLevel[0.4], Editable -> False, Selectable -> False}, 
+        ItemSize -> {Automatic, Automatic}, Alignment -> {Left, Center}, 
+        Background -> RGBColor[0.92, 0.92, 0.9]], "\[SpanFromLeft]", 
+       "\[SpanFromLeft]", "\[SpanFromLeft]", "\[SpanFromLeft]"}}, 
+     GridBoxFrame -> {"ColumnsIndexed" -> {{{1, -1}, {1, -1}} -> True}}, 
+     FrameStyle -> RGBColor[0, 0, 0, 0.4], GridBoxDividers -> {"Columns" -> {
+         RGBColor[0, 0, 0, 0.4], {
+          RGBColor[0, 0, 0, 0.09]}, 
+         RGBColor[0, 0, 0, 0.4]}, "Rows" -> {
+         RGBColor[0, 0, 0, 0.4], 
+         RGBColor[0, 0, 0, 0.3], {
+          RGBColor[0, 0, 0, 0.08]}, 
+         RGBColor[0, 0, 0, 0.4]}}, RowSpacings -> {1.5, 1.2}, 
+     GridBoxBackground -> {"Columns" -> {}, "Rows" -> {
+         RGBColor[0.92, 0.92, 0.9]}}, 
+     GridBoxAlignment -> {"Columns" -> {{Left}}}, ColumnSpacings -> 2.5, 
+     GridFrameMargins -> {{2, 3}, {1, 3}}, 
+     GridBoxItemSize -> {"Columns" -> {{Automatic}}, "Rows" -> {{Automatic}}},
+      RowMinHeight -> 1.3],"Dataset[{__Association}]"},
+   "Dataset",
+   DisplayFunction->(TagBox[
+     StyleBox[#, {
+      ShowAutoStyles -> False, LineBreakWithin -> False, FontWeight -> 
+       "Light", FontFamily -> "Helvetica Neue", NumberMarks -> False, 
+       SpanMaxSize -> 3, SpanMinSize -> 1., Editable -> False, Selectable -> 
+       True, Background -> RGBColor[0.985, 0.98, 0.973], 
+       LinebreakAdjustments -> {0.4, 5, 100, 0, 0.5}, LineIndent -> 0, 
+       LineSpacing -> {1.1, 5}}], Deploy]& ),
+   InterpretationFunction->(#2& )],
+  False,
+  Editable->False,
+  SelectWithContents->True,
+  Selectable->False]], "Output",
+ CellChangeTimes->{{3.6639365261995897`*^9, 3.6639365501935177`*^9}, {
+  3.663936861097993*^9, 3.663936873761013*^9}}]
+}, Open  ]],
+
+Cell["\<\
+A note about MongoObjectID: this is an automatically generated unique ID that \
+MongoDB creates when you insert Documents. It contains a bunch of info, like \
+the servers clock time when the Document was created, the ID of the machine \
+which created the Document, etc:\
+\>", "Text",
+ CellChangeTimes->{{3.66393661776171*^9, 3.663936688016961*^9}, {
+  3.663936889832554*^9, 3.6639368965454483`*^9}}],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"MongoObjectID", "[", "\"\<56b88a74d682ee08887278f0\>\"", "]"}], "//",
+   "Normal"}]], "Input",
+ CellChangeTimes->{{3.663936675217455*^9, 3.663936678093801*^9}}],
+
+Cell[BoxData[
+ RowBox[{"\[LeftAssociation]", 
+  RowBox[{
+   RowBox[{"\<\"GenerationTime\"\>", "\[Rule]", 
+    TemplateBox[{RowBox[{"\"Mon 8 Feb 2016 14:30:44\"", 
+        StyleBox[
+         RowBox[{"\"GMT+\"", "\[InvisibleSpace]", "2.`"}], FontColor -> 
+         GrayLevel[0.5]]}],RowBox[{"DateObject", "[", 
+        RowBox[{
+          RowBox[{"{", 
+            RowBox[{"2016", ",", "2", ",", "8"}], "}"}], ",", 
+          RowBox[{"TimeObject", "[", 
+            RowBox[{
+              RowBox[{"{", 
+                RowBox[{"14", ",", "30", ",", "44.`"}], "}"}], ",", 
+              RowBox[{"TimeZone", "\[Rule]", "2.`"}]}], "]"}], ",", 
+          RowBox[{"TimeZone", "\[Rule]", "2.`"}]}], "]"}]},
+     "DateObject",
+     Editable->False]}], ",", 
+   RowBox[{"\<\"MachineID\"\>", "\[Rule]", "14058222"}], ",", 
+   RowBox[{"\<\"ProcessID\"\>", "\[Rule]", "2184"}], ",", 
+   RowBox[{"\<\"Counter\"\>", "\[Rule]", "7502064"}]}], 
+  "\[RightAssociation]"}]], "Output",
+ CellChangeTimes->{3.6639366783543043`*^9, 3.663936876543105*^9}]
+}, Open  ]],
+
+Cell[TextData[{
+ "MongoDB has a fairly rich and simple query language (see ",
+ ButtonBox["here",
+  BaseStyle->"Hyperlink",
+  ButtonData->{
+    URL["https://docs.mongodb.org/manual/tutorial/query-documents/"], None},
+  ButtonNote->"https://docs.mongodb.org/manual/tutorial/query-documents/"],
+ "). A simple query:"
+}], "Text",
+ CellChangeTimes->{{3.6639367125697613`*^9, 3.663936730032454*^9}, {
+  3.66393677569783*^9, 3.663936854264822*^9}}],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"iter", "=", 
+  RowBox[{"CollectionFind", "[", 
+   RowBox[{"coll", ",", 
+    RowBox[{"<|", 
+     RowBox[{"\"\<age\>\"", "\[Rule]", " ", "80"}], "|>"}]}], 
+   "]"}]}]], "Input",
+ CellChangeTimes->{{3.663936734289283*^9, 3.663936745632872*^9}}],
+
+Cell[BoxData[
+ TagBox[GridBox[{
+    {
+     StyleBox["MongoIterator", "Text",
+      StripOnInput->False], "\[SpanFromLeft]"}
+   },
+   AutoDelete->False,
+   FrameStyle->GrayLevel[0.85],
+   GridBoxAlignment->{"Columns" -> {{Left}}},
+   GridBoxDividers->{"Columns" -> {{True}}, "Rows" -> {{True}}},
+   GridBoxItemSize->{"Columns" -> {{Automatic}}, "Rows" -> {{Automatic}}},
+   GridBoxItemStyle->{"Columns" -> {"Text", "Output"}},
+   GridBoxSpacings->{"Columns" -> {{1}}, "Rows" -> {{1}}}],
+  "Grid"]], "Output",
+ CellChangeTimes->{3.6639367462148523`*^9, 3.6639367948142233`*^9, 
+  3.6639368475536003`*^9, 3.663936918858335*^9}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"Dataset", "@", 
+  RowBox[{"ReadList", "@", "iter"}]}]], "Input"],
+
+Cell[BoxData[
+ TagBox[
+  TemplateBox[{GridBox[{{
+       StyleBox["\"_id\"", 
+        GrayLevel[0.3]], 
+       StyleBox["\"class\"", 
+        GrayLevel[0.3]], 
+       StyleBox["\"age\"", 
+        GrayLevel[0.3]], 
+       StyleBox["\"sex\"", 
+        GrayLevel[0.3]], 
+       StyleBox["\"survived\"", 
+        GrayLevel[0.3]]}, {
+       InterpretationBox[
+        TagBox[
+         RowBox[{"MongoObjectID", "[", "\"56b88a74d682ee08887278ed\"", "]"}], 
+         Short[#, 5]& ], 
+        MongoLink`MongoObjectID["56b88a74d682ee08887278ed"]], 
+       StyleBox["\"1st\"", FontColor -> GrayLevel[0.4]], 80, 
+       StyleBox["\"male\"", FontColor -> GrayLevel[0.4]], 
+       InterpretationBox["True", True]}, {
+       ItemBox[
+        RowBox[{"2 levels", 
+          AdjustmentBox[" | ", BoxBaselineShift -> -0.3], 
+          RowBox[{"1", "rows"}]}], 
+        BaseStyle -> {
+         FontFamily -> "Helvetica", FontSize -> 10, FontColor -> 
+          GrayLevel[0.4], Editable -> False, Selectable -> False}, 
+        ItemSize -> {Automatic, Automatic}, Alignment -> {Left, Center}, 
+        Background -> RGBColor[0.92, 0.92, 0.9]], "\[SpanFromLeft]", 
+       "\[SpanFromLeft]", "\[SpanFromLeft]", "\[SpanFromLeft]"}}, 
+     GridBoxFrame -> {"ColumnsIndexed" -> {{{1, -1}, {1, -1}} -> True}}, 
+     FrameStyle -> RGBColor[0, 0, 0, 0.4], GridBoxDividers -> {"Columns" -> {
+         RGBColor[0, 0, 0, 0.4], {
+          RGBColor[0, 0, 0, 0.09]}, 
+         RGBColor[0, 0, 0, 0.4]}, "Rows" -> {
+         RGBColor[0, 0, 0, 0.4], 
+         RGBColor[0, 0, 0, 0.3], {
+          RGBColor[0, 0, 0, 0.08]}, 
+         RGBColor[0, 0, 0, 0.4]}}, RowSpacings -> {1.5, 1.2}, 
+     GridBoxBackground -> {"Columns" -> {}, "Rows" -> {
+         RGBColor[0.92, 0.92, 0.9]}}, 
+     GridBoxAlignment -> {"Columns" -> {{Left}}}, ColumnSpacings -> 2.5, 
+     GridFrameMargins -> {{2, 3}, {1, 3}}, 
+     GridBoxItemSize -> {"Columns" -> {{Automatic}}, "Rows" -> {{Automatic}}},
+      RowMinHeight -> 1.3],"Dataset[{__Association}]"},
+   "Dataset",
+   DisplayFunction->(TagBox[
+     StyleBox[#, {
+      ShowAutoStyles -> False, LineBreakWithin -> False, FontWeight -> 
+       "Light", FontFamily -> "Helvetica Neue", NumberMarks -> False, 
+       SpanMaxSize -> 3, SpanMinSize -> 1., Editable -> False, Selectable -> 
+       True, Background -> RGBColor[0.985, 0.98, 0.973], 
+       LinebreakAdjustments -> {0.4, 5, 100, 0, 0.5}, LineIndent -> 0, 
+       LineSpacing -> {1.1, 5}}], Deploy]& ),
+   InterpretationFunction->(#2& )],
+  False,
+  Editable->False,
+  SelectWithContents->True,
+  Selectable->False]], "Output",
+ CellChangeTimes->{3.6639367541896152`*^9, 3.663936796098957*^9, 
+  3.663936920004117*^9}]
+}, Open  ]],
+
+Cell["Doing this on the WL side instead:", "Text",
+ CellChangeTimes->{{3.66393692232368*^9, 3.663936934936695*^9}}],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"titanicDataset", "[", 
+  RowBox[{"Select", "[", 
+   RowBox[{
+    RowBox[{"#age", " ", "\[Equal]", " ", "80"}], "&"}], "]"}], 
+  "]"}]], "Input",
+ CellChangeTimes->{{3.663936937841301*^9, 3.663936951080945*^9}}],
+
+Cell[BoxData[
+ TagBox[
+  TemplateBox[{GridBox[{{
+       StyleBox["\"_id\"", 
+        GrayLevel[0.3]], 
+       StyleBox["\"class\"", 
+        GrayLevel[0.3]], 
+       StyleBox["\"age\"", 
+        GrayLevel[0.3]], 
+       StyleBox["\"sex\"", 
+        GrayLevel[0.3]], 
+       StyleBox["\"survived\"", 
+        GrayLevel[0.3]]}, {
+       InterpretationBox[
+        TagBox[
+         RowBox[{"MongoObjectID", "[", "\"56b88a74d682ee08887278ed\"", "]"}], 
+         Short[#, 5]& ], 
+        MongoLink`MongoObjectID["56b88a74d682ee08887278ed"]], 
+       InterpretationBox[
+        StyleBox["\"1st\"", 
+         GrayLevel[0.45]], "1st"], 
+       InterpretationBox[
+        TagBox["80", Short[#, 5]& ], 80], 
+       InterpretationBox[
+        StyleBox["\"male\"", 
+         GrayLevel[0.45]], "male"], 
+       InterpretationBox["True", True]}, {
+       ItemBox[
+        RowBox[{"2 levels", 
+          AdjustmentBox[" | ", BoxBaselineShift -> -0.3], 
+          RowBox[{"1", "rows"}]}], 
+        BaseStyle -> {
+         FontFamily -> "Helvetica", FontSize -> 10, FontColor -> 
+          GrayLevel[0.4], Editable -> False, Selectable -> False}, 
+        ItemSize -> {Automatic, Automatic}, Alignment -> {Left, Center}, 
+        Background -> RGBColor[0.92, 0.92, 0.9]], "\[SpanFromLeft]", 
+       "\[SpanFromLeft]", "\[SpanFromLeft]", "\[SpanFromLeft]"}}, 
+     GridBoxFrame -> {"ColumnsIndexed" -> {{{1, -1}, {1, -1}} -> True}}, 
+     FrameStyle -> RGBColor[0, 0, 0, 0.4], GridBoxDividers -> {"Columns" -> {
+         RGBColor[0, 0, 0, 0.4], {
+          RGBColor[0, 0, 0, 0.09]}, 
+         RGBColor[0, 0, 0, 0.4]}, "Rows" -> {
+         RGBColor[0, 0, 0, 0.4], 
+         RGBColor[0, 0, 0, 0.3], {
+          RGBColor[0, 0, 0, 0.08]}, 
+         RGBColor[0, 0, 0, 0.4]}}, RowSpacings -> {1.5, 1.2}, 
+     GridBoxBackground -> {"Columns" -> {}, "Rows" -> {
+         RGBColor[0.92, 0.92, 0.9]}}, 
+     GridBoxAlignment -> {"Columns" -> {{Left}}}, ColumnSpacings -> 2.5, 
+     GridFrameMargins -> {{2, 3}, {1, 3}}, 
+     GridBoxItemSize -> {"Columns" -> {{Automatic}}, "Rows" -> {{Automatic}}},
+      RowMinHeight -> 1.3],"Dataset[{__Association}]"},
+   "Dataset",
+   DisplayFunction->(TagBox[
+     StyleBox[#, {
+      ShowAutoStyles -> False, LineBreakWithin -> False, FontWeight -> 
+       "Light", FontFamily -> "Helvetica Neue", NumberMarks -> False, 
+       SpanMaxSize -> 3, SpanMinSize -> 1., Editable -> False, Selectable -> 
+       True, Background -> RGBColor[0.985, 0.98, 0.973], 
+       LinebreakAdjustments -> {0.4, 5, 100, 0, 0.5}, LineIndent -> 0, 
+       LineSpacing -> {1.1, 5}}], Deploy]& ),
+   InterpretationFunction->(#2& )],
+  False,
+  Editable->False,
+  SelectWithContents->True,
+  Selectable->False]], "Output",
+ CellChangeTimes->{3.6639369513911963`*^9}]
+}, Open  ]]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["Local MongoDB server example", "Section",
+ CellChangeTimes->{{3.6639370135851994`*^9, 3.663937019585123*^9}}],
+
+Cell["\<\
+This example will require you to install and run a local MongoDB server. \
+\>", "Text",
+ CellChangeTimes->{{3.6639370211444798`*^9, 3.663937038296921*^9}, {
+  3.663937082363632*^9, 3.663937090736444*^9}}],
 
 Cell[CellGroupData[{
 
 Cell["Client level ops:", "Subsection",
  CellChangeTimes->{{3.6628103555189466`*^9, 3.662810358681555*^9}}],
+
+Cell["\<\
+Connect to local server + see which databases are available :\
+\>", "Text",
+ CellChangeTimes->{{3.663935198257895*^9, 3.6639352007397337`*^9}}],
 
 Cell[CellGroupData[{
 
@@ -72,49 +792,20 @@ Cell[BoxData[{
   RowBox[{"ClientConnect", "[", "]"}]}], "\[IndentingNewLine]", 
  RowBox[{"ClientDatabaseNames", "@", "client"}]}], "Input",
  CellChangeTimes->{{3.6627918633303623`*^9, 3.6627918772844963`*^9}, {
-  3.662805026367321*^9, 3.662805027389963*^9}}],
+  3.662805026367321*^9, 3.662805027389963*^9}, {3.663921791110999*^9, 
+  3.663921795584834*^9}, {3.663935153928841*^9, 3.663935157417034*^9}}],
 
 Cell[BoxData[
- RowBox[{"MongoClient", "[", "3", "]"}]], "Output",
+ RowBox[{"MongoClient", "[", "19", "]"}]], "Output",
  CellChangeTimes->{
-  3.662730136009467*^9, 3.6627918367725153`*^9, 3.662791877838893*^9, {
-   3.662792024192885*^9, 3.66279202946667*^9}, 3.6627920923110847`*^9, {
-   3.662792697637491*^9, 3.662792709638392*^9}, 3.662792739997484*^9, {
-   3.6627927746022873`*^9, 3.66279277681807*^9}, 3.662792820488491*^9, {
-   3.662792852052663*^9, 3.6627928544930353`*^9}, {3.6627975118786697`*^9, 
-   3.662797529090776*^9}, 3.662797992174284*^9, 3.662798061678486*^9, 
-   3.6627980976841583`*^9, {3.662805029983029*^9, 3.6628050487298107`*^9}, 
-   3.6628056119850473`*^9, 3.6628094475977173`*^9, 3.662809688976997*^9, 
-   3.662809729657707*^9, 3.6628098874279413`*^9, 3.6628101399866257`*^9, 
-   3.662810276230482*^9, 3.662810475270751*^9, 3.662810508429512*^9, 
-   3.662810672914631*^9, 3.662810978090624*^9, 3.662811385571089*^9, 
-   3.662811421362831*^9, 3.662823416021278*^9, 3.6628235519815207`*^9, 
-   3.662823605785467*^9, 3.662823644897147*^9, 3.662824261792746*^9, 
-   3.6628244661605463`*^9, 3.662824568770781*^9, 3.6628257067983713`*^9, 
-   3.6628790330987787`*^9, 3.662879301217013*^9, {3.662880452806643*^9, 
-   3.662880475174306*^9}}],
+  3.6639351576672487`*^9, {3.663937040736722*^9, 3.66393705657444*^9}}],
 
 Cell[BoxData[
  RowBox[{"{", 
   RowBox[{"\<\"a_test\"\>", ",", "\<\"MachineLearningData\"\>", 
-   ",", "\<\"test\"\>"}], "}"}]], "Output",
+   ",", "\<\"test\"\>", ",", "\<\"test99\"\>"}], "}"}]], "Output",
  CellChangeTimes->{
-  3.662730136009467*^9, 3.6627918367725153`*^9, 3.662791877838893*^9, {
-   3.662792024192885*^9, 3.66279202946667*^9}, 3.6627920923110847`*^9, {
-   3.662792697637491*^9, 3.662792709638392*^9}, 3.662792739997484*^9, {
-   3.6627927746022873`*^9, 3.66279277681807*^9}, 3.662792820488491*^9, {
-   3.662792852052663*^9, 3.6627928544930353`*^9}, {3.6627975118786697`*^9, 
-   3.662797529090776*^9}, 3.662797992174284*^9, 3.662798061678486*^9, 
-   3.6627980976841583`*^9, {3.662805029983029*^9, 3.6628050487298107`*^9}, 
-   3.6628056119850473`*^9, 3.6628094475977173`*^9, 3.662809688976997*^9, 
-   3.662809729657707*^9, 3.6628098874279413`*^9, 3.6628101399866257`*^9, 
-   3.662810276230482*^9, 3.662810475270751*^9, 3.662810508429512*^9, 
-   3.662810672914631*^9, 3.662810978090624*^9, 3.662811385571089*^9, 
-   3.662811421362831*^9, 3.662823416021278*^9, 3.6628235519815207`*^9, 
-   3.662823605785467*^9, 3.662823644897147*^9, 3.662824261792746*^9, 
-   3.6628244661605463`*^9, 3.662824568770781*^9, 3.6628257067983713`*^9, 
-   3.6628790330987787`*^9, 3.662879301217013*^9, {3.662880452806643*^9, 
-   3.662880475183971*^9}}]
+  3.6639351576672487`*^9, {3.663937040736722*^9, 3.6639370565796556`*^9}}]
 }, Open  ]]
 }, Open  ]],
 
@@ -138,7 +829,7 @@ Cell[BoxData[{
   3.662797521017989*^9}, {3.662809463211138*^9, 3.6628094635604897`*^9}}],
 
 Cell[BoxData[
- RowBox[{"MongoDatabase", "[", "3", "]"}]], "Output",
+ RowBox[{"MongoDatabase", "[", "13", "]"}]], "Output",
  CellChangeTimes->{
   3.662730192121407*^9, {3.662791890001341*^9, 3.662791911455017*^9}, {
    3.662792007955296*^9, 3.662792027625554*^9}, {3.66279752148099*^9, 
@@ -151,12 +842,13 @@ Cell[BoxData[
    3.662823646497527*^9, 3.6628242638193007`*^9, 3.662824468152843*^9, 
    3.662824570516659*^9, 3.6628257086936502`*^9, 3.662827436230872*^9, 
    3.6628790348042383`*^9, 3.662879302958103*^9, {3.662880454696519*^9, 
-   3.662880476910343*^9}}],
+   3.662880476910343*^9}, 3.6630601475779552`*^9, 3.663767308907919*^9, {
+   3.66383435528234*^9, 3.663834358440155*^9}, 3.663937058225853*^9}],
 
 Cell[BoxData[
  RowBox[{"{", 
   RowBox[{"\<\"system.indexes\"\>", ",", "\<\"test99\"\>", 
-   ",", "\<\"testCollection\"\>"}], "}"}]], "Output",
+   ",", "\<\"testCollection\"\>", ",", "\<\"titanic\"\>"}], "}"}]], "Output",
  CellChangeTimes->{
   3.662730192121407*^9, {3.662791890001341*^9, 3.662791911455017*^9}, {
    3.662792007955296*^9, 3.662792027625554*^9}, {3.66279752148099*^9, 
@@ -169,7 +861,8 @@ Cell[BoxData[
    3.662823646497527*^9, 3.6628242638193007`*^9, 3.662824468152843*^9, 
    3.662824570516659*^9, 3.6628257086936502`*^9, 3.662827436230872*^9, 
    3.6628790348042383`*^9, 3.662879302958103*^9, {3.662880454696519*^9, 
-   3.662880476920121*^9}}]
+   3.662880476910343*^9}, 3.6630601475779552`*^9, 3.663767308907919*^9, {
+   3.66383435528234*^9, 3.663834358440155*^9}, 3.663937058230755*^9}]
 }, Open  ]]
 }, Open  ]],
 
@@ -201,7 +894,7 @@ Cell[BoxData[{
   3.662810503699552*^9}, {3.66281065164756*^9, 3.662810699252275*^9}}],
 
 Cell[BoxData[
- RowBox[{"MongoCollection", "[", "6", "]"}]], "Output",
+ RowBox[{"MongoCollection", "[", "8", "]"}]], "Output",
  CellChangeTimes->{
   3.662730192121407*^9, {3.662791890001341*^9, 3.662791911455017*^9}, {
    3.662792007955296*^9, 3.662792027625554*^9}, {3.66279752148099*^9, 
@@ -215,7 +908,8 @@ Cell[BoxData[
    3.662824265504446*^9, 3.662824469841078*^9, 3.662824590537509*^9, 
    3.662825710425226*^9, 3.662827438754877*^9, 3.662879036623015*^9, 
    3.6628790771009893`*^9, 3.662879304723558*^9, {3.6628804568069363`*^9, 
-   3.662880478672597*^9}}],
+   3.662880478672597*^9}, 3.6630601504533463`*^9, 3.6637673114242363`*^9, 
+   3.6638343602230043`*^9, 3.6639370621392097`*^9}],
 
 Cell[BoxData["\<\"testCollection\"\>"], "Output",
  CellChangeTimes->{
@@ -231,7 +925,8 @@ Cell[BoxData["\<\"testCollection\"\>"], "Output",
    3.662824265504446*^9, 3.662824469841078*^9, 3.662824590537509*^9, 
    3.662825710425226*^9, 3.662827438754877*^9, 3.662879036623015*^9, 
    3.6628790771009893`*^9, 3.662879304723558*^9, {3.6628804568069363`*^9, 
-   3.662880478683572*^9}}]
+   3.662880478672597*^9}, 3.6630601504533463`*^9, 3.6637673114242363`*^9, 
+   3.6638343602230043`*^9, 3.663937062144784*^9}]
 }, Open  ]],
 
 Cell["Count number of documents in collection:", "Text",
@@ -244,14 +939,15 @@ Cell[BoxData[
  RowBox[{"CollectionCount", "@", "coll"}]], "Input",
  CellChangeTimes->{{3.662810447262451*^9, 3.662810460945869*^9}}],
 
-Cell[BoxData["100006"], "Output",
+Cell[BoxData["100016"], "Output",
  CellChangeTimes->{
   3.662810513912178*^9, 3.6628109842151814`*^9, 3.662811394930422*^9, 
    3.662811426605177*^9, 3.6628234221869793`*^9, 3.662823558583651*^9, 
    3.662823610953177*^9, 3.662823650526204*^9, 3.66282426773709*^9, 
    3.6628245929369183`*^9, 3.66282571460666*^9, 3.662827440686908*^9, 
    3.662879079726053*^9, {3.6628804586500072`*^9, 3.6628804816571293`*^9}, 
-   3.66288155464462*^9}]
+   3.66288155464462*^9, 3.6637673139285707`*^9, 3.66383436263057*^9, 
+   3.663937063631209*^9}]
 }, Open  ]],
 
 Cell["The two argument form allows an explicit query:", "Text",
@@ -269,12 +965,13 @@ Cell[BoxData[
  CellChangeTimes->{{3.662810620115683*^9, 3.6628106257608337`*^9}, {
   3.662880500001649*^9, 3.6628805117139482`*^9}}],
 
-Cell[BoxData["6"], "Output",
+Cell[BoxData["10"], "Output",
  CellChangeTimes->{3.662810626163206*^9, 3.6628109860483847`*^9, 
   3.662811396726552*^9, 3.662811428305703*^9, 3.662823423323328*^9, 
   3.6628235604614067`*^9, 3.662823613322557*^9, 3.662824270048366*^9, 
   3.662824595108844*^9, 3.662825715866438*^9, 3.6628274422881727`*^9, 
-  3.6628790822384357`*^9, 3.662880511980918*^9, 3.6628815597031727`*^9}]
+  3.6628790822384357`*^9, 3.662880511980918*^9, 3.6628815597031727`*^9, 
+  3.663767317086258*^9, 3.663834364629004*^9, 3.663937065257132*^9}]
 }, Open  ]],
 
 Cell[CellGroupData[{
@@ -318,7 +1015,9 @@ Cell[BoxData[
          "}"}]}], ",", 
        RowBox[{"\"\<BoundingBoxLabels\>\"", "\[Rule]", " ", 
         RowBox[{"{", 
-         RowBox[{"\"\<Dog\>\"", ",", "\"\<Lion\>\""}], "}"}]}]}], "|>"}], ",", 
+         RowBox[{"\"\<Dog\>\"", ",", "\"\<Lion\>\""}], "}"}]}], ",", 
+       RowBox[{"\"\<ModifiedDate\>\"", "\[Rule]", " ", 
+        RowBox[{"DateObject", "[", "]"}]}]}], "|>"}], ",", 
      RowBox[{"<|", 
       RowBox[{
        RowBox[{"\"\<Type\>\"", "\[Rule]", " ", "\"\<Image\>\""}], ",", 
@@ -331,10 +1030,13 @@ Cell[BoxData[
           RowBox[{"0.3", ",", "6.7", ",", "6.6", ",", "2.3"}], "}"}], "}"}]}],
         ",", 
        RowBox[{"\"\<BoundingBoxLabels\>\"", "\[Rule]", " ", 
-        RowBox[{"{", "\"\<Hyena\>\"", "}"}]}]}], "|>"}]}], "}"}], 
+        RowBox[{"{", "\"\<Hyena\>\"", "}"}]}], ",", " ", 
+       RowBox[{"\"\<ModifiedDate\>\"", "\[Rule]", " ", 
+        RowBox[{"DateObject", "[", "]"}]}]}], "|>"}]}], "}"}], 
    "]"}]}]], "Input",
  CellChangeTimes->{{3.6628268700502243`*^9, 3.662827086042739*^9}, {
-  3.662827264969755*^9, 3.6628273269699*^9}}],
+  3.662827264969755*^9, 3.6628273269699*^9}, {3.663840332437353*^9, 
+  3.663840362492766*^9}}],
 
 Cell[BoxData[
  TagBox[
@@ -346,6 +1048,8 @@ Cell[BoxData[
        StyleBox["\"BoundingBoxes\"", 
         GrayLevel[0.3]], 
        StyleBox["\"BoundingBoxLabels\"", 
+        GrayLevel[0.3]], 
+       StyleBox["\"ModifiedDate\"", 
         GrayLevel[0.3]]}, {
        StyleBox["\"Image\"", FontColor -> GrayLevel[0.4]], 
        StyleBox[
@@ -366,7 +1070,24 @@ Cell[BoxData[
         RowBox[{"{", "\[ThinSpace]", 
           StyleBox["\"Dog\"", FontColor -> GrayLevel[0.4]], ",", 
           StyleBox["\"Lion\"", FontColor -> GrayLevel[0.4]], "\[ThinSpace]", 
-          "}"}], LineBreakWithin -> Automatic]}, {
+          "}"}], LineBreakWithin -> Automatic], 
+       InterpretationBox[
+        TagBox[
+         TooltipBox[
+          StyleBox[
+          "\"8 Feb 2016 18:17:49\"", FontFamily -> "Arial", FontSize -> 11, 
+           FontWeight -> Bold, FontColor -> RGBColor[{
+              Rational[33, 74], 
+              Rational[27, 74], 
+              Rational[117, 370]}]], 
+          StyleBox[
+          "DateObject[{2016, 2, 8}, TimeObject[{18, 17, 49.220426}, TimeZone \
+-> 2.], TimeZone -> 2.]", FontWeight -> Bold, ShowStringCharacters -> True]], 
+         
+         MouseAppearanceTag["Arrow"]], 
+        DateObject[{2016, 2, 8}, 
+         TimeObject[{18, 17, 49.220426}, TimeZone -> 2.], TimeZone -> 2.]]}, {
+      
        StyleBox["\"Image\"", FontColor -> GrayLevel[0.4]], 
        StyleBox[
         RowBox[{"{", "\[ThinSpace]", 234, ",", 334, "\[ThinSpace]", "}"}], 
@@ -381,7 +1102,24 @@ Cell[BoxData[
        StyleBox[
         RowBox[{"{", "\[ThinSpace]", 
           StyleBox["\"Hyena\"", FontColor -> GrayLevel[0.4]], "\[ThinSpace]", 
-          "}"}], LineBreakWithin -> Automatic]}, {
+          "}"}], LineBreakWithin -> Automatic], 
+       InterpretationBox[
+        TagBox[
+         TooltipBox[
+          StyleBox[
+          "\"8 Feb 2016 18:17:49\"", FontFamily -> "Arial", FontSize -> 11, 
+           FontWeight -> Bold, FontColor -> RGBColor[{
+              Rational[33, 74], 
+              Rational[27, 74], 
+              Rational[117, 370]}]], 
+          StyleBox[
+          "DateObject[{2016, 2, 8}, TimeObject[{18, 17, 49.220486}, TimeZone \
+-> 2.], TimeZone -> 2.]", FontWeight -> Bold, ShowStringCharacters -> True]], 
+         
+         MouseAppearanceTag["Arrow"]], 
+        DateObject[{2016, 2, 8}, 
+         TimeObject[{18, 17, 49.220486}, TimeZone -> 2.], TimeZone -> 2.]]}, {
+      
        ItemBox[
         RowBox[{"4 levels", 
           AdjustmentBox[" | ", BoxBaselineShift -> -0.3], 
@@ -391,7 +1129,7 @@ Cell[BoxData[
           GrayLevel[0.4], Editable -> False, Selectable -> False}, 
         ItemSize -> {Automatic, Automatic}, Alignment -> {Left, Center}, 
         Background -> RGBColor[0.92, 0.92, 0.9]], "\[SpanFromLeft]", 
-       "\[SpanFromLeft]", "\[SpanFromLeft]"}}, 
+       "\[SpanFromLeft]", "\[SpanFromLeft]", "\[SpanFromLeft]"}}, 
      GridBoxFrame -> {"ColumnsIndexed" -> {{{1, -1}, {1, -1}} -> True}}, 
      FrameStyle -> RGBColor[0, 0, 0, 0.4], GridBoxDividers -> {"Columns" -> {
          RGBColor[0, 0, 0, 0.4], {
@@ -424,7 +1162,9 @@ Cell[BoxData[
  CellChangeTimes->{{3.6628268877506247`*^9, 3.6628269341626463`*^9}, 
    3.6628270263374443`*^9, 3.662827086869338*^9, {3.662827289322177*^9, 
    3.662827334380711*^9}, 3.66282744427207*^9, 3.662879091241371*^9, 
-   3.662880521551313*^9, 3.662881571337811*^9}]
+   3.662880521551313*^9, 3.662881571337811*^9, 3.663060186234229*^9, 
+   3.663834367172224*^9, 3.663840363435872*^9, 3.663840423407803*^9, 
+   3.6639370692453833`*^9}]
 }, Open  ]],
 
 Cell["\<\
@@ -466,7 +1206,9 @@ Cell[BoxData[
    3.6628256983670177`*^9, 3.662825742717698*^9}, 3.662825815342567*^9, {
    3.662826200587421*^9, 3.662826217768894*^9}, 3.6628262946126213`*^9, 
    3.662826664222988*^9, 3.6628273547965508`*^9, 3.662827446303565*^9, 
-   3.662879096296088*^9, 3.662880527518279*^9, 3.662881575667303*^9}]
+   3.662879096296088*^9, 3.662880527518279*^9, 3.662881575667303*^9, 
+   3.663834369668611*^9, 3.6638403714856462`*^9, 3.6638404255589437`*^9, 
+   3.6639370712978888`*^9}]
 }, Open  ]],
 
 Cell["Many functions have a bunch of MongoDB options:", "Text",
@@ -485,303 +1227,174 @@ Cell[BoxData[
    RowBox[{"\<\"Journal\"\>", "\[Rule]", "Automatic"}], ",", 
    RowBox[{"\<\"Timeout\"\>", "\[Rule]", "Automatic"}], ",", 
    RowBox[{"\<\"Ordered\"\>", "\[Rule]", "True"}]}], "}"}]], "Output",
- CellChangeTimes->{3.662880542083439*^9, 3.662881621376369*^9}]
+ CellChangeTimes->{3.662880542083439*^9, 3.662881621376369*^9, 
+  3.6638343715420713`*^9, 3.6638404271458473`*^9, 3.6639370728409653`*^9}]
 }, Open  ]]
 }, Open  ]],
 
 Cell[CellGroupData[{
 
-Cell["Queries", "Subsubsection",
- CellChangeTimes->{{3.662880693546814*^9, 3.66288069752992*^9}}],
+Cell["Insertion example 2", "Subsubsection",
+ CellChangeTimes->{{3.66383514925852*^9, 3.663835152329338*^9}, {
+  3.663839709908841*^9, 3.663839715170396*^9}}],
 
-Cell["\<\
-Iterators are fundamental to MongoDB queries: any query you do will return an \
-iterator object.
-Create an iterator that iterators through all images:\
-\>", "Text",
- CellChangeTimes->{{3.662879836867544*^9, 3.662879851121669*^9}, {
-  3.662880564499127*^9, 3.662880571761148*^9}, {3.6628807329076757`*^9, 
-  3.6628807627061243`*^9}}],
+Cell["Lets get the titanic dataset:", "Text",
+ CellChangeTimes->{{3.6638351661783113`*^9, 3.663835171721497*^9}}],
 
 Cell[CellGroupData[{
 
 Cell[BoxData[
- RowBox[{"iter", "=", 
-  RowBox[{"CollectionFind", "[", "coll", "]"}]}]], "Input",
- CellChangeTimes->{{3.6628797441552134`*^9, 3.6628797444735947`*^9}, {
-  3.662879808291849*^9, 3.66287981720183*^9}, {3.662879857249483*^9, 
-  3.662879866455461*^9}, {3.662880581842023*^9, 3.662880582354327*^9}, {
-  3.6628813589616528`*^9, 3.6628813751619473`*^9}}],
-
-Cell[BoxData[
- TagBox[GridBox[{
-    {
-     StyleBox["MongoIterator", "Text",
-      StripOnInput->False], "\[SpanFromLeft]"}
-   },
-   AutoDelete->False,
-   FrameStyle->GrayLevel[0.85],
-   GridBoxAlignment->{"Columns" -> {{Left}}},
-   GridBoxDividers->{"Columns" -> {{True}}, "Rows" -> {{True}}},
-   GridBoxItemSize->{"Columns" -> {{Automatic}}, "Rows" -> {{Automatic}}},
-   GridBoxItemStyle->{"Columns" -> {"Text", "Output"}},
-   GridBoxSpacings->{"Columns" -> {{1}}, "Rows" -> {{1}}}],
-  "Grid"]], "Output",
- CellChangeTimes->{{3.6628797447140207`*^9, 3.66287975939425*^9}, {
-   3.662879805453865*^9, 3.6628798177293463`*^9}, {3.66287985384582*^9, 
-   3.6628798667411737`*^9}, 3.66288004660905*^9, 3.662880582829543*^9, 
-   3.662881008960621*^9, 3.662881097872164*^9, {3.662881353804044*^9, 
-   3.662881376686262*^9}, 3.66288163103271*^9}]
-}, Open  ]],
-
-Cell["\<\
-This is equivalent to the two argument form with empty query:\
-\>", "Text",
- CellChangeTimes->{{3.662880579074843*^9, 3.662880605953587*^9}}],
-
-Cell[CellGroupData[{
-
-Cell[BoxData[
- RowBox[{"iter", "=", 
-  RowBox[{"CollectionFind", "[", 
-   RowBox[{"coll", ",", " ", 
-    RowBox[{"<|", "|>"}]}], "]"}]}]], "Input",
- CellChangeTimes->{{3.662880593283285*^9, 3.662880594850482*^9}}],
-
-Cell[BoxData[
- TagBox[GridBox[{
-    {
-     StyleBox["MongoIterator", "Text",
-      StripOnInput->False], "\[SpanFromLeft]"}
-   },
-   AutoDelete->False,
-   FrameStyle->GrayLevel[0.85],
-   GridBoxAlignment->{"Columns" -> {{Left}}},
-   GridBoxDividers->{"Columns" -> {{True}}, "Rows" -> {{True}}},
-   GridBoxItemSize->{"Columns" -> {{Automatic}}, "Rows" -> {{Automatic}}},
-   GridBoxItemStyle->{"Columns" -> {"Text", "Output"}},
-   GridBoxSpacings->{"Columns" -> {{1}}, "Rows" -> {{1}}}],
-  "Grid"]], "Output",
- CellChangeTimes->{
-  3.662880607772521*^9, {3.662881355614583*^9, 3.662881378021947*^9}}]
-}, Open  ]],
-
-Cell["Read the next value:", "Text",
- CellChangeTimes->{{3.662881381345415*^9, 3.662881386449869*^9}}],
-
-Cell[CellGroupData[{
-
-Cell[BoxData[
- RowBox[{"Read", "@", "iter"}]], "Input",
- CellChangeTimes->{{3.6628813878064137`*^9, 3.662881389529928*^9}}],
-
-Cell[BoxData[
- RowBox[{"\[LeftAssociation]", 
-  RowBox[{
-   RowBox[{"\<\"_id\"\>", "\[Rule]", 
-    RowBox[{"\[LeftAssociation]", 
-     RowBox[{"\<\"$oid\"\>", "\[Rule]", "\<\"56a8a08fd682ee650274a642\"\>"}], 
-     "\[RightAssociation]"}]}], ",", 
-   RowBox[{"\<\"Type\"\>", "\[Rule]", "\<\"Image\"\>"}], ",", 
-   RowBox[{"\<\"Dimensions\"\>", "\[Rule]", 
-    RowBox[{"{", 
-     RowBox[{"234", ",", "334"}], "}"}]}], ",", 
-   RowBox[{"\<\"BoundingBoxes\"\>", "\[Rule]", 
-    RowBox[{"{", 
-     RowBox[{"{", 
-      RowBox[{"0.3`", ",", "6.7`", ",", "6.6`", ",", "2.3`"}], "}"}], "}"}]}],
-    ",", 
-   RowBox[{"\<\"BoundingBoxLabels\"\>", "\[Rule]", 
-    RowBox[{"{", "\<\"Hyena\"\>", "}"}]}]}], 
-  "\[RightAssociation]"}]], "Output",
- CellChangeTimes->{3.662881389779237*^9, 3.6628816435714808`*^9}]
-}, Open  ]],
-
-Cell[TextData[{
- "Lets search for all documents that have a bounding box label of at least \
-one dog (see this for queries on ",
- ButtonBox["arrays",
-  BaseStyle->"Hyperlink",
-  ButtonData->{
-    URL["https://docs.mongodb.org/manual/tutorial/query-documents/#arrays"], 
-    None},
-  ButtonNote->
-   "https://docs.mongodb.org/manual/tutorial/query-documents/#arrays"],
- "):"
-}], "Text",
- CellChangeTimes->{{3.662880646914815*^9, 3.66288067305758*^9}, {
-  3.662880871610931*^9, 3.6628808843446302`*^9}}],
-
-Cell[CellGroupData[{
-
-Cell[BoxData[
- RowBox[{"iter", "=", 
-  RowBox[{"CollectionFind", "[", 
-   RowBox[{"coll", ",", 
-    RowBox[{"<|", 
-     RowBox[{"\"\<BoundingBoxLabels\>\"", "\[Rule]", " ", "\"\<Lion\>\""}], 
-     "|>"}]}], "]"}]}]], "Input",
- CellChangeTimes->{{3.6628791000795727`*^9, 3.662879103761734*^9}, {
-  3.662879540354228*^9, 3.6628795532018003`*^9}, {3.662879973163457*^9, 
-  3.6628799759055023`*^9}, {3.6628808449777927`*^9, 3.662880854010027*^9}}],
-
-Cell[BoxData[
- TagBox[GridBox[{
-    {
-     StyleBox["MongoIterator", "Text",
-      StripOnInput->False], "\[SpanFromLeft]"}
-   },
-   AutoDelete->False,
-   FrameStyle->GrayLevel[0.85],
-   GridBoxAlignment->{"Columns" -> {{Left}}},
-   GridBoxDividers->{"Columns" -> {{True}}, "Rows" -> {{True}}},
-   GridBoxItemSize->{"Columns" -> {{Automatic}}, "Rows" -> {{Automatic}}},
-   GridBoxItemStyle->{"Columns" -> {"Text", "Output"}},
-   GridBoxSpacings->{"Columns" -> {{1}}, "Rows" -> {{1}}}],
-  "Grid"]], "Output",
- CellChangeTimes->{
-  3.662879104606101*^9, 3.662879138416445*^9, 3.662879309229089*^9, 
-   3.662879342932933*^9, 3.662879553475543*^9, 3.662879734756212*^9, 
-   3.6628799762921333`*^9, 3.662880854534111*^9, {3.662881420792037*^9, 
-   3.6628814386800337`*^9}}]
-}, Open  ]],
-
-Cell["Lets read all of these docs and put them into dataset:", "Text",
- CellChangeTimes->{{3.662881422970716*^9, 3.662881434553508*^9}}],
-
-Cell[CellGroupData[{
-
-Cell[BoxData[
- RowBox[{"Dataset", "@", 
-  RowBox[{"ReadList", "@", "iter"}]}]], "Input",
- CellChangeTimes->{{3.662880956264772*^9, 3.662880986681982*^9}, {
-  3.662881436883374*^9, 3.6628814417935266`*^9}}],
+ RowBox[{"titanic", "=", 
+  RowBox[{"ExampleData", "[", 
+   RowBox[{"{", 
+    RowBox[{"\"\<Dataset\>\"", ",", "\"\<Titanic\>\""}], "}"}], 
+   "]"}]}]], "Input"],
 
 Cell[BoxData[
  TagBox[
   TemplateBox[{GridBox[{{
-       StyleBox["\"_id\"", 
+       StyleBox["\"class\"", 
         GrayLevel[0.3]], 
-       StyleBox["\"Type\"", 
+       StyleBox["\"age\"", 
         GrayLevel[0.3]], 
-       StyleBox["\"Dimensions\"", 
+       StyleBox["\"sex\"", 
         GrayLevel[0.3]], 
-       StyleBox["\"BoundingBoxes\"", 
-        GrayLevel[0.3]], 
-       StyleBox["\"BoundingBoxLabels\"", 
+       StyleBox["\"survived\"", 
         GrayLevel[0.3]]}, {
-       StyleBox[
-        RowBox[{
-          StyleBox["\[LeftAssociation]", 
-           GrayLevel[0.45]], "\[ThinSpace]", 
-          RowBox[{
-            StyleBox["\"$oid\"", 
-             GrayLevel[0.3]], 
-            StyleBox["\[Rule]", 
-             GrayLevel[0.5]], 
-            StyleBox[
-            "\"56a7d136d682ee551f033471\"", FontColor -> GrayLevel[0.4]]}], 
-          "\[ThinSpace]", 
-          StyleBox["\[RightAssociation]", 
-           GrayLevel[0.45]]}], LineBreakWithin -> Automatic], 
-       StyleBox["\"Image\"", FontColor -> GrayLevel[0.4]], 
-       StyleBox[
-        RowBox[{"{", "\[ThinSpace]", 288, ",", 299, "\[ThinSpace]", "}"}], 
-        LineBreakWithin -> Automatic], 
-       StyleBox[
-        RowBox[{"{", "\[ThinSpace]", 
-          RowBox[{"{", 
-            StyleBox[
-             SubscriptBox["\[CenterEllipsis]", "4"], 
-             GrayLevel[0.5]], "}"}], ",", 
-          RowBox[{"{", 
-            StyleBox[
-             SubscriptBox["\[CenterEllipsis]", "4"], 
-             GrayLevel[0.5]], "}"}], "\[ThinSpace]", "}"}], LineBreakWithin -> 
-        Automatic], 
-       StyleBox[
-        RowBox[{"{", "\[ThinSpace]", 
-          StyleBox["\"Dog\"", FontColor -> GrayLevel[0.4]], ",", 
-          StyleBox["\"Lion\"", FontColor -> GrayLevel[0.4]], "\[ThinSpace]", 
-          "}"}], LineBreakWithin -> Automatic]}, {
-       StyleBox[
-        RowBox[{
-          StyleBox["\[LeftAssociation]", 
-           GrayLevel[0.45]], "\[ThinSpace]", 
-          RowBox[{
-            StyleBox["\"$oid\"", 
-             GrayLevel[0.3]], 
-            StyleBox["\[Rule]", 
-             GrayLevel[0.5]], 
-            StyleBox[
-            "\"56a8a08fd682ee650274a641\"", FontColor -> GrayLevel[0.4]]}], 
-          "\[ThinSpace]", 
-          StyleBox["\[RightAssociation]", 
-           GrayLevel[0.45]]}], LineBreakWithin -> Automatic], 
-       StyleBox["\"Image\"", FontColor -> GrayLevel[0.4]], 
-       StyleBox[
-        RowBox[{"{", "\[ThinSpace]", 288, ",", 299, "\[ThinSpace]", "}"}], 
-        LineBreakWithin -> Automatic], 
-       StyleBox[
-        RowBox[{"{", "\[ThinSpace]", 
-          RowBox[{"{", 
-            StyleBox[
-             SubscriptBox["\[CenterEllipsis]", "4"], 
-             GrayLevel[0.5]], "}"}], ",", 
-          RowBox[{"{", 
-            StyleBox[
-             SubscriptBox["\[CenterEllipsis]", "4"], 
-             GrayLevel[0.5]], "}"}], "\[ThinSpace]", "}"}], LineBreakWithin -> 
-        Automatic], 
-       StyleBox[
-        RowBox[{"{", "\[ThinSpace]", 
-          StyleBox["\"Dog\"", FontColor -> GrayLevel[0.4]], ",", 
-          StyleBox["\"Lion\"", FontColor -> GrayLevel[0.4]], "\[ThinSpace]", 
-          "}"}], LineBreakWithin -> Automatic]}, {
-       StyleBox[
-        RowBox[{
-          StyleBox["\[LeftAssociation]", 
-           GrayLevel[0.45]], "\[ThinSpace]", 
-          RowBox[{
-            StyleBox["\"$oid\"", 
-             GrayLevel[0.3]], 
-            StyleBox["\[Rule]", 
-             GrayLevel[0.5]], 
-            StyleBox[
-            "\"56a89af8d682ee64cb3e3541\"", FontColor -> GrayLevel[0.4]]}], 
-          "\[ThinSpace]", 
-          StyleBox["\[RightAssociation]", 
-           GrayLevel[0.45]]}], LineBreakWithin -> Automatic], 
-       StyleBox["\"Image\"", FontColor -> GrayLevel[0.4]], 
-       StyleBox[
-        RowBox[{"{", "\[ThinSpace]", 288, ",", 299, "\[ThinSpace]", "}"}], 
-        LineBreakWithin -> Automatic], 
-       StyleBox[
-        RowBox[{"{", "\[ThinSpace]", 
-          RowBox[{"{", 
-            StyleBox[
-             SubscriptBox["\[CenterEllipsis]", "4"], 
-             GrayLevel[0.5]], "}"}], ",", 
-          RowBox[{"{", 
-            StyleBox[
-             SubscriptBox["\[CenterEllipsis]", "4"], 
-             GrayLevel[0.5]], "}"}], "\[ThinSpace]", "}"}], LineBreakWithin -> 
-        Automatic], 
-       StyleBox[
-        RowBox[{"{", "\[ThinSpace]", 
-          StyleBox["\"Dog\"", FontColor -> GrayLevel[0.4]], ",", 
-          StyleBox["\"Lion\"", FontColor -> GrayLevel[0.4]], "\[ThinSpace]", 
-          "}"}], LineBreakWithin -> Automatic]}, {
+       InterpretationBox[
+        StyleBox["\"1st\"", 
+         GrayLevel[0.45]], "1st"], 29, 
+       InterpretationBox[
+        StyleBox["\"female\"", 
+         GrayLevel[0.45]], "female"], 
+       InterpretationBox["True", True]}, {
+       InterpretationBox[
+        StyleBox["\"1st\"", 
+         GrayLevel[0.45]], "1st"], 1, 
+       InterpretationBox[
+        StyleBox["\"male\"", 
+         GrayLevel[0.45]], "male"], 
+       InterpretationBox["True", True]}, {
+       InterpretationBox[
+        StyleBox["\"1st\"", 
+         GrayLevel[0.45]], "1st"], 2, 
+       InterpretationBox[
+        StyleBox["\"female\"", 
+         GrayLevel[0.45]], "female"], 
+       InterpretationBox["False", False]}, {
+       InterpretationBox[
+        StyleBox["\"1st\"", 
+         GrayLevel[0.45]], "1st"], 30, 
+       InterpretationBox[
+        StyleBox["\"male\"", 
+         GrayLevel[0.45]], "male"], 
+       InterpretationBox["False", False]}, {
+       InterpretationBox[
+        StyleBox["\"1st\"", 
+         GrayLevel[0.45]], "1st"], 25, 
+       InterpretationBox[
+        StyleBox["\"female\"", 
+         GrayLevel[0.45]], "female"], 
+       InterpretationBox["False", False]}, {
+       InterpretationBox[
+        StyleBox["\"1st\"", 
+         GrayLevel[0.45]], "1st"], 48, 
+       InterpretationBox[
+        StyleBox["\"male\"", 
+         GrayLevel[0.45]], "male"], 
+       InterpretationBox["True", True]}, {
+       InterpretationBox[
+        StyleBox["\"1st\"", 
+         GrayLevel[0.45]], "1st"], 63, 
+       InterpretationBox[
+        StyleBox["\"female\"", 
+         GrayLevel[0.45]], "female"], 
+       InterpretationBox["True", True]}, {
+       InterpretationBox[
+        StyleBox["\"1st\"", 
+         GrayLevel[0.45]], "1st"], 39, 
+       InterpretationBox[
+        StyleBox["\"male\"", 
+         GrayLevel[0.45]], "male"], 
+       InterpretationBox["False", False]}, {
+       InterpretationBox[
+        StyleBox["\"1st\"", 
+         GrayLevel[0.45]], "1st"], 53, 
+       InterpretationBox[
+        StyleBox["\"female\"", 
+         GrayLevel[0.45]], "female"], 
+       InterpretationBox["True", True]}, {
+       InterpretationBox[
+        StyleBox["\"1st\"", 
+         GrayLevel[0.45]], "1st"], 71, 
+       InterpretationBox[
+        StyleBox["\"male\"", 
+         GrayLevel[0.45]], "male"], 
+       InterpretationBox["False", False]}, {
+       InterpretationBox[
+        StyleBox["\"1st\"", 
+         GrayLevel[0.45]], "1st"], 47, 
+       InterpretationBox[
+        StyleBox["\"male\"", 
+         GrayLevel[0.45]], "male"], 
+       InterpretationBox["False", False]}, {
+       InterpretationBox[
+        StyleBox["\"1st\"", 
+         GrayLevel[0.45]], "1st"], 18, 
+       InterpretationBox[
+        StyleBox["\"female\"", 
+         GrayLevel[0.45]], "female"], 
+       InterpretationBox["True", True]}, {
+       InterpretationBox[
+        StyleBox["\"1st\"", 
+         GrayLevel[0.45]], "1st"], 24, 
+       InterpretationBox[
+        StyleBox["\"female\"", 
+         GrayLevel[0.45]], "female"], 
+       InterpretationBox["True", True]}, {
+       InterpretationBox[
+        StyleBox["\"1st\"", 
+         GrayLevel[0.45]], "1st"], 26, 
+       InterpretationBox[
+        StyleBox["\"female\"", 
+         GrayLevel[0.45]], "female"], 
+       InterpretationBox["True", True]}, {
+       InterpretationBox[
+        StyleBox["\"1st\"", 
+         GrayLevel[0.45]], "1st"], 80, 
+       InterpretationBox[
+        StyleBox["\"male\"", 
+         GrayLevel[0.45]], "male"], 
+       InterpretationBox["True", True]}, {
+       InterpretationBox[
+        StyleBox["\"1st\"", 
+         GrayLevel[0.45]], "1st"], 
+       InterpretationBox[
+        StyleBox[
+        "missing", FontFamily -> "Arial", FontSize -> 11, FontWeight -> Bold, 
+         
+         GrayLevel[0.7]], 
+        Missing[]], 
+       InterpretationBox[
+        StyleBox["\"male\"", 
+         GrayLevel[0.45]], "male"], 
+       InterpretationBox["False", False]}, {
        ItemBox[
-        RowBox[{"4 levels", 
+        UnderscriptBox["\[VerticalEllipsis]", 
+         StyleBox["1293", 
+          GrayLevel[0.5]]], Alignment -> {Center, Bottom}, Background -> 
+        RGBColor[0.985, 0.98, 0.973]], "\[SpanFromLeft]", "\[SpanFromLeft]", 
+       "\[SpanFromLeft]"}, {
+       ItemBox[
+        RowBox[{"2 levels", 
           AdjustmentBox[" | ", BoxBaselineShift -> -0.3], 
-          RowBox[{"3", "rows"}]}], 
+          RowBox[{"1309", "rows"}]}], 
         BaseStyle -> {
          FontFamily -> "Helvetica", FontSize -> 10, FontColor -> 
           GrayLevel[0.4], Editable -> False, Selectable -> False}, 
         ItemSize -> {Automatic, Automatic}, Alignment -> {Left, Center}, 
         Background -> RGBColor[0.92, 0.92, 0.9]], "\[SpanFromLeft]", 
-       "\[SpanFromLeft]", "\[SpanFromLeft]", "\[SpanFromLeft]"}}, 
+       "\[SpanFromLeft]", "\[SpanFromLeft]"}}, 
      GridBoxFrame -> {"ColumnsIndexed" -> {{{1, -1}, {1, -1}} -> True}}, 
      FrameStyle -> RGBColor[0, 0, 0, 0.4], GridBoxDividers -> {"Columns" -> {
          RGBColor[0, 0, 0, 0.4], {
@@ -811,22 +1424,576 @@ Cell[BoxData[
   Editable->False,
   SelectWithContents->True,
   Selectable->False]], "Output",
- CellChangeTimes->{{3.662880957486689*^9, 3.662881011519827*^9}, 
-   3.662881099818918*^9, 3.662881444675725*^9}]
+ CellChangeTimes->{
+  3.663835173870812*^9, 3.663836171088966*^9, 3.663839078390237*^9, 
+   3.663839158568254*^9, 3.663839412549486*^9, 3.663928377791772*^9, {
+   3.663937074927286*^9, 3.663937095456462*^9}, 3.663937137125554*^9}]
+}, Open  ]],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"coll", "=", 
+   RowBox[{"CollectionConnect", "[", 
+    RowBox[{"client", ",", "\"\<test\>\"", ",", "\"\<titanic\>\""}], "]"}]}], 
+  ";"}]], "Input"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"CollectionInsert", "[", 
+  RowBox[{"coll", ",", "titanic"}], "]"}]], "Input",
+ CellChangeTimes->{{3.663835227034905*^9, 3.663835246792615*^9}, 
+   3.663837350486619*^9, {3.663837380858963*^9, 3.663837389889771*^9}, {
+   3.663837541003707*^9, 3.663837541153201*^9}, {3.663839098868819*^9, 
+   3.663839099794898*^9}, {3.6638391698527813`*^9, 3.663839179625019*^9}, {
+   3.663937149228014*^9, 3.6639371516903553`*^9}}],
+
+Cell[BoxData[
+ RowBox[{"\[LeftAssociation]", 
+  RowBox[{
+   RowBox[{"\<\"nInserted\"\>", "\[Rule]", "1309"}], ",", 
+   RowBox[{"\<\"nMatched\"\>", "\[Rule]", "0"}], ",", 
+   RowBox[{"\<\"nModified\"\>", "\[Rule]", "0"}], ",", 
+   RowBox[{"\<\"nRemoved\"\>", "\[Rule]", "0"}], ",", 
+   RowBox[{"\<\"nUpserted\"\>", "\[Rule]", "0"}], ",", 
+   RowBox[{"\<\"writeErrors\"\>", "\[Rule]", 
+    RowBox[{"{", "}"}]}]}], "\[RightAssociation]"}]], "Output",
+ CellChangeTimes->{3.663839180009139*^9, 3.6638394149854383`*^9, 
+  3.6638394947386723`*^9}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[{
+ RowBox[{"iter", "=", 
+  RowBox[{"CollectionFind", "[", "coll", "]"}]}], "\[IndentingNewLine]", 
+ RowBox[{"d2", "=", 
+  RowBox[{"Dataset", "@", 
+   RowBox[{"ReadList", "@", "iter"}]}]}]}], "Input",
+ CellChangeTimes->{{3.663835283083152*^9, 3.6638353025375757`*^9}, {
+  3.663837396571247*^9, 3.6638374200180693`*^9}, {3.663837501289712*^9, 
+  3.663837501624998*^9}, {3.663839126930813*^9, 3.6638391287149897`*^9}, {
+  3.663839208540331*^9, 3.663839275612321*^9}, {3.663839335420452*^9, 
+  3.663839368362167*^9}, {3.663839477861649*^9, 3.6638394817067347`*^9}, {
+  3.663937183077469*^9, 3.6639372108489923`*^9}}],
+
+Cell[BoxData[
+ TagBox[GridBox[{
+    {
+     StyleBox["MongoIterator", "Text",
+      StripOnInput->False], "\[SpanFromLeft]"}
+   },
+   AutoDelete->False,
+   FrameStyle->GrayLevel[0.85],
+   GridBoxAlignment->{"Columns" -> {{Left}}},
+   GridBoxDividers->{"Columns" -> {{True}}, "Rows" -> {{True}}},
+   GridBoxItemSize->{"Columns" -> {{Automatic}}, "Rows" -> {{Automatic}}},
+   GridBoxItemStyle->{"Columns" -> {"Text", "Output"}},
+   GridBoxSpacings->{"Columns" -> {{1}}, "Rows" -> {{1}}}],
+  "Grid"]], "Output",
+ CellChangeTimes->{{3.663837409651641*^9, 3.663837414360297*^9}, {
+   3.663837498341175*^9, 3.663837545171475*^9}, {3.663839082811084*^9, 
+   3.663839129323853*^9}, 3.663839184025607*^9, {3.663839219208044*^9, 
+   3.663839275954987*^9}, {3.6638393208665857`*^9, 3.663839336246163*^9}, {
+   3.663839368638968*^9, 3.663839382539938*^9}, 3.66383941837041*^9, {
+   3.663839478168603*^9, 3.6638394961812773`*^9}, 3.6638395562797003`*^9, 
+   3.6639371267864017`*^9, {3.663937157598631*^9, 3.6639372110907917`*^9}}],
+
+Cell[BoxData[
+ TagBox[
+  TemplateBox[{StyleBox[
+     GridBox[{{
+        RowBox[{"{", "\[ThinSpace]", 
+          StyleBox[
+           RowBox[{
+             StyleBox["\[LeftAssociation]", 
+              GrayLevel[0.45]], "\[ThinSpace]", 
+             StyleBox[
+              RowBox[{
+                StyleBox[
+                 StyleBox["\"_id\"", FontColor -> GrayLevel[0.4]], 
+                 GrayLevel[0.3]], 
+                StyleBox["\[Rule]", 
+                 GrayLevel[0.5]], 
+                InterpretationBox[
+                 TagBox[
+                  
+                  RowBox[{
+                   "MongoObjectID", "[", "\"56b74286d682ee04a52df97f\"", 
+                    "]"}], Short[#, 5]& ], 
+                 MongoLink`MongoObjectID["56b74286d682ee04a52df97f"]]}], 
+              SpanMinSize -> 1], ",", 
+             StyleBox[
+              RowBox[{
+                StyleBox[
+                 StyleBox["\"class\"", FontColor -> GrayLevel[0.4]], 
+                 GrayLevel[0.3]], 
+                StyleBox["\[Rule]", 
+                 GrayLevel[0.5]], 
+                InterpretationBox[
+                 TagBox["\"3rd\"", Short[#, 5]& ], "3rd"]}], SpanMinSize -> 
+              1], ",", 
+             StyleBox[
+              SubscriptBox["\[CenterEllipsis]", "3"], 
+              GrayLevel[0.5]], "\[ThinSpace]", 
+             StyleBox["\[RightAssociation]", 
+              GrayLevel[0.45]]}], LineBreakWithin -> Automatic], ",", 
+          StyleBox[
+           SubscriptBox["\[CenterEllipsis]", "1312"], 
+           GrayLevel[0.5]], "\[ThinSpace]", "}"}]}, {
+        ItemBox[
+         RowBox[{"2 levels", 
+           AdjustmentBox[" | ", BoxBaselineShift -> -0.3], 
+           RowBox[{"1313", "rows"}]}], 
+         BaseStyle -> {
+          FontFamily -> "Helvetica", FontSize -> 10, FontColor -> 
+           GrayLevel[0.4], Editable -> False, Selectable -> False}, 
+         ItemSize -> {Automatic, Automatic}, Alignment -> {Left, Center}, 
+         Background -> RGBColor[0.92, 0.92, 0.9]]}}, 
+      GridBoxAlignment -> {{{Left}}}, 
+      GridBoxItemSize -> {
+       "Columns" -> {{Automatic}}, "Rows" -> {{Automatic}}}, 
+      GridBoxSpacings -> {"Rows" -> {{0, 0}}, "Columns" -> {{0}}}, 
+      GridBoxFrame -> {"ColumnsIndexed" -> {{{1, -1}, {1, -1}} -> True}}, 
+      FrameStyle -> RGBColor[0, 0, 0, 0.4], 
+      GridFrameMargins -> {{2, 1}, {0, 2}}], LineBreakWithin -> Automatic],
+    "Dataset[{__Association}]"},
+   "Dataset",
+   DisplayFunction->(TagBox[
+     StyleBox[#, {
+      ShowAutoStyles -> False, LineBreakWithin -> False, FontWeight -> 
+       "Light", FontFamily -> "Helvetica Neue", NumberMarks -> False, 
+       SpanMaxSize -> 3, SpanMinSize -> 1., Editable -> False, Selectable -> 
+       True, Background -> RGBColor[0.985, 0.98, 0.973], 
+       LinebreakAdjustments -> {0.4, 5, 100, 0, 0.5}, LineIndent -> 0, 
+       LineSpacing -> {1.1, 5}}], Deploy]& ),
+   InterpretationFunction->(#2& )],
+  False,
+  Editable->False,
+  SelectWithContents->True,
+  Selectable->False]], "Output",
+ CellChangeTimes->{{3.663837409651641*^9, 3.663837414360297*^9}, {
+   3.663837498341175*^9, 3.663837545171475*^9}, {3.663839082811084*^9, 
+   3.663839129323853*^9}, 3.663839184025607*^9, {3.663839219208044*^9, 
+   3.663839275954987*^9}, {3.6638393208665857`*^9, 3.663839336246163*^9}, {
+   3.663839368638968*^9, 3.663839382539938*^9}, 3.66383941837041*^9, {
+   3.663839478168603*^9, 3.6638394961812773`*^9}, 3.6638395562797003`*^9, 
+   3.6639371267864017`*^9, {3.663937157598631*^9, 3.66393721114896*^9}}]
+}, Open  ]]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["A Note on Types", "Subsubsection",
+ CellChangeTimes->{{3.663839722698114*^9, 3.663839724826291*^9}}],
+
+Cell["\<\
+The following are the native MongoDB types. It is strongly preferred to use \
+only these types, unless not avoidable (eg Entity types). First, all the JSON \
+types:\
+\>", "Text",
+ CellChangeTimes->{{3.663839731338213*^9, 3.663839796106612*^9}, {
+  3.6638402708532467`*^9, 3.66384028419461*^9}}],
+
+Cell["String", "Item",
+ CellChangeTimes->{{3.663839761458127*^9, 3.663839782896295*^9}}],
+
+Cell[BoxData[
+ RowBox[{"<|", 
+  RowBox[{"\"\<key\>\"", "\[Rule]", " ", "\"\<The One Went In\>\""}], 
+  "|>"}]], "Input",
+ CellChangeTimes->{{3.663839839591378*^9, 3.6638398446660852`*^9}, {
+  3.6638399010424747`*^9, 3.6638399073865356`*^9}}],
+
+Cell["Integer", "Item",
+ CellChangeTimes->{{3.663839761458127*^9, 3.6638398000569963`*^9}}],
+
+Cell[BoxData[
+ RowBox[{"<|", 
+  RowBox[{"\"\<key\>\"", "->", "456"}], "|>"}]], "Input",
+ CellChangeTimes->{{3.663839837423328*^9, 3.663839838050571*^9}, {
+  3.663839910308013*^9, 3.663839915770693*^9}}],
+
+Cell["Real", "Item",
+ CellChangeTimes->{{3.663839761458127*^9, 3.6638398035472927`*^9}}],
+
+Cell[BoxData[
+ RowBox[{"<|", 
+  RowBox[{"\"\<key\>\"", "->", "1.2344"}], "|>"}]], "Input",
+ CellChangeTimes->{{3.663839834895488*^9, 3.6638398356666813`*^9}, {
+  3.6638399195941*^9, 3.663839928026494*^9}}],
+
+Cell["Null (this is the preferred way to indicate missing data)", "Item",
+ CellChangeTimes->{{3.663839761458127*^9, 3.6638398073311653`*^9}, {
+  3.663839933378375*^9, 3.663839943210112*^9}}],
+
+Cell[BoxData[
+ RowBox[{"<|", 
+  RowBox[{"\"\<key\>\"", "\[Rule]", " ", "Null"}], "|>"}]], "Input",
+ CellChangeTimes->{{3.6638398286589003`*^9, 3.663839832978544*^9}, {
+  3.663839930146323*^9, 3.663839948930649*^9}}],
+
+Cell["Boolean (True + False)", "Item",
+ CellChangeTimes->{{3.663839761458127*^9, 3.663839815954563*^9}}],
+
+Cell[BoxData[
+ RowBox[{"<|", 
+  RowBox[{"\"\<key\>\"", "\[Rule]", " ", "True"}], "|>"}]], "Input",
+ CellChangeTimes->{{3.663839823092266*^9, 3.663839826002366*^9}, {
+  3.6638399513799877`*^9, 3.663839960612269*^9}}],
+
+Cell["Arrays of the basic types", "Item",
+ CellChangeTimes->{{3.663839761458127*^9, 3.663839815954563*^9}, {
+  3.66383986223569*^9, 3.663839866466343*^9}}],
+
+Cell[BoxData[
+ RowBox[{"<|", 
+  RowBox[{"\"\<key\>\"", "\[Rule]", 
+   RowBox[{"{", 
+    RowBox[{"1.2", ",", "5", ",", "5.6", ",", "True"}], "}"}]}], 
+  "|>"}]], "Input",
+ CellChangeTimes->{{3.663839870309678*^9, 3.66383989591465*^9}, {
+  3.6638399638262987`*^9, 3.663839970522553*^9}}],
+
+Cell["If in doubt, check that its JSONizable!", "Text",
+ CellChangeTimes->{{3.663839974450012*^9, 3.663839983762435*^9}}],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"Developer`WriteRawJSONString", "@", 
+  RowBox[{"<|", 
+   RowBox[{"\"\<key\>\"", "\[Rule]", 
+    RowBox[{"{", 
+     RowBox[{"1.2", ",", "5", ",", "5.6", ",", "True"}], "}"}]}], 
+   "|>"}]}]], "Input",
+ CellChangeTimes->{{3.663839985292852*^9, 3.663839993790082*^9}}],
+
+Cell[BoxData["\<\"{\\n\\t\\\"key\\\":[\\n\\t\\t1.2,\\n\\t\\t5,\\n\\t\\t5.6,\\\
+n\\t\\ttrue\\n\\t]\\n}\"\>"], "Output",
+ CellChangeTimes->{3.663839994151041*^9}]
 }, Open  ]],
 
 Cell["\<\
-Notice the unique ID field thats been attached to each entry.\
+In addition to the basic JSON types, there are some special types:\
 \>", "Text",
- CellChangeTimes->{{3.66288146184251*^9, 3.662881476241671*^9}}]
+ CellChangeTimes->{{3.663840005923443*^9, 3.663840023922525*^9}}],
+
+Cell["DateObject:", "Item",
+ CellChangeTimes->{{3.663839761458127*^9, 3.663839815954563*^9}, {
+  3.66383986223569*^9, 3.663839866466343*^9}, {3.663840037627906*^9, 
+  3.663840038002324*^9}, {3.663840138682234*^9, 3.663840142242614*^9}, {
+  3.663937248725317*^9, 3.66393724872899*^9}}],
+
+Cell[BoxData[
+ RowBox[{"<|", 
+  RowBox[{"\"\<key\>\"", "\[Rule]", " ", 
+   TemplateBox[{RowBox[{"\"Sun 7 Feb 2016 18:50:55\"", 
+       StyleBox[
+        RowBox[{"\"GMT+\"", "\[InvisibleSpace]", "5.5`"}], FontColor -> 
+        GrayLevel[0.5]]}],RowBox[{"DateObject", "[", 
+       RowBox[{
+         RowBox[{"{", 
+           RowBox[{"2016", ",", "2", ",", "7"}], "}"}], ",", 
+         RowBox[{"TimeObject", "[", 
+           RowBox[{
+             RowBox[{"{", 
+               RowBox[{"18", ",", "50", ",", "55.315639`"}], "}"}], ",", 
+             RowBox[{"TimeZone", "\[Rule]", "5.5`"}]}], "]"}], ",", 
+         RowBox[{"TimeZone", "\[Rule]", "5.5`"}]}], "]"}]},
+    "DateObject",
+    Editable->False]}], "|>"}]], "Input"],
+
+Cell["ObjectID:", "Item",
+ CellChangeTimes->{{3.663839761458127*^9, 3.663839815954563*^9}, {
+  3.66383986223569*^9, 3.663839866466343*^9}, {3.663840037627906*^9, 
+  3.663840038002324*^9}, {3.663840138682234*^9, 3.663840142242614*^9}, {
+  3.663937248725317*^9, 3.663937268768491*^9}}],
+
+Cell[BoxData[
+ RowBox[{"<|", 
+  RowBox[{"\"\<key\>\"", "\[Rule]", " ", 
+   RowBox[{"MongoObjectID", "[", "\"\<56b74286d682ee04a52df97f\>\"", "]"}]}], 
+  "|>"}]], "Input",
+ CellChangeTimes->{{3.663937284390059*^9, 3.663937314113028*^9}}],
+
+Cell[BoxData[
+ RowBox[{"MongoObjectID", "[", "\"\<56b74286d682ee04a52df97f\>\"", 
+  "]"}]], "Input"]
 }, Open  ]]
 }, Open  ]]
 }, Open  ]]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["Work", "Subchapter",
+ CellChangeTimes->{{3.663809161330207*^9, 3.663809161656825*^9}, 
+   3.663816197927302*^9}],
+
+Cell[CellGroupData[{
+
+Cell["Notes:", "Subsection",
+ CellChangeTimes->{{3.663829042930532*^9, 3.663829044129134*^9}}],
+
+Cell["Is this a bug?", "Item",
+ CellChangeTimes->{{3.663829059402227*^9, 3.6638290731294317`*^9}, {
+  3.663829241418641*^9, 3.663829243457204*^9}}],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"DateObject", "[", 
+  RowBox[{"{", 
+   RowBox[{"\"\<1970/6000000\>\"", ",", " ", 
+    RowBox[{"{", 
+     RowBox[{"\"\<Year\>\"", ",", " ", "\"\<Second\>\""}], "}"}]}], "}"}], 
+  "]"}]], "Input",
+ CellChangeTimes->{{3.663829248147563*^9, 3.6638292605536327`*^9}}],
+
+Cell[BoxData[
+ TemplateBox[{RowBox[{"\"Tue 20 Jan 1970 17:37:12\"", 
+     StyleBox[
+      RowBox[{"\"GMT+\"", "\[InvisibleSpace]", "5.5`"}], FontColor -> 
+      GrayLevel[0.5]]}],RowBox[{"DateObject", "[", 
+     RowBox[{
+       RowBox[{"{", 
+         RowBox[{"1970", ",", "1", ",", "20"}], "}"}], ",", 
+       RowBox[{"TimeObject", "[", 
+         RowBox[{
+           RowBox[{"{", 
+             RowBox[{"17", ",", "37", ",", "12.704`"}], "}"}], ",", 
+           RowBox[{"TimeZone", "\[Rule]", "5.5`"}]}], "]"}], ",", 
+       RowBox[{"TimeZone", "\[Rule]", "5.5`"}]}], "]"}]},
+  "DateObject",
+  Editable->False]], "Output",
+ CellChangeTimes->{{3.663829246093108*^9, 3.663829261242909*^9}}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"DateObject", "[", 
+  RowBox[{"{", 
+   RowBox[{"\"\<1970/60000000\>\"", ",", " ", 
+    RowBox[{"{", 
+     RowBox[{"\"\<Year\>\"", ",", " ", "\"\<Second\>\""}], "}"}]}], "}"}], 
+  "]"}]], "Input",
+ CellChangeTimes->{3.663829269522648*^9}],
+
+Cell[BoxData[
+ TemplateBox[{RowBox[{"\"Tue 30 Dec 1969 12:00:57\"", 
+     StyleBox[
+      RowBox[{"\"GMT+\"", "\[InvisibleSpace]", "5.5`"}], FontColor -> 
+      GrayLevel[0.5]]}],RowBox[{"DateObject", "[", 
+     RowBox[{
+       RowBox[{"{", 
+         RowBox[{"1969", ",", "12", ",", "30"}], "}"}], ",", 
+       RowBox[{"TimeObject", "[", 
+         RowBox[{
+           RowBox[{"{", 
+             RowBox[{"12", ",", "0", ",", "57.856`"}], "}"}], ",", 
+           RowBox[{"TimeZone", "\[Rule]", "5.5`"}]}], "]"}], ",", 
+       RowBox[{"TimeZone", "\[Rule]", "5.5`"}]}], "]"}]},
+  "DateObject",
+  Editable->False]], "Output",
+ CellChangeTimes->{3.663829269974794*^9}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["\<\
+Suggestion: FromUnixTime should support options like \
+\[OpenCurlyDoubleQuote]DateFormat\[CloseCurlyDoubleQuote]\
+\>", "Item",
+ CellChangeTimes->{{3.663829059402227*^9, 3.6638290731294317`*^9}, {
+  3.663829241418641*^9, 3.663829243457204*^9}, {3.663829332810946*^9, 
+  3.663829335121386*^9}, {3.6638305618824577`*^9, 3.663830575521081*^9}}],
+
+Cell["Suggestion: FromUnixTime and UnixTime are not invertible", "Item",
+ CellChangeTimes->{{3.663829059402227*^9, 3.6638290731294317`*^9}, {
+  3.663829241418641*^9, 3.663829243457204*^9}, {3.663829332810946*^9, 
+  3.663829335121386*^9}, {3.6638305618824577`*^9, 3.663830575521081*^9}, {
+  3.663831835634704*^9, 3.663831845217358*^9}}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"unixTime", "=", "1454840647.456"}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{"t", "=", 
+  RowBox[{"FromUnixTime", "[", "unixTime", "]"}]}], "\[IndentingNewLine]", 
+ RowBox[{"t", "[", "\"\<Millisecond\>\"", "]"}]}], "Input",
+ CellChangeTimes->{{3.663831858945118*^9, 3.663831905037175*^9}}],
+
+Cell[BoxData[
+ TemplateBox[{RowBox[{"\"Sun 7 Feb 2016 15:54:07\"", 
+     StyleBox[
+      RowBox[{"\"GMT+\"", "\[InvisibleSpace]", "5.5`"}], FontColor -> 
+      GrayLevel[0.5]]}],RowBox[{"DateObject", "[", 
+     RowBox[{
+       RowBox[{"{", 
+         RowBox[{"2016", ",", "2", ",", "7"}], "}"}], ",", 
+       RowBox[{"TimeObject", "[", 
+         RowBox[{
+           RowBox[{"{", 
+             RowBox[{"15", ",", "54", ",", "7.456000328063965`"}], "}"}], ",", 
+           RowBox[{"TimeZone", "\[Rule]", "5.5`"}]}], "]"}], ",", 
+       RowBox[{"TimeZone", "\[Rule]", "5.5`"}]}], "]"}]},
+  "DateObject",
+  Editable->False]], "Output",
+ CellChangeTimes->{{3.663831860166779*^9, 3.6638319053229523`*^9}}],
+
+Cell[BoxData["456"], "Output",
+ CellChangeTimes->{{3.663831860166779*^9, 3.663831905333949*^9}}]
+}, Open  ]],
+
+Cell["Now getting the unix time doesn\[CloseCurlyQuote]t return the original \
+time:", "Text",
+ CellChangeTimes->{{3.663831934288844*^9, 3.663831946617344*^9}}],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"UnixTime", "@", "t"}]], "Input",
+ CellChangeTimes->{{3.663831887907148*^9, 3.663831889437958*^9}, 
+   3.663831924978744*^9}],
+
+Cell[BoxData["1454840647"], "Output",
+ CellChangeTimes->{3.663831925309613*^9}]
+}, Open  ]],
+
+Cell["querying milliseconds is slow compared to getting seconds:", "Item",
+ CellChangeTimes->{{3.663829059402227*^9, 3.6638290731294317`*^9}, {
+  3.663829241418641*^9, 3.663829243457204*^9}, {3.663829332810946*^9, 
+  3.663829335121386*^9}, {3.6638305618824577`*^9, 3.663830575521081*^9}, {
+  3.663831835634704*^9, 3.663831845217358*^9}, {3.66383214581057*^9, 
+  3.6638321547853603`*^9}, {3.6638322051065693`*^9, 3.663832220720934*^9}, {
+  3.6638324017949142`*^9, 3.663832404577422*^9}}],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"t", "=", 
+  RowBox[{"DateObject", "[", "]"}]}]], "Input",
+ CellChangeTimes->{{3.663832157241197*^9, 3.663832160404269*^9}}],
+
+Cell[BoxData[
+ TemplateBox[{RowBox[{"\"Sun 7 Feb 2016 16:39:20\"", 
+     StyleBox[
+      RowBox[{"\"GMT+\"", "\[InvisibleSpace]", "5.5`"}], FontColor -> 
+      GrayLevel[0.5]]}],RowBox[{"DateObject", "[", 
+     RowBox[{
+       RowBox[{"{", 
+         RowBox[{"2016", ",", "2", ",", "7"}], "}"}], ",", 
+       RowBox[{"TimeObject", "[", 
+         RowBox[{
+           RowBox[{"{", 
+             RowBox[{"16", ",", "39", ",", "20.665965`"}], "}"}], ",", 
+           RowBox[{"TimeZone", "\[Rule]", "5.5`"}]}], "]"}], ",", 
+       RowBox[{"TimeZone", "\[Rule]", "5.5`"}]}], "]"}]},
+  "DateObject",
+  Editable->False]], "Output",
+ CellChangeTimes->{3.6638321606775703`*^9}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"RepeatedTiming", "@", 
+  RowBox[{"t", "[", "\"\<Millisecond\>\"", "]"}]}]], "Input",
+ CellChangeTimes->{{3.663832162372533*^9, 3.663832172585844*^9}}],
+
+Cell[BoxData[
+ RowBox[{"{", 
+  RowBox[{"0.00005614772727272726685369616528298309`2.", ",", "665"}], 
+  "}"}]], "Output",
+ CellChangeTimes->{{3.663832173317574*^9, 3.663832178137122*^9}, 
+   3.663832407538102*^9}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"RepeatedTiming", "@", 
+  RowBox[{"FractionalPart", "@", 
+   RowBox[{"t", "[", "\"\<Second\>\"", "]"}]}]}]], "Input",
+ CellChangeTimes->{{3.663832184107071*^9, 3.6638321847136803`*^9}, {
+  3.663832239177834*^9, 3.6638322431697073`*^9}}],
+
+Cell[BoxData[
+ RowBox[{"{", 
+  RowBox[{
+  "3.87353515624999955081503993925551`2.*^-6", ",", "0.6659649999999999`"}], 
+  "}"}]], "Output",
+ CellChangeTimes->{3.663832184967112*^9, 3.6638322436344547`*^9, 
+  3.6638324088098707`*^9}]
+}, Open  ]],
+
+Cell["Weird replace all behaviour with associations", "Item",
+ CellChangeTimes->{{3.663832766258429*^9, 3.663832779745585*^9}}],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"t", "=", 
+  RowBox[{"ReplaceAll", "[", 
+   RowBox[{
+    RowBox[{"<|", 
+     RowBox[{"\"\<key\>\"", "\[Rule]", " ", 
+      RowBox[{"{", 
+       RowBox[{"\"\<$symbol\>\"", "\[Rule]", " ", "\"\<Sin\>\""}], "}"}]}], 
+     "|>"}], ",", 
+    RowBox[{
+     RowBox[{"{", 
+      RowBox[{"Rule", "[", 
+       RowBox[{"\"\<$symbol\>\"", ",", "x_"}], "]"}], "}"}], ":>", " ", 
+     RowBox[{"ToExpression", "@", "x"}]}]}], "]"}]}]], "Input",
+ CellChangeTimes->{{3.663832814859661*^9, 3.6638328171615467`*^9}}],
+
+Cell[BoxData[
+ RowBox[{"\[LeftAssociation]", 
+  RowBox[{"\<\"key\"\>", "\[Rule]", 
+   RowBox[{"ToExpression", "[", "\<\"Sin\"\>", "]"}]}], 
+  "\[RightAssociation]"}]], "Output",
+ CellChangeTimes->{3.663832781394109*^9, 3.663832817663377*^9, 
+  3.663832947167163*^9}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"t", "=", 
+  RowBox[{"ReplaceAll", "[", 
+   RowBox[{
+    RowBox[{"{", 
+     RowBox[{"\"\<key\>\"", "\[Rule]", " ", 
+      RowBox[{"{", 
+       RowBox[{"\"\<$symbol\>\"", "\[Rule]", " ", "\"\<Sin\>\""}], "}"}]}], 
+     "}"}], ",", 
+    RowBox[{
+     RowBox[{"{", 
+      RowBox[{"Rule", "[", 
+       RowBox[{"\"\<$symbol\>\"", ",", "x_"}], "]"}], "}"}], ":>", " ", 
+     RowBox[{"ToExpression", "@", "x"}]}]}], "]"}]}]], "Input",
+ CellChangeTimes->{{3.663832787923024*^9, 3.6638328213870277`*^9}}],
+
+Cell[BoxData[
+ RowBox[{"{", 
+  RowBox[{"\<\"key\"\>", "\[Rule]", "Sin"}], "}"}]], "Output",
+ CellChangeTimes->{{3.663832799591658*^9, 3.663832821714014*^9}}]
+}, Open  ]],
+
+Cell[BoxData[""], "Input",
+ CellChangeTimes->{{3.663832252702272*^9, 3.6638322580254183`*^9}}]
+}, Open  ]]
+}, Closed]]
 }, Open  ]]
 },
 InitializationCellEvaluation->False,
 WindowSize->{1440, 653},
-WindowMargins->{{-14, Automatic}, {Automatic, 0}},
+WindowMargins->{{876, Automatic}, {Automatic, 183}},
 Magnification:>1.25 Inherited,
 FrontEndVersion->"10.4 for Mac OS X x86 (32-bit, 64-bit Kernel) (January 11, \
 2016)",
@@ -845,96 +2012,225 @@ CellTagsIndex->{}
 Notebook[{
 Cell[CellGroupData[{
 Cell[580, 22, 104, 1, 114, "Title"],
-Cell[687, 25, 96, 1, 35, "Input"],
-Cell[786, 28, 202, 5, 37, "Text"],
-Cell[991, 35, 611, 15, 138, "Code"],
+Cell[687, 25, 202, 5, 37, "Text"],
+Cell[892, 32, 629, 15, 119, "Code"],
 Cell[CellGroupData[{
-Cell[1627, 54, 171, 2, 78, "Subchapter"],
-Cell[1801, 58, 191, 2, 37, "Text"],
+Cell[1546, 51, 171, 2, 78, "Subchapter"],
 Cell[CellGroupData[{
-Cell[2017, 64, 107, 1, 54, "Subsection"],
+Cell[1742, 57, 184, 2, 80, "Section"],
+Cell[1929, 61, 337, 6, 37, "Text"],
 Cell[CellGroupData[{
-Cell[2149, 69, 283, 5, 57, "Input"],
-Cell[2435, 76, 1202, 18, 36, "Output"],
-Cell[3640, 96, 1274, 20, 36, "Output"]
+Cell[2291, 71, 634, 14, 57, "Input"],
+Cell[2928, 87, 311, 5, 36, "Output"]
+}, Open  ]],
+Cell[3254, 95, 229, 5, 37, "Text"],
+Cell[CellGroupData[{
+Cell[3508, 104, 123, 1, 37, "Item"],
+Cell[3634, 107, 103, 1, 30, "Subitem"],
+Cell[3740, 110, 93, 1, 37, "Item"],
+Cell[3836, 113, 103, 1, 30, "Subitem"],
+Cell[3942, 116, 92, 1, 37, "Item"],
+Cell[4037, 119, 101, 1, 30, "Subitem"]
+}, Open  ]],
+Cell[4153, 123, 141, 1, 37, "Text"],
+Cell[CellGroupData[{
+Cell[4319, 128, 138, 2, 35, "Input"],
+Cell[4460, 132, 384, 7, 35, "Output"]
+}, Open  ]],
+Cell[4859, 142, 157, 3, 37, "Text"],
+Cell[CellGroupData[{
+Cell[5041, 149, 358, 8, 57, "Input"],
+Cell[5402, 159, 182, 3, 36, "Output"],
+Cell[5587, 164, 620, 15, 56, "Output"]
+}, Open  ]],
+Cell[6222, 182, 236, 5, 37, "Text"],
+Cell[CellGroupData[{
+Cell[6483, 191, 228, 4, 57, "Input"],
+Cell[6714, 197, 593, 13, 36, "Output"],
+Cell[7310, 212, 590, 13, 36, "Output"]
+}, Open  ]],
+Cell[7915, 228, 197, 4, 37, "Text"],
+Cell[CellGroupData[{
+Cell[8137, 236, 244, 5, 35, "Input"],
+Cell[8384, 243, 10764, 283, 583, "Output"]
+}, Open  ]],
+Cell[19163, 529, 409, 7, 61, "Text"],
+Cell[CellGroupData[{
+Cell[19597, 540, 195, 4, 36, "Input"],
+Cell[19795, 546, 1030, 23, 52, "Output"]
+}, Open  ]],
+Cell[20840, 572, 441, 10, 37, "Text"],
+Cell[CellGroupData[{
+Cell[21306, 586, 265, 7, 36, "Input"],
+Cell[21574, 595, 624, 15, 56, "Output"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[22235, 615, 88, 2, 35, "Input"],
+Cell[22326, 619, 2671, 61, 111, "Output"]
+}, Open  ]],
+Cell[25012, 683, 115, 1, 37, "Text"],
+Cell[CellGroupData[{
+Cell[25152, 688, 234, 6, 36, "Input"],
+Cell[25389, 696, 2756, 66, 111, "Output"]
 }, Open  ]]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[4963, 122, 107, 1, 54, "Subsection"],
-Cell[5073, 125, 138, 1, 37, "Text"],
+Cell[28194, 768, 115, 1, 80, "Section"],
+Cell[28312, 771, 214, 4, 37, "Text"],
 Cell[CellGroupData[{
-Cell[5236, 130, 419, 7, 57, "Input"],
-Cell[5658, 139, 904, 14, 36, "Output"],
-Cell[6565, 155, 979, 16, 36, "Output"]
+Cell[28551, 779, 107, 1, 54, "Subsection"],
+Cell[28661, 782, 153, 3, 37, "Text"],
+Cell[CellGroupData[{
+Cell[28839, 789, 378, 6, 57, "Input"],
+Cell[29220, 797, 158, 3, 36, "Output"],
+Cell[29381, 802, 255, 5, 36, "Output"]
 }, Open  ]]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[7593, 177, 110, 1, 54, "Subsection"],
-Cell[7706, 180, 184, 2, 37, "Text"],
+Cell[29685, 813, 107, 1, 54, "Subsection"],
+Cell[29795, 816, 138, 1, 37, "Text"],
 Cell[CellGroupData[{
-Cell[7915, 186, 659, 14, 99, "Input"],
-Cell[8577, 202, 981, 15, 36, "Output"],
-Cell[9561, 219, 961, 14, 35, "Output"]
-}, Open  ]],
-Cell[10537, 236, 179, 2, 37, "Text"],
-Cell[CellGroupData[{
-Cell[10741, 242, 132, 2, 35, "Input"],
-Cell[10876, 246, 437, 7, 35, "Output"]
-}, Open  ]],
-Cell[11328, 256, 178, 2, 37, "Text"],
-Cell[CellGroupData[{
-Cell[11531, 262, 306, 7, 36, "Input"],
-Cell[11840, 271, 378, 5, 35, "Output"]
-}, Open  ]],
-Cell[CellGroupData[{
-Cell[12255, 281, 102, 1, 43, "Subsubsection"],
-Cell[12360, 284, 666, 11, 85, "Text"],
-Cell[CellGroupData[{
-Cell[13051, 299, 1515, 37, 99, "Input"],
-Cell[14569, 338, 3895, 88, 139, "Output"]
-}, Open  ]],
-Cell[18479, 429, 240, 5, 37, "Text"],
-Cell[CellGroupData[{
-Cell[18744, 438, 531, 8, 35, "Input"],
-Cell[19278, 448, 1189, 20, 36, "Output"]
-}, Open  ]],
-Cell[20482, 471, 131, 1, 37, "Text"],
-Cell[CellGroupData[{
-Cell[20638, 476, 137, 2, 36, "Input"],
-Cell[20778, 480, 365, 7, 35, "Output"]
+Cell[29958, 821, 419, 7, 57, "Input"],
+Cell[30380, 830, 1022, 15, 36, "Output"],
+Cell[31405, 847, 1120, 17, 36, "Output"]
 }, Open  ]]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[21192, 493, 97, 1, 43, "Subsubsection"],
-Cell[21292, 496, 342, 7, 61, "Text"],
+Cell[32574, 870, 110, 1, 54, "Subsection"],
+Cell[32687, 873, 184, 2, 37, "Text"],
 Cell[CellGroupData[{
-Cell[21659, 507, 362, 6, 35, "Input"],
-Cell[22024, 515, 839, 18, 56, "Output"]
+Cell[32896, 879, 659, 14, 99, "Input"],
+Cell[33558, 895, 1081, 16, 36, "Output"],
+Cell[34642, 913, 1059, 15, 35, "Output"]
 }, Open  ]],
-Cell[22878, 536, 151, 3, 37, "Text"],
+Cell[35716, 931, 179, 2, 37, "Text"],
 Cell[CellGroupData[{
-Cell[23054, 543, 213, 5, 35, "Input"],
-Cell[23270, 550, 598, 15, 56, "Output"]
+Cell[35920, 937, 132, 2, 35, "Input"],
+Cell[36055, 941, 508, 8, 35, "Output"]
 }, Open  ]],
-Cell[23883, 568, 102, 1, 37, "Text"],
+Cell[36578, 952, 178, 2, 37, "Text"],
 Cell[CellGroupData[{
-Cell[24010, 573, 123, 2, 35, "Input"],
-Cell[24136, 577, 797, 19, 57, "Output"]
+Cell[36781, 958, 306, 7, 36, "Input"],
+Cell[37090, 967, 448, 6, 35, "Output"]
 }, Open  ]],
-Cell[24948, 599, 501, 13, 37, "Text"],
 Cell[CellGroupData[{
-Cell[25474, 616, 443, 9, 36, "Input"],
-Cell[25920, 627, 768, 18, 56, "Output"]
-}, Open  ]],
-Cell[26703, 648, 136, 1, 37, "Text"],
+Cell[37575, 978, 102, 1, 43, "Subsubsection"],
+Cell[37680, 981, 666, 11, 85, "Text"],
 Cell[CellGroupData[{
-Cell[26864, 653, 205, 4, 35, "Input"],
-Cell[27072, 659, 6377, 155, 169, "Output"]
+Cell[38371, 996, 1781, 42, 99, "Input"],
+Cell[40155, 1040, 5427, 126, 139, "Output"]
 }, Open  ]],
-Cell[33464, 817, 150, 3, 37, "Text"]
+Cell[45597, 1169, 240, 5, 37, "Text"],
+Cell[CellGroupData[{
+Cell[45862, 1178, 531, 8, 35, "Input"],
+Cell[46396, 1188, 1291, 22, 36, "Output"]
+}, Open  ]],
+Cell[47702, 1213, 131, 1, 37, "Text"],
+Cell[CellGroupData[{
+Cell[47858, 1218, 137, 2, 36, "Input"],
+Cell[47998, 1222, 440, 8, 35, "Output"]
+}, Open  ]]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[48487, 1236, 158, 2, 43, "Subsubsection"],
+Cell[48648, 1240, 113, 1, 37, "Text"],
+Cell[CellGroupData[{
+Cell[48786, 1245, 174, 5, 36, "Input"],
+Cell[48963, 1252, 6555, 177, 583, "Output"]
+}, Open  ]],
+Cell[55533, 1432, 183, 5, 35, "Input"],
+Cell[CellGroupData[{
+Cell[55741, 1441, 439, 7, 35, "Input"],
+Cell[56183, 1450, 540, 11, 36, "Output"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[56760, 1466, 625, 11, 57, "Input"],
+Cell[57388, 1479, 1016, 20, 56, "Output"],
+Cell[58407, 1501, 3527, 79, 69, "Output"]
+}, Open  ]]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[61983, 1586, 106, 1, 43, "Subsubsection"],
+Cell[62092, 1589, 304, 6, 37, "Text"],
+Cell[62399, 1597, 88, 1, 37, "Item"],
+Cell[62490, 1600, 241, 5, 36, "Input"],
+Cell[62734, 1607, 91, 1, 37, "Item"],
+Cell[62828, 1610, 202, 4, 36, "Input"],
+Cell[63033, 1616, 88, 1, 37, "Item"],
+Cell[63124, 1619, 205, 4, 36, "Input"],
+Cell[63332, 1625, 190, 2, 37, "Item"],
+Cell[63525, 1629, 215, 4, 36, "Input"],
+Cell[63743, 1635, 104, 1, 37, "Item"],
+Cell[63850, 1638, 215, 4, 36, "Input"],
+Cell[64068, 1644, 155, 2, 37, "Item"],
+Cell[64226, 1648, 285, 7, 36, "Input"],
+Cell[64514, 1657, 121, 1, 37, "Text"],
+Cell[CellGroupData[{
+Cell[64660, 1662, 289, 7, 36, "Input"],
+Cell[64952, 1671, 160, 2, 183, "Output"]
+}, Open  ]],
+Cell[65127, 1676, 156, 3, 37, "Text"],
+Cell[65286, 1681, 284, 4, 37, "Item"],
+Cell[65573, 1687, 719, 17, 51, "Input"],
+Cell[66295, 1706, 283, 4, 37, "Item"],
+Cell[66581, 1712, 236, 5, 36, "Input"],
+Cell[66820, 1719, 100, 2, 36, "Input"]
 }, Open  ]]
 }, Open  ]]
 }, Open  ]]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[66993, 1729, 118, 2, 78, "Subchapter"],
+Cell[CellGroupData[{
+Cell[67136, 1735, 94, 1, 54, "Subsection"],
+Cell[67233, 1738, 147, 2, 37, "Item"],
+Cell[CellGroupData[{
+Cell[67405, 1744, 285, 7, 36, "Input"],
+Cell[67693, 1753, 687, 16, 49, "Output"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[68417, 1774, 260, 7, 36, "Input"],
+Cell[68680, 1783, 663, 16, 49, "Output"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[69380, 1804, 350, 6, 37, "Item"],
+Cell[69733, 1812, 335, 4, 37, "Item"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[70105, 1821, 324, 6, 78, "Input"],
+Cell[70432, 1829, 698, 16, 49, "Output"],
+Cell[71133, 1847, 96, 1, 35, "Output"]
+}, Open  ]],
+Cell[71244, 1851, 160, 2, 37, "Text"],
+Cell[CellGroupData[{
+Cell[71429, 1857, 148, 3, 35, "Input"],
+Cell[71580, 1862, 79, 1, 35, "Output"]
+}, Open  ]],
+Cell[71674, 1866, 486, 6, 37, "Item"],
+Cell[CellGroupData[{
+Cell[72185, 1876, 147, 3, 36, "Input"],
+Cell[72335, 1881, 666, 16, 49, "Output"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[73038, 1902, 174, 3, 36, "Input"],
+Cell[73215, 1907, 212, 5, 35, "Output"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[73464, 1917, 259, 5, 36, "Input"],
+Cell[73726, 1924, 230, 6, 42, "Output"]
+}, Open  ]],
+Cell[73971, 1933, 127, 1, 37, "Item"],
+Cell[CellGroupData[{
+Cell[74123, 1938, 520, 14, 36, "Input"],
+Cell[74646, 1954, 266, 6, 36, "Output"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[74949, 1965, 518, 14, 36, "Input"],
+Cell[75470, 1981, 157, 3, 36, "Output"]
+}, Open  ]],
+Cell[75642, 1987, 94, 1, 35, "Input"]
+}, Open  ]]
+}, Closed]]
 }, Open  ]]
 }
 ]

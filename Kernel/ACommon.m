@@ -50,3 +50,15 @@ MongoFailureMessage[parentSymbol_] := Module[
 	parentSymbol::mongoError = lastError;
 	Message[parentSymbol::mongoError];
 ]
+
+(******************************************************************************)
+
+(* Mongo Unix time is accurate to the millisecond *)
+FromMillisecondUnixTime[time_Integer] := Module[
+	{dateList}
+	,
+	dateList = DateList@FromUnixTime[time / 1000.];
+	DateObject[dateList, DateFormat -> {"DateTime", ":", "Millisecond"}]
+]
+
+ToMillisecondUnixTime[date_DateObject] := 1000 * (UnixTime@date + FractionalPart@date["Second"])

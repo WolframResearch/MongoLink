@@ -37,7 +37,7 @@ MongoIterator[handleKey_][] := Module[
 		(*MongoFailureMessage[MongoIterator];*) 
 		Return@$Failed
 	];
-	Developer`ReadRawJSONString@result
+	BSONToAssociation@result
 ]
 
 (******************************************************************************)
