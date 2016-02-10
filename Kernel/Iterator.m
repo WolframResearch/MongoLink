@@ -30,7 +30,9 @@ iteratorNext = LibraryFunctionLoad[$MongoLinkLib, "WL_IteratorNext",
 
 (******************************************************************************)
 
-MongoIterator[handleKey_][] := Module[
+PackageScope["MongoIteratorRead"]
+
+MongoIteratorRead[MongoIterator[handleKey_]] := Module[
 	{result},
 	result = iteratorNext[handleKey];
 	If[LibraryFunctionFailureQ@result, 
@@ -42,9 +44,14 @@ MongoIterator[handleKey_][] := Module[
 
 (******************************************************************************)
 
-MongoIterator[handleKey_]["HasNext"] := Module[
+
+PackageScope["MongoIteratorHasNextQ"]
+
+(* note: this doesn't seem to actually work very well: it says True but then
+getting the next element fails, then this returns False *)
+MongoIteratorHasNextQ[MongoIterator[handleKey_]] := Module[
 	{result},
-	result = iteratorHasNext[handleKey]; Print[result];
+	result = iteratorHasNext[handleKey]; 
 	If[LibraryFunctionFailureQ@result, 
 		MongoFailureMessage[MongoIterator]; 
 		Return@$Failed
