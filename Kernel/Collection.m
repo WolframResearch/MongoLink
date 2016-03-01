@@ -222,7 +222,10 @@ CollectionFind[collection_MongoCollection, query_, opts:OptionsPattern[]] := Mod
 	NewIterator[
 		MongoIterator, 
 		{iter = iteratorHandle}, 
-		Replace[iter[], $Failed :> IteratorExhausted]
+		Replace[
+			MongoIteratorRead[iter], 
+			$Failed :> IteratorExhausted
+		]
 	]
 ]
 
