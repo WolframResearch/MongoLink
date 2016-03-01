@@ -80,6 +80,29 @@ mongoCollectionCreateBulkOp = LibraryFunctionLoad[$MongoLinkLib, "WL_MongoCollec
 	"Void"				
 ]	
 
+mongoCollectionUpdate = LibraryFunctionLoad[$MongoLinkLib, "WL_MongoCollectionUpdate", 
+	{
+		Integer,			(* collection handle *)
+		Integer,			(* selector bson handle *)
+		Integer,			(* update bson handle *)
+		Integer,			(* write concern handle *)
+		Integer,			(* upsert *)
+		Integer				(* Multi *)
+	}, 
+	"Void"				
+]	
+
+mongoCollectionRemove = LibraryFunctionLoad[$MongoLinkLib, "WL_MongoCollectionRemove", 
+	{
+		Integer,			(* collection handle *)
+		Integer,			(* delete single *)
+		Integer,			(* selector bson handle *)
+		Integer				(* write concern handle *)
+	}, 
+	"Void"				
+]	
+
+
 
 (******************************************************************************)
 
@@ -278,3 +301,111 @@ Module[
 
 CollectionInsert::insertError = "Could ";
 CollectionInsert::unknownType = "Unknown type for document.";
+
+(******************************************************************************)
+
+PackageExport["CollectionUpdate"]
+
+SetUsage[CollectionUpdate, "
+CollectionUpdate[MongoCollection[$$], query$, update$] update a single document in the \
+collection MongoCollection[$$] which satisfies the query$ association. The update$ document \
+will replace the contents of the matched document (exept for _id field). To update only \
+individual fields, use the $set operator. If no document satisfies query$, nothing is done, unless \
+the Option \"Upsert\" is set to True. To update all documents satisfying the query$, set the option \
+\"MultiDocumentUpdate\" to True."
+]
+
+
+Options[CollectionUpdate] =
+{
+	"WriteConcern" -> Automatic,
+	"Journal" -> Automatic,
+	"Timeout" -> Automatic,
+	"Upsert" -> False,
+	"MultiDocumentUpdate" -> False
+};
+
+CollectionUpdate[collection_MongoCollection, selector_, updaterDoc_, OptionsPattern[]] := Scope[
+	UnpackOptions[writeConcern, journal, timeout, upsert, multiDocumentUpdate];
+		
+	(* Write concern *)
+	writeConcern = WriteConcernCreate[
+		"WriteConcern" -> writeConcern, 
+		"Journal" -> journal, 
+		"Timeout" -> timeout
+	];
+	If[FailureQ@writeConcern, Return@writeConcern];
+
+	(* Create BSON query + update docs *)
+	queryBSON = BSONCreate@selector;
+	updaterDocBSON = BSONCreate@updaterDoc;
+	If[FailureQ@query, Return@queryBSON];
+	If[FailureQ@updaterDocumentBSON, Return@updaterDocumentBSON];
+
+
+	(* Execute *)
+	result = mongoCollectionUpdate[
+		ManagedLibraryExpressionID@collection,
+		ManagedLibraryExpressionID@queryBSON,
+		ManagedLibraryExpressionID@updaterDocBSON,
+		ManagedLibraryExpressionID@writeConcern,
+		Boole@upsert,
+		Boole@multiDocumentUpdate
+	];
+	
+	(* Check for errors *)
+	If[LibraryFunctionFailureQ@result, 
+		MongoFailureMessage[CollectionUpdate]; 
+		Return@$Failed
+	];
+	result
+]
+
+(******************************************************************************)
+
+PackageExport["CollectionRemove"]
+
+SetUsage[CollectionRemove, "
+CollectionRemove[MongoCollection[$$], query$] removes a single document from MongoCollection[$$] \
+that satisfies the query $query. To remove all documents, set the Option \"MultiDocumentUpdate\" to \ 
+True."
+]
+
+
+Options[CollectionRemove] =
+{
+	"WriteConcern" -> Automatic,
+	"Journal" -> Automatic,
+	"Timeout" -> Automatic,
+	"MultiDocumentUpdate" -> False
+};
+
+CollectionRemove[collection_MongoCollection, selector_, OptionsPattern[]] := Scope[
+	UnpackOptions[writeConcern, journal, timeout, multiDocumentUpdate];
+		
+	(* Write concern *)
+	writeConcern = WriteConcernCreate[
+		"WriteConcern" -> writeConcern, 
+		"Journal" -> journal, 
+		"Timeout" -> timeout
+	];
+	If[FailureQ@writeConcern, Return@writeConcern];
+
+	(* Create BSON query *)
+	queryBSON = BSONCreate@selector;
+	If[FailureQ@query, Return@queryBSON];
+	
+	(* Execute *)
+	result = mongoCollectionRemove[
+		ManagedLibraryExpressionID@collection,
+		Boole@multiDocumentUpdate,
+		ManagedLibraryExpressionID@queryBSON,
+		ManagedLibraryExpressionID@writeConcern
+	];
+	(* Check for errors *)
+	If[LibraryFunctionFailureQ@result, 
+		MongoFailureMessage[CollectionRemove]; 
+		Return@$Failed
+	];
+	result
+]

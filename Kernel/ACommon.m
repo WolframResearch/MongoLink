@@ -12,6 +12,9 @@ PackageExport["LibraryFunctionFailureQ"]
 PackageExport["MongoFailureMessage"]
 PackageExport["MongoGetLastError"]
 
+PackageScope["ToMillisecondUnixTime"]
+PackageScope["FromMillisecondUnixTime"]
+
 (******************************************************************************)
 
 (****** Global Variables ******)
@@ -62,3 +65,7 @@ FromMillisecondUnixTime[time_Integer] := Module[
 ]
 
 ToMillisecondUnixTime[date_DateObject] := 1000 * (UnixTime@date + FractionalPart@date["Second"])
+
+
+(******************************************************************************)
+

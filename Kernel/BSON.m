@@ -39,12 +39,12 @@ bsonAsJSON = LibraryFunctionLoad[$MongoLinkLib, "WL_bsonAsJSON",
 
 $EncodingRules = {
 	MongoObjectID[x_] -> <|Rule["$oid", x]|>,
-	x_DateObject :> <|Rule["$date", toMillisecondUnixTime@x]|>
+	x_DateObject :> <|Rule["$date", ToMillisecondUnixTime@x]|>
 };
 
 $DecodingRules = {
 	<|Rule["$oid", x_]|> :> MongoObjectID[x],
-	<|Rule["$date", x_]|> :> fromMillisecondUnixTime[x]
+	<|Rule["$date", x_]|> :> FromMillisecondUnixTime[x]
 };
 
 (******************************************************************************)

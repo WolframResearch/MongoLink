@@ -104,17 +104,75 @@ WL_MongoCollectionCreateBulkOp(WolframLibraryData libData, mint Argc,
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// NOTE: we only support a single update flag. Will change in future.
 
-// EXTERN_C DLLEXPORT int WL_MongoCollectionRemove(WolframLibraryData libData,
-//                                                 mint Argc, MArgument *Args,
-//                                                 MArgument Res) {
+EXTERN_C DLLEXPORT int WL_MongoCollectionUpdate(WolframLibraryData libData,
+                                                mint Argc, MArgument *Args,
+                                                MArgument Res) {
+  // Inputs
+  auto collection = collectionHandleMap[MArgument_getInteger(Args[0])];
+  auto selector = bsonHandleMap[MArgument_getInteger(Args[1])];
+  auto update = bsonHandleMap[MArgument_getInteger(Args[2])];
+  auto write_concern = writeConcernHandleMap[MArgument_getInteger(Args[3])];
+  bool upsert = MArgument_getInteger(Args[4]);
+  bool multi = MArgument_getInteger(Args[5]);
+
+  // Deal with update flags
+  mongoc_update_flags_t updateFlag = MONGOC_UPDATE_NONE;
+  if (upsert)
+    updateFlag = (mongoc_update_flags_t)(updateFlag | MONGOC_UPDATE_UPSERT);
+  if (multi)
+    updateFlag =
+        (mongoc_update_flags_t)(updateFlag | MONGOC_UPDATE_MULTI_UPDATE);
+  // API:
+  // http://api.mongodb.org/c/current/mongoc_collection_update.html
+  bson_error_t error;
+  bool result = mongoc_collection_update(collection, updateFlag, selector,
+                                         update, write_concern, &error);
+  // Error handling
+  if (!result) {
+    errorString = error.message;
+    return LIBRARY_FUNCTION_ERROR;
+  }
+  return LIBRARY_NO_ERROR;
+}
+
+//////////////////////////////////////////////////////////////////////////////
+
+EXTERN_C DLLEXPORT int WL_MongoCollectionRemove(WolframLibraryData libData,
+                                                mint Argc, MArgument *Args,
+                                                MArgument Res) {
+  // Inputs
+  auto collection = collectionHandleMap[MArgument_getInteger(Args[0])];
+  bool multiUpdate = MArgument_getInteger(Args[1]);
+  auto selector = bsonHandleMap[MArgument_getInteger(Args[2])];
+  auto write_concern = writeConcernHandleMap[MArgument_getInteger(Args[3])];
+
+  // Deal with remove flags
+  mongoc_remove_flags_t removeFlags = MONGOC_REMOVE_NONE;
+  if (!multiUpdate)
+    removeFlags = MONGOC_REMOVE_SINGLE_REMOVE;
+
+  // API:
+  // http://api.mongodb.org/c/current/mongoc_collection_remove.html
+  bson_error_t error;
+  bool result = mongoc_collection_remove(collection, removeFlags, selector,
+                                         write_concern, &error);
+  // Error handling
+  if (!result) {
+    errorString = error.message;
+    return LIBRARY_FUNCTION_ERROR;
+  }
+  return LIBRARY_NO_ERROR;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+// EXTERN_C DLLEXPORT int WL_MongoCollectionDrop(WolframLibraryData libData,
+//                                               mint Argc, MArgument *Args,
+//                                               MArgument Res) {
 //   // Inputs
 //   auto collection = collectionHandleMap[MArgument_getInteger(Args[0])];
-//   auto selector = bsonHandleMap[MArgument_getInteger(Args[1])];
-//   auto write_concern = writeConcernHandleMap[MArgument_getInteger(Args[2])];
-//
-//   mint output_bulk_key = MArgument_getInteger(Args[3]);
-//
 //   // API:
 //   // http://api.mongodb.org/c/current/mongoc_collection_remove.html
 //   if(!mongoc_collection_remove(
