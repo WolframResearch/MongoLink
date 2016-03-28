@@ -183,3 +183,28 @@ EXTERN_C DLLEXPORT int WL_MongoCollectionRemove(WolframLibraryData libData,
 //
 //   return LIBRARY_NO_ERROR;
 // }
+
+////////////////////////////////////////////////////////////////////////////////
+
+EXTERN_C DLLEXPORT int WL_MongoCollectionAggregation(WolframLibraryData libData,
+                                                     mint Argc, MArgument *Args,
+                                                     MArgument Res) {
+  auto collection = collectionHandleMap[MArgument_getInteger(Args[0])];
+  auto pipeline = bsonHandleMap[MArgument_getInteger(Args[1])];
+  mint outputIteratorHandleKey = MArgument_getInteger(Args[2]);
+
+  // API: http://api.mongodb.org/c/1.3.3/mongoc_collection_aggregate.html
+  auto cursor = mongoc_collection_aggregate(collection, MONGOC_QUERY_NONE,
+                                            pipeline, NULL, NULL);
+
+  // Cursor can return Null if invalid parameters. Check
+  if (!cursor) {
+    errorString = "Unable to do perform query.";
+    return LIBRARY_FUNCTION_ERROR;
+  }
+
+  // add iterator to map
+  iteratorHandleMap[outputIteratorHandleKey] = cursor;
+
+  return LIBRARY_NO_ERROR;
+}

@@ -44,6 +44,10 @@ EXTERN_C DLLEXPORT int WL_MongoCollectionRemove(WolframLibraryData libData,
                                                 mint Argc, MArgument *Args,
                                                 MArgument Res);
 
+EXTERN_C DLLEXPORT int WL_MongoCollectionAggregation(WolframLibraryData libData,
+                                                     mint Argc, MArgument *Args,
+                                                     MArgument Res);
+
 ////////////////////////////////////////////////////////////////////////////////
 
 #endif

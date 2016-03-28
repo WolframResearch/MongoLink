@@ -10,6 +10,7 @@ Package["MongoLink`"]
 PackageExport["MongoBSON"]
 
 PackageExport["MongoObjectID"]
+PackageExport["MongoReference"]
 
 PackageExport["BSONCreate"]
 PackageExport["BSONToJSON"]
@@ -18,31 +19,33 @@ PackageExport["BSONToAssociation"]
 (******************************************************************************)
 (****** Load Library Functions ******)
 
-createBSONfromJSON = LibraryFunctionLoad[$MongoLinkLib, "WL_CreateBSONfromJSON", 
+createBSONfromJSON = LibraryFunctionLoad[$MongoLinkLib, "WL_CreateBSONfromJSON",
 	{
 		Integer,					(* bson handle *)
 		"UTF8String"				(* json *)
-	}, 
-	"Void"						
-]	
+	},
+	"Void"
+]
 
-bsonAsJSON = LibraryFunctionLoad[$MongoLinkLib, "WL_bsonAsJSON", 
+bsonAsJSON = LibraryFunctionLoad[$MongoLinkLib, "WL_bsonAsJSON",
 	{
 		Integer					(* bson handle *)
 
-	}, 
-	"UTF8String"				(* json *)	
-]	
+	},
+	"UTF8String"				(* json *)
+]
 
 (******************************************************************************)
 (* Rules for encoding and decoding Associations to BSON *)
 
 $EncodingRules = {
+	MongoReference[dataset_, id_] -> <|Rule["$ref", dataset], Rule["$id", id]|>,
 	MongoObjectID[x_] -> <|Rule["$oid", x]|>,
 	x_DateObject :> <|Rule["$date", ToMillisecondUnixTime@x]|>
 };
 
 $DecodingRules = {
+	<|Rule["$ref", dataset_], Rule["$id", id_]|> :> MongoReference[dataset, id],
 	<|Rule["$oid", x_]|> :> MongoObjectID[x],
 	<|Rule["$date", x_]|> :> FromMillisecondUnixTime[x]
 };
@@ -55,7 +58,7 @@ MongoObjectID /: Normal[x_MongoObjectID] :=  <|
 	"MachineID" -> Interpreter["HexInteger"]@StringTake[First@x, {9, 14}],
 	"ProcessID" -> Interpreter["HexInteger"]@StringTake[First@x, {15, 18}],
 	"Counter" -> Interpreter["HexInteger"]@StringTake[First@x, {19, -1}]
-|>	
+|>
 
 (******************************************************************************)
 
@@ -68,8 +71,8 @@ BSONCreate[doc_ /; (AssociationQ@doc || StringQ@doc)] := Module[
 			(* First, convert special expr like DateObject to MongoDB equivalents *)
 			doc2 = ReplaceAll[doc, $EncodingRules];
 			(* Now convert to JSON. Note that we convert all other expressions to strings *)
-			json = Developer`WriteRawJSONString[doc2, 
-		 		"Compact" -> True, 
+			json = Developer`WriteRawJSONString[doc2,
+		 		"Compact" -> True,
 		 		"ConversionFunction" -> ToString
 		 	];
 		 If[FailureQ@json, Return@json];
@@ -78,8 +81,8 @@ BSONCreate[doc_ /; (AssociationQ@doc || StringQ@doc)] := Module[
 		 createBSONfromJSON[ManagedLibraryExpressionID@bsonHandle, doc]
 	];
 	(* Check for errors *)
-	If[LibraryFunctionFailureQ@result, 
-		MongoFailureMessage[BSONCreate]; 
+	If[LibraryFunctionFailureQ@result,
+		MongoFailureMessage[BSONCreate];
 		Return@$Failed
 	];
 	bsonHandle
@@ -90,9 +93,9 @@ BSONCreate[doc_ /; (AssociationQ@doc || StringQ@doc)] := Module[
 BSONToJSON[bson_MongoBSON] := Module[
 	{result},
 	result = bsonAsJSON[ManagedLibraryExpressionID@bson];
-	
-	If[LibraryFunctionFailureQ@result, 
-		MongoFailureMessage[BSONToJSON]; 
+
+	If[LibraryFunctionFailureQ@result,
+		MongoFailureMessage[BSONToJSON];
 		Return@$Failed
 	];
 	result
@@ -103,9 +106,9 @@ BSONToJSON[bson_MongoBSON] := Module[
 BSONToAssociation[bson_MongoBSON] := Module[
 	{json},
 	json = BSONToJSON[bson];
-	If[FailureQ@json, 
+	If[FailureQ@json,
 		Return@json,
-		Return@BSONToAssociation[json]	
+		Return@BSONToAssociation[json]
 	]
 ]
 
@@ -113,9 +116,7 @@ BSONToAssociation[json_String] := Module[
 	{assoc},
 	assoc = Developer`ReadRawJSONString@json;
 	If[FailureQ@assoc, Return@assoc];
-	
+
 	(* Now interpret the various MongoDB types, like $symbol or $date, as WL types *)
 	ReplaceAll[assoc, $DecodingRules]
 ]
-
-

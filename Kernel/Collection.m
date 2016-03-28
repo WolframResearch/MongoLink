@@ -102,6 +102,15 @@ mongoCollectionRemove = LibraryFunctionLoad[$MongoLinkLib, "WL_MongoCollectionRe
 	"Void"				
 ]	
 
+mongoCollectionAggregate = LibraryFunctionLoad[$MongoLinkLib, "WL_MongoCollectionAggregation", 
+	{
+		Integer,			(* connection handle *)
+		Integer,			(* pipeline bson *)
+		Integer				(* iterator *)
+	
+	}, 
+	"Void"				
+]
 
 
 (******************************************************************************)
@@ -411,4 +420,42 @@ CollectionRemove[collection_MongoCollection, selector_, OptionsPattern[]] := Sco
 		Return@$Failed
 	];
 	result
+]
+
+(******************************************************************************)
+PackageExport["CollectionAggregate"]
+
+CollectionAggregate[collection_MongoCollection, pipeline_] := Module[
+	{iteratorHandle, pipelineBSON, result},
+	
+	iteratorHandle = CreateManagedLibraryExpression["MongoIterator", MongoIterator];
+	pipelineBSON = BSONCreate@<|"pipeline" -> pipeline|>;
+	If[FailureQ@pipelineBSON, Return@pipelineBSON];
+
+	result = mongoCollectionAggregate[
+		ManagedLibraryExpressionID@collection, 
+		ManagedLibraryExpressionID@pipelineBSON, 
+		ManagedLibraryExpressionID@iteratorHandle
+	];
+	
+	If[LibraryFunctionFailureQ@result, 
+		MongoFailureMessage[CollectionFind]; 
+		Return@$Failed
+	];
+	(* Return iterator object *)
+	NewIterator[
+		MongoIterator, 
+		{iter = iteratorHandle}, 
+		Replace[
+			MongoIteratorRead[iter], 
+			$Failed :> IteratorExhausted
+		]
+	]
+]
+
+MongoCollection /: RandomSample[coll_MongoCollection, n_] := Module[
+	{pipeline}
+	,
+	pipeline = {<|"$sample" -> <|"size" -> n|>|>};
+	CollectionAggregate[coll, pipeline]
 ]
