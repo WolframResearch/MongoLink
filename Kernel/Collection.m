@@ -459,3 +459,20 @@ MongoCollection /: RandomSample[coll_MongoCollection, n_] := Module[
 	pipeline = {<|"$sample" -> <|"size" -> n|>|>};
 	CollectionAggregate[coll, pipeline]
 ]
+
+(******************************************************************************)
+PackageExport["MongoReferenceGet"]
+
+SetUsage[MongoReferenceGet, "
+MongoReferenceGet[MongoDatabase[$$], MongoReference[$$]] returns the corresponding document \
+referenced by MongoReference[$$].
+"
+]
+
+MongoReferenceGet[database_MongoDatabase, mong_MongoReference] := Scope[
+	coll = CollectionConnect[database, First@mong];
+	docIter = CollectionFind[coll, <|"_id" -> Last@mong|>];
+	If[FailureQ@doc, Return@$Failed];
+	Read@docIter
+]
+

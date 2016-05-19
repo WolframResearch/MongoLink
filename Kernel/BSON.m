@@ -51,6 +51,13 @@ $DecodingRules = {
 };
 
 (******************************************************************************)
+(* Normal form for MongoReference *)
+MongoReference /: Normal[x_MongoReference] :=  <|
+	"$ref" -> First@x,
+	"$id" -> Last@x
+|>
+
+(******************************************************************************)
 (* Normal form for MongoObjectID *)
 
 MongoObjectID /: Normal[x_MongoObjectID] :=  <|
