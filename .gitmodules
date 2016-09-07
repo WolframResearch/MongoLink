@@ -1,3 +1,0 @@
-[submodule "Libraries/MongoLink/librarylinktools"]
-	path = Libraries/MongoLink/librarylinktools
-	url = ssh://git@stash.wolfram.com:7999/arg/librarylinktools.git
