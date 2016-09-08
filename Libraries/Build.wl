@@ -30,11 +30,8 @@ $CSourceDir  = FileNameJoin[{$LibrariesDirectory, "MongoLink"}];
 $WLSource = FileNames["*.cpp", {FileNameJoin[{$LibrariesDirectory, "MongoLink"}]}];
 $WLInclude = {$CSourceDir};
 
-(* LibraryLinkTools Source *)
-$LibLinkToolsInc = {FileNameJoin[{$LibrariesDirectory, "MongoLink", "librarylinktools"}]};
-
 (* Build *)
-$Include = Join[$WLInclude, $MongoInc, $LibLinkToolsInc];
+$Include = Join[$WLInclude, $MongoInc];
 $Libraries = Join[$MongoLib];
 $LibraryDir = Join[$MongoLibDir];
 
