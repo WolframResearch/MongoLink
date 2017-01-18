@@ -7,7 +7,6 @@ Paclet[
 	Creator -> "Sebastian Bodenstein <sebastianb@wolfram.com>",
 	Extensions -> {
 		{"Kernel", Context -> {"MongoLink`"}, Symbols -> {
-			"MongoLink`GetClient"
 		}},
 		{"LibraryLink"}
 	}
