@@ -1,16 +1,14 @@
-# MongoDB Link
-A WL link to the [MongoDB C driver.](https://docs.mongodb.org/ecosystem/drivers/c/)
+# MongoDB Link for the Wolfram Language
+MongoLink is a package for interacting with MongoDB inside the [Wolfram Language](https://www.wolfram.com/language/). It interfaces to the [MongoDB C driver.](https://docs.mongodb.org/ecosystem/drivers/c/) via LibraryLink.
 
+### Where did this come from?
 
-## Building
+MongoLink is a paclet maintained by Sebastian Bodenstein of Wolfram Research. It is used within Wolfram Research by the Machine Learning Group to manage large machine learning datasets.
 
-* First, follow the installation instructions of Mongo C driver: http://api.mongodb.org/c/current/installing.html
+### More...
 
-* Run the build script: `mongolink/Libraries/build.nb`
+See the following files for more information:
 
-* To use the examples, you need to install then run a MongoDB server on your local machine: https://docs.mongodb.org/manual/administration/install-community/
-
-## Running
-
-* See `mongolink/Notes/MongoDBLink.nb` for examples.
-* To run this: either require GeneralUtilities checked out (it makes use of its new iterator framework), or a new 10.4 build. In either case, you need to set this correctly at the top of the `MongoDBLink.nb` notebook.
+* [COPYING.md](COPYING.md) - MongoLink license
+* [CONTRIBUTING.md](CONTRIBUTING.md) - Guidelines for contributing to MongoLink
+* [HowToBuild.md](HowToBuild.md) - Instructions for building MongoLink

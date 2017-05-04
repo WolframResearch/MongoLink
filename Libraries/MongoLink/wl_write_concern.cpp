@@ -1,5 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Write concern handler + functions
+// For API guide, see:
+// http://mongoc.org/libmongoc/current/mongoc_write_concern_t.html
 ////////////////////////////////////////////////////////////////////////////////
 
 #include "wl_write_concern.h"
@@ -25,7 +27,6 @@ EXTERN_C DLLEXPORT int WL_WriteConcernSet(WolframLibraryData libData, mint Argc,
                                           MArgument *Args, MArgument Res) {
   auto wc = writeConcernHandleMap[MArgument_getInteger(Args[0])];
   int32_t w = MArgument_getInteger(Args[1]);
-
   mongoc_write_concern_set_w(wc, w);
   return LIBRARY_NO_ERROR;
 }
@@ -36,7 +37,6 @@ EXTERN_C DLLEXPORT int WL_WriteConcernSetWtimeout(WolframLibraryData libData,
                                                   MArgument Res) {
   auto wc = writeConcernHandleMap[MArgument_getInteger(Args[0])];
   int32_t wtimeout_msec = MArgument_getInteger(Args[1]);
-
   mongoc_write_concern_set_wtimeout(wc, wtimeout_msec);
   return LIBRARY_NO_ERROR;
 }
@@ -47,7 +47,6 @@ EXTERN_C DLLEXPORT int WL_WriteConcernSetJournal(WolframLibraryData libData,
                                                  MArgument Res) {
   auto wc = writeConcernHandleMap[MArgument_getInteger(Args[0])];
   bool journal = MArgument_getInteger(Args[1]);
-
   mongoc_write_concern_set_journal(wc, journal);
   return LIBRARY_NO_ERROR;
 }
@@ -63,13 +62,11 @@ EXTERN_C DLLEXPORT int WL_WriteConcernGetInfo(WolframLibraryData libData,
   if (!MLGetInteger(mlp, &wc_handle))
     return LIBRARY_FUNCTION_ERROR;
   auto wc = writeConcernHandleMap[wc_handle];
-
   // Get metadata
   bool journal = mongoc_write_concern_get_journal(wc);
   int32_t wtimeout = mongoc_write_concern_get_wtimeout(wc);
   int32_t w = mongoc_write_concern_get_w(wc);
   bool majority = mongoc_write_concern_get_wmajority(wc);
-
   // Export to linkobject
   if (!MLNewPacket(mlp))
     goto retPt;
@@ -110,7 +107,6 @@ EXTERN_C DLLEXPORT int WL_WriteConcernGetInfo(WolframLibraryData libData,
   } else if (!MLPutSymbol(mlp, "False"))
     goto retPt;
   // Return via mathlink
-
   return LIBRARY_NO_ERROR;
 retPt:
   return LIBRARY_FUNCTION_ERROR;

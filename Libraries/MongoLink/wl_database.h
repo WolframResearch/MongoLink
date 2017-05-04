@@ -33,6 +33,7 @@ EXTERN_C DLLEXPORT int WL_DatabaseCreateCollection(WolframLibraryData libData,
 EXTERN_C DLLEXPORT int WL_DatabaseGetCollection(WolframLibraryData libData,
                                                 mint Argc, MArgument *Args,
                                                 MArgument Res);
+                                                
 ////////////////////////////////////////////////////////////////////////////////
 
 #endif

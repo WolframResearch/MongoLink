@@ -1,6 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////////
-// BSON functions
-//	- For API guide, see: https://api.mongodb.org/libbson/current/
+// Collection-level functions
+//	- For API guide, see:
+// http://mongoc.org/libmongoc/current/mongoc_collection_t.html
 ////////////////////////////////////////////////////////////////////////////////
 
 #include "wl_collection.h"
@@ -17,7 +18,6 @@ DLLEXPORT void manage_instance_mongocollection(WolframLibraryData libData,
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-
 // Collection handle creation
 EXTERN_C DLLEXPORT int WL_CollectionGetName(WolframLibraryData libData,
                                             mint Argc, MArgument *Args,
@@ -27,7 +27,7 @@ EXTERN_C DLLEXPORT int WL_CollectionGetName(WolframLibraryData libData,
   // Set global returnString to name
   // Api: http://api.mongodb.org/c/current/mongoc_collection_get_name.html
   returnString = mongoc_collection_get_name(collection);
-
+  // Return string
   MArgument_setUTF8String(Res, const_cast<char *>(returnString.c_str()));
   return LIBRARY_NO_ERROR;
 }
@@ -39,7 +39,6 @@ EXTERN_C DLLEXPORT int WL_MongoCollectionCount(WolframLibraryData libData,
                                                MArgument Res) {
   auto collection = collectionHandleMap[MArgument_getInteger(Args[0])];
   auto query = bsonHandleMap[MArgument_getInteger(Args[1])];
-
   bson_error_t error;
   mint count = mongoc_collection_count(collection, MONGOC_QUERY_NONE, query, 0,
                                        0, NULL, &error);
@@ -48,7 +47,6 @@ EXTERN_C DLLEXPORT int WL_MongoCollectionCount(WolframLibraryData libData,
     errorString = error.message;
     return LIBRARY_FUNCTION_ERROR;
   }
-
   MArgument_setInteger(Res, count);
   return LIBRARY_NO_ERROR;
 }
@@ -65,22 +63,16 @@ EXTERN_C DLLEXPORT int WL_MongoCollectionFind(WolframLibraryData libData,
   uint32_t batch_size = MArgument_getInteger(Args[3]);
   auto query = bsonHandleMap[MArgument_getInteger(Args[4])];
   auto fields = bsonHandleMap[MArgument_getInteger(Args[5])];
-
   mint outputIteratorHandleKey = MArgument_getInteger(Args[6]);
-
-  // API: http://api.mongodb.org/c/current/mongoc_collection_find.html
   auto cursor = mongoc_collection_find(collection, MONGOC_QUERY_NONE, skip,
                                        limit, batch_size, query, fields, NULL);
-
   // Cursor can return Null if invalid parameters. Check
   if (!cursor) {
     errorString = "Unable to do perform query.";
     return LIBRARY_FUNCTION_ERROR;
   }
-
   // add iterator to map
   iteratorHandleMap[outputIteratorHandleKey] = cursor;
-
   return LIBRARY_NO_ERROR;
 }
 
@@ -92,20 +84,14 @@ WL_MongoCollectionCreateBulkOp(WolframLibraryData libData, mint Argc,
   auto collection = collectionHandleMap[MArgument_getInteger(Args[0])];
   bool ordered = MArgument_getInteger(Args[1]);
   auto writeconcern = writeConcernHandleMap[MArgument_getInteger(Args[2])];
-
   mint output_bulk_key = MArgument_getInteger(Args[3]);
-
-  // API:
-  // http://api.mongodb.org/c/current/mongoc_collection_create_bulk_operation.html
   bulkOperationHandleMap[output_bulk_key] =
       mongoc_collection_create_bulk_operation(collection, ordered, NULL);
-
   return LIBRARY_NO_ERROR;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 // NOTE: we only support a single update flag. Will change in future.
-
 EXTERN_C DLLEXPORT int WL_MongoCollectionUpdate(WolframLibraryData libData,
                                                 mint Argc, MArgument *Args,
                                                 MArgument Res) {
@@ -116,7 +102,6 @@ EXTERN_C DLLEXPORT int WL_MongoCollectionUpdate(WolframLibraryData libData,
   auto write_concern = writeConcernHandleMap[MArgument_getInteger(Args[3])];
   bool upsert = MArgument_getInteger(Args[4]);
   bool multi = MArgument_getInteger(Args[5]);
-
   // Deal with update flags
   mongoc_update_flags_t updateFlag = MONGOC_UPDATE_NONE;
   if (upsert)
@@ -147,14 +132,11 @@ EXTERN_C DLLEXPORT int WL_MongoCollectionRemove(WolframLibraryData libData,
   bool multiUpdate = MArgument_getInteger(Args[1]);
   auto selector = bsonHandleMap[MArgument_getInteger(Args[2])];
   auto write_concern = writeConcernHandleMap[MArgument_getInteger(Args[3])];
-
   // Deal with remove flags
   mongoc_remove_flags_t removeFlags = MONGOC_REMOVE_NONE;
   if (!multiUpdate)
     removeFlags = MONGOC_REMOVE_SINGLE_REMOVE;
 
-  // API:
-  // http://api.mongodb.org/c/current/mongoc_collection_remove.html
   bson_error_t error;
   bool result = mongoc_collection_remove(collection, removeFlags, selector,
                                          write_concern, &error);
@@ -168,43 +150,20 @@ EXTERN_C DLLEXPORT int WL_MongoCollectionRemove(WolframLibraryData libData,
 
 ////////////////////////////////////////////////////////////////////////////////
 
-// EXTERN_C DLLEXPORT int WL_MongoCollectionDrop(WolframLibraryData libData,
-//                                               mint Argc, MArgument *Args,
-//                                               MArgument Res) {
-//   // Inputs
-//   auto collection = collectionHandleMap[MArgument_getInteger(Args[0])];
-//   // API:
-//   // http://api.mongodb.org/c/current/mongoc_collection_remove.html
-//   if(!mongoc_collection_remove(
-//       collection, NULL,
-//       const bson_t *selector, const mongoc_write_concern_t *write_concern,
-//       bson_error_t *error);
-//   (collection, ordered, NULL);
-//
-//   return LIBRARY_NO_ERROR;
-// }
-
-////////////////////////////////////////////////////////////////////////////////
-
 EXTERN_C DLLEXPORT int WL_MongoCollectionAggregation(WolframLibraryData libData,
                                                      mint Argc, MArgument *Args,
                                                      MArgument Res) {
   auto collection = collectionHandleMap[MArgument_getInteger(Args[0])];
   auto pipeline = bsonHandleMap[MArgument_getInteger(Args[1])];
   mint outputIteratorHandleKey = MArgument_getInteger(Args[2]);
-
-  // API: http://api.mongodb.org/c/1.3.3/mongoc_collection_aggregate.html
   auto cursor = mongoc_collection_aggregate(collection, MONGOC_QUERY_NONE,
                                             pipeline, NULL, NULL);
-
   // Cursor can return Null if invalid parameters. Check
   if (!cursor) {
     errorString = "Unable to do perform query.";
     return LIBRARY_FUNCTION_ERROR;
   }
-
   // add iterator to map
   iteratorHandleMap[outputIteratorHandleKey] = cursor;
-
   return LIBRARY_NO_ERROR;
 }

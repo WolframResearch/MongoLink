@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // BSON functions
-//	- For API guide, see: https://api.mongodb.org/libbson/current/
+//	- For API guide, see: http://mongoc.org/libbson/current/index.html
 ////////////////////////////////////////////////////////////////////////////////
 
 #include "wl_bson.h"
@@ -31,7 +31,6 @@ EXTERN_C DLLEXPORT int WL_CreateBSONfromJSON(WolframLibraryData libData,
     return LIBRARY_FUNCTION_ERROR;
   }
   bsonHandleMap[bson_handle_key] = b;
-
   // Disown string
   libData->UTF8String_disown(json);
   return LIBRARY_NO_ERROR;
@@ -46,7 +45,6 @@ EXTERN_C DLLEXPORT int WL_bsonAsJSON(WolframLibraryData libData, mint Argc,
   }
   int bson_handle_key = MArgument_getInteger(Args[0]);
   returnBSONJSON = bson_as_json(bsonHandleMap[bson_handle_key], NULL);
-
   MArgument_setUTF8String(Res, returnBSONJSON);
   return LIBRARY_NO_ERROR;
 }

@@ -1,5 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Database-level functions
+// - For API guide, see:
+// http://mongoc.org/libmongoc/current/mongoc_database_t.html
 ////////////////////////////////////////////////////////////////////////////////
 
 #include "wl_database.h"
@@ -17,12 +19,9 @@ DLLEXPORT void manage_instance_mongodatabase(WolframLibraryData libData,
 ////////////////////////////////////////////////////////////////////////////////
 EXTERN_C DLLEXPORT int WL_DatabaseGetName(WolframLibraryData libData, mint Argc,
                                           MArgument *Args, MArgument Res) {
-
   auto database = databaseHandleMap[MArgument_getInteger(Args[0])];
   // Set global returnString to name
-  // Api: http://api.mongodb.org/c/current/mongoc_database_get_name.html
   returnString = mongoc_database_get_name(database);
-
   MArgument_setUTF8String(Res, const_cast<char *>(returnString.c_str()));
   return LIBRARY_NO_ERROR;
 }
@@ -35,7 +34,6 @@ EXTERN_C DLLEXPORT int WL_DatabaseHandleCreate(WolframLibraryData libData,
   int client_handle_key = MArgument_getInteger(Args[0]);
   int database_handle_key = MArgument_getInteger(Args[1]);
   char *databaseName = MArgument_getUTF8String(Args[2]);
-
   auto database = mongoc_client_get_database(clientHandleMap[client_handle_key],
                                              databaseName);
   if (!database) {
@@ -43,7 +41,6 @@ EXTERN_C DLLEXPORT int WL_DatabaseHandleCreate(WolframLibraryData libData,
     return LIBRARY_FUNCTION_ERROR;
   }
   databaseHandleMap[database_handle_key] = database;
-
   // Disown string
   libData->UTF8String_disown(databaseName);
   return LIBRARY_NO_ERROR;
@@ -63,11 +60,9 @@ EXTERN_C DLLEXPORT int WL_GetCollectionNames(WolframLibraryData libData,
   if (!MLGetInteger(mlp, &database_handle))
     return LIBRARY_FUNCTION_ERROR;
   auto database = databaseHandleMap[database_handle];
-
   // Create new output packet
   if (!MLNewPacket(mlp))
     return LIBRARY_FUNCTION_ERROR;
-
   // Get collection names
   bson_error_t error;
   char **strv;
@@ -79,7 +74,6 @@ EXTERN_C DLLEXPORT int WL_GetCollectionNames(WolframLibraryData libData,
     errorString = error.message;
     return LIBRARY_FUNCTION_ERROR;
   }
-
   // If success, loop over string array:
   if (!MLPutFunction(mlp, "List", length))
     return LIBRARY_FUNCTION_ERROR;
@@ -87,7 +81,6 @@ EXTERN_C DLLEXPORT int WL_GetCollectionNames(WolframLibraryData libData,
   for (int i = 0; i < length; i++)
     if (!MLPutString(mlp, strv[i]))
       return LIBRARY_FUNCTION_ERROR;
-
   // Free string array
   bson_strfreev(strv);
   // Return
@@ -98,14 +91,11 @@ EXTERN_C DLLEXPORT int WL_GetCollectionNames(WolframLibraryData libData,
 EXTERN_C DLLEXPORT int WL_DatabaseCreateCollection(WolframLibraryData libData,
                                                    mint Argc, MArgument *Args,
                                                    MArgument Res) {
-
   auto database = databaseHandleMap[MArgument_getInteger(Args[0])];
   char *collectionName = MArgument_getUTF8String(Args[1]);
   auto options = bsonHandleMap[MArgument_getInteger(Args[2])];
 
   auto output_collection_key = MArgument_getInteger(Args[3]);
-  // API:
-  // http://api.mongodb.org/c/current/mongoc_database_create_collection.html
   bson_error_t error;
   auto collection = mongoc_database_create_collection(database, collectionName,
                                                       options, &error);
@@ -114,9 +104,7 @@ EXTERN_C DLLEXPORT int WL_DatabaseCreateCollection(WolframLibraryData libData,
     errorString = error.message;
     return LIBRARY_FUNCTION_ERROR;
   }
-
   collectionHandleMap[output_collection_key] = collection;
-
   // Disown string
   libData->UTF8String_disown(collectionName);
   return LIBRARY_NO_ERROR;
@@ -129,18 +117,14 @@ EXTERN_C DLLEXPORT int WL_DatabaseGetCollection(WolframLibraryData libData,
   auto database = databaseHandleMap[MArgument_getInteger(Args[0])];
   int collection_handle_key = MArgument_getInteger(Args[1]);
   char *collectionName = MArgument_getUTF8String(Args[2]);
-
   // Create collection handle, append to collectionHandleMap if successfully
   // created.
-  // API: http://api.mongodb.org/c/current/mongoc_database_get_collection.html
   auto collection = mongoc_database_get_collection(database, collectionName);
-
   if (!collection) {
     errorString = "Cannot connect to collection.";
     return LIBRARY_FUNCTION_ERROR;
   }
   collectionHandleMap[collection_handle_key] = collection;
-
   // Disown strings
   libData->UTF8String_disown(collectionName);
   return LIBRARY_NO_ERROR;
