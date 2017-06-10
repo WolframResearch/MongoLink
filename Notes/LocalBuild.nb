@@ -1,0 +1,79 @@
+Notebook[{
+
+Cell[CellGroupData[{
+Cell["MongoLink Local Build", \
+"Title",ExpressionUUID->"75d8215e-cff5-4b4b-871e-c3f91c1f8a2c"],
+
+Cell["This is a build script for MongoLink.", "Text",
+ CellChangeTimes->{{3.659860197165052*^9, 3.6598602101290007`*^9}, 
+   3.6598602528829107`*^9, {3.659860302235612*^9, 3.6598603137771482`*^9}, 
+   3.667940759684976*^9},ExpressionUUID->"06a3075b-c929-4512-b999-\
+c854671d17f1"],
+
+Cell[BoxData[
+ RowBox[{"libmongoc", "-", 
+  RowBox[{
+  "1.0", ".", 
+   "a"}]}]], "Input",ExpressionUUID->"8d494de3-2c93-435a-9a5c-6adc68852f0e"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"$MongoLib", " ", "=", " ", 
+   RowBox[{"{", "\"\</usr/local/lib\>\"", "}"}]}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{
+  "$MongoSrc", " ", "=", " ", "\"\</usr/local/include/libmongoc-1.0\>\""}], 
+  ";"}], "\n", 
+ RowBox[{
+  RowBox[{
+   RowBox[{
+   "$BSONInc", " ", "=", " ", "\"\</usr/local/include/libbson-1.0\>\""}], 
+   ";"}], "\n"}], "\n", 
+ RowBox[{"Get", "@", 
+  RowBox[{"FileNameJoin", "[", 
+   RowBox[{"{", 
+    RowBox[{
+     RowBox[{"ParentDirectory", " ", "@", " ", 
+      RowBox[{"NotebookDirectory", "[", "]"}]}], ",", " ", 
+     "\"\<Libraries\>\"", ",", " ", "\"\<Build.wl\>\""}], "}"}], 
+   "]"}]}], "\n", 
+ RowBox[{"BuildMongoLink", "[", 
+  RowBox[{
+  "$MongoSrc", ",", " ", "$BSONInc", ",", " ", "$MongoLib", ",", " ", 
+   RowBox[{"\"\<Debug\>\"", "\[Rule]", "True"}]}], 
+  "]"}]}], "Code",ExpressionUUID->"12e6f9cb-d8da-4d53-982c-62dd403e9abf"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData["\<\"/Users/sebastianb/git/mongolink/\"\>"], \
+"Print",ExpressionUUID->"966ca314-cb84-410c-a5b3-62c68b774f04"],
+
+Cell[BoxData["\<\"/Users/sebastianb/git/mongolink/Libraries/MongoLink/wl_\
+collection.cpp:67:17: warning: 'mongoc_collection_find' is deprecated \
+[-Wdeprecated-declarations]\\n  auto cursor = \
+mongoc_collection_find(collection, MONGOC_QUERY_NONE, skip,\\n                \
+^\\n/usr/local/include/libmongoc-1.0/mongoc-collection.h:143:1: note: \
+'mongoc_collection_find' has been explicitly marked deprecated \
+here\\nmongoc_collection_find (mongoc_collection_t *collection,\\n^\\n1 \
+warning generated.\"\>"], \
+"Print",ExpressionUUID->"cdd53762-50d7-4ab3-90f6-823d91e05902"]
+}, Open  ]],
+
+Cell[BoxData[
+ RowBox[{"{", 
+  RowBox[{"\<\"/Users/sebastianb/Library/Mathematica/SystemFiles/\
+LibraryResources/MacOSX-x86-64/MongoLink.dylib\"\>", ",", "None"}], 
+  "}"}]], "Output",ExpressionUUID->"fc7a5b07-894e-41a2-8a66-a9e6dd87cfe6"]
+}, Open  ]]
+}, Open  ]]
+},
+WindowSize->{1234, 800},
+WindowMargins->{{124, Automatic}, {Automatic, 185}},
+FrontEndVersion->"11.1 for Mac OS X x86 (32-bit, 64-bit Kernel) (April 8, \
+2017)",
+StyleDefinitions->"Default.nb"
+]
+
