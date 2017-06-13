@@ -6,14 +6,9 @@ Client level functions
 
 Package["MongoLink`"]
 
-(*** Package Exports ***)
-PackageExport["MongoClient"]
+PackageImport["GeneralUtilities`"]
 
-PackageExport["ClientConnect"]
-PackageExport["ClientDatabaseNames"]
-
-(******************************************************************************)
-
+(*----------------------------------------------------------------------------*)
 (****** Load Library Functions ******)
 
 clientHandleCreate = LibraryFunctionLoad[$MongoLinkLib, "WL_ClientHandleCreate", 
@@ -22,37 +17,66 @@ clientHandleCreate = LibraryFunctionLoad[$MongoLinkLib, "WL_ClientHandleCreate",
 		"UTF8String"				(* connection info *)
 	}, 
 	"Void"						
-]	
+]
 
 getDatabaseNames = LibraryFunctionLoad[$MongoLinkLib, "WL_GetDatabaseNames", 
 	Automatic, LinkObject					
-]	
+]
 
-(******************************************************************************)
+(*----------------------------------------------------------------------------*)
+PackageExport["MongoClientObject"]
+
+(* This is a utility function defined in GeneralUtilities, which makes a nicely
+formatted display box *)
+DefineCustomBoxes[MongoClientObject, 
+	e:MongoClientObject[id_] :> Block[{},
+	BoxForm`ArrangeSummaryBox[
+		MongoClientObject, e, None, 
+		{BoxForm`SummaryItem[{"ID: ", ManagedLibraryExpressionID[id]}]},
+		{},
+		StandardForm
+	]
+]];
+
+MongoClientObject[id_][database_String] := DatabaseConnect[id, database]
+
+(*----------------------------------------------------------------------------*)
+PackageExport["ClientConnect"]
+
+ClientConnect::usage = 
+"ClientConnect[] connects to the default URI, mongodb://localhost:27017, and \
+returns a ClientConnectionObject[...].
+ClientConnect[uri_] connects using the specified URI uri_.
+"
 
 ClientConnect[uri_String] := Module[
 	{clientHandle, result},
 	clientHandle = CreateManagedLibraryExpression["MongoClient", MongoClient];
-	result = clientHandleCreate[ManagedLibraryExpressionID@clientHandle, uri];
-	If[LibraryFunctionFailureQ@result, 
+	result = clientHandleCreate[ManagedLibraryExpressionID[clientHandle], uri];
+	If[LibraryFunctionFailureQ[result], 
 		MongoFailureMessage[ClientConnect]; 
-		Return@$Failed
+		Return[$Failed]
 	];
-	clientHandle
+	MongoClientObject[clientHandle]
 ]
 
 ClientConnect[] := ClientConnect["mongodb://localhost:27017"]
 
-(******************************************************************************)
+(*----------------------------------------------------------------------------*)
+PackageExport["ClientDatabaseNames"]
 
-ClientDatabaseNames[database_MongoClient] := Module[
+SetUsage[ClientDatabaseNames,
+"ClientDatabaseNames[MongoClientObject[$$]] returns a list of databases on the \
+connected server. 
+"
+]
+
+ClientDatabaseNames[MongoClientObject[database_MongoClient]] := Module[
 	{result},
-	result = getDatabaseNames[
-		ManagedLibraryExpressionID@database
-	];
-	If[LibraryFunctionFailureQ@result, 
+	result = getDatabaseNames[ManagedLibraryExpressionID[database]];
+	If[LibraryFunctionFailureQ[result], 
 		MongoFailureMessage[ClientDatabaseNames]; 
-		Return@$Failed
+		Return[$Failed]
 	];
 	result
 ]
