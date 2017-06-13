@@ -5,14 +5,13 @@ Get["CCompilerDriver`"];
 
 BuildMongoLink;
 
-
 Begin["`Private`"]
 
 $RootDir = DirectoryName@DirectoryName@$InputFileName;
 
 (*************************************************************************)
 SetUsage[BuildMongoLink,
-"BuildMongoLink[mongoDir$, mongoLib$] builds MongoLink library. mongoDir$ is \
+"BuildMongoLink[includeDir$, libdir$] builds MongoLink library. mongoDir$ is \
 the directory of the Mongo C driver source code (this is needed for include files). \
 mongoLib$ is the full path of the Mongo C Driver static library. Its assumed that the version \
 of the driver mongoDir$ is the same as the static library mongoLib$.
@@ -20,27 +19,20 @@ of the driver mongoDir$ is the same as the static library mongoLib$.
 ]
 
 Options[BuildMongoLink] = {
-	"Debug" -> False
+	"Debug" -> False,
+	"StaticLibrary" -> False
 };
 
-BuildMongoLink[mongoIncDir_, bsonIncDir_, mongoLibDir_List, opts:OptionsPattern[]] := Module[
+BuildMongoLink[includeDir_List, libDir_List, opts:OptionsPattern[]] := Catch @ Module[
 	{
-	 compileOpts, wlSrc, includeDir, lib, libResourceLib, libResourceDir
+	 compileOpts, wlSrc, lib, libResourceLib, libResourceDir,
+	 libNames, fullIncl
 	}
 	,
-	Print@$RootDir;
-	If[Not @ DirectoryQ[mongoIncDir],
-		Print[mongoIncDir <> " is not a directory."];
-		Return[$Failed];
-	];
-	If[Not @ DirectoryQ[bsonIncDir],
-		Print[bsonIncDir <> " is not a directory."];
-		Return[$Failed];
-	];
 	If[Not @ FileExistsQ[#],
 		Print[# <> " is not a valid file."];
-		Return[$Failed];
-	]& /@ mongoLibDir;
+		Throw[$Failed];
+	]& /@ Join[includeDir, libDir];
 
 	compileOpts = Switch[$OperatingSystem,
 		"Windows", 
@@ -52,24 +44,32 @@ BuildMongoLink[mongoIncDir_, bsonIncDir_, mongoLibDir_List, opts:OptionsPattern[
 		"Unix",
 			"-std=c++11"
 	];
-
+	
+	libNames = 	If[OptionValue["StaticLibrary"],
+		{"mongoc-static-1.0", "bson-static-1.0", "ssl", "crypto"},
+		{"mongoc-1.0", "bson-1.0"}
+	];
+	
 	(* WL Source *)
 	wlSrc = FileNames["*.cpp", {FileNameJoin[{$RootDir, "Libraries", "MongoLink"}]}];	
-	includeDir = {mongoIncDir, bsonIncDir, FileNameJoin[{$RootDir, "Libraries"}]};
-	
+	fullIncl = Join[
+		includeDir, 
+		{FileNameJoin[{$RootDir, "Libraries", "MongoLink"}]}
+	];
+
 	(* Build *)
 	lib = CreateLibrary[
 		wlSrc, "MongoLink",
-		"IncludeDirectories"-> includeDir,
-		"Libraries" -> {"mongoc-1.0", "bson-1.0"},
-		"LibraryDirectories" -> mongoLibDir,
-		"CompileOptions"->compileOpts,
+		"IncludeDirectories"-> fullIncl,
+		"Libraries" -> libNames,
+		"LibraryDirectories" -> libDir,
+		"CompileOptions" -> compileOpts,
 		"Language" -> "C++",
 		"Debug" -> OptionValue["Debug"],
 		"CleanIntermediate"-> True
 	];
 	
-	(* copy build to paclet *)
+	(* Postprocessing: copy build to paclet *)
 	libResourceDir = FileNameJoin[{$RootDir , "LibraryResources", $SystemID}];
 	libResourceLib = FileNameJoin[{libResourceDir, FileNameTake[lib]}];
 	
