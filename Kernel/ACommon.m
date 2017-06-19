@@ -6,23 +6,23 @@ Common: global variables plus common utility functions
 
 Package["MongoLink`"]
 
-(*** Package Exports ***)
-PackageExport["$MongoLinkLib"]
-PackageExport["LibraryFunctionFailureQ"]
-PackageExport["MongoFailureMessage"]
-PackageExport["MongoGetLastError"]
-
-PackageScope["ToMillisecondUnixTime"]
-PackageScope["FromMillisecondUnixTime"]
-
-(******************************************************************************)
-
 (****** Global Variables ******)
-$MongoLinkLib = FindLibrary["MongoLink"];
+$LibraryResources = FileNameJoin[{ParentDirectory[DirectoryName @ $InputFileName], "LibraryResources", $SystemID}];
 
+PackageScope["$MongoLinkLib"]
 
-(******************************************************************************)
-(****** Load Library Functions ******)
+$MongoLinkLib = Switch[$OperatingSystem,
+	"MacOSX", 
+		FileNameJoin[{$LibraryResources, "MongoLink.dylib"}],
+	"Windows",
+		FileNameJoin[{$LibraryResources, "MongoLink.dll"}],
+	"Unix",
+		FileNameJoin[{$LibraryResources, "MongoLink.so"}]
+]
+
+(*----------------------------------------------------------------------------*)
+
+PackageScope["MongoGetLastError"]
 
 MongoGetLastError = LibraryFunctionLoad[$MongoLinkLib, "WL_MongoGetLastError", 
 	{
@@ -30,41 +30,51 @@ MongoGetLastError = LibraryFunctionLoad[$MongoLinkLib, "WL_MongoGetLastError",
 	"UTF8String"						
 	]	
 
-(******************************************************************************)
-(****** Load Library Functions ******)
+(*----------------------------------------------------------------------------*)
+
+PackageScope["MongoEnableLogging"]
 
 MongoEnableLogging = LibraryFunctionLoad[$MongoLinkLib, "WL_EnableLogging", 
 	{
 	}, 
 	"Void"						
-	]	
-	
-(******************************************************************************)
+	]
+
+(*----------------------------------------------------------------------------*)
+PackageScope["LibraryFunctionFailureQ"]
 
 LibraryFunctionFailureQ[call_] :=
-	If[Head@call === LibraryFunctionError, True, False]
+	If[Head[call] === LibraryFunctionError, True, False]
 
-(******************************************************************************)
+(*----------------------------------------------------------------------------*)
+PackageScope["MongoFailureMessage"]
 
 MongoFailureMessage[parentSymbol_] := Module[
 	{lastError},
 	lastError = MongoGetLastError[];
-	lastError = If[TrueQ@LibraryFunctionFailureQ@lastError, "Unknown Error", lastError];
+	lastError = If[TrueQ @ LibraryFunctionFailureQ[lastError], 
+		"Unknown Error", 
+		lastError
+	];
 	parentSymbol::mongoError = lastError;
 	Message[parentSymbol::mongoError];
 ]
 
-(******************************************************************************)
-
+(*----------------------------------------------------------------------------*)
 (* Mongo Unix time is accurate to the millisecond *)
+
+PackageScope["FromMillisecondUnixTime"]
+
 FromMillisecondUnixTime[time_Integer] := Module[
 	{dateList}
 	,
-	dateList = DateList@FromUnixTime[time / 1000.];
+	dateList = DateList @ FromUnixTime[time / 1000.];
 	DateObject[dateList, DateFormat -> {"DateTime", ":", "Millisecond"}]
 ]
 
-ToMillisecondUnixTime[date_DateObject] := 1000 * (UnixTime@date + FractionalPart@date["Second"])
+PackageScope["ToMillisecondUnixTime"]
+
+ToMillisecondUnixTime[date_DateObject] := 1000 * (UnixTime[date] + FractionalPart[date["Second"]])
 
 
 (******************************************************************************)
