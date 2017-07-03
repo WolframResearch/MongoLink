@@ -2,28 +2,22 @@
 // Client-level functions
 ////////////////////////////////////////////////////////////////////////////////
 
-#include "wl_client.h"
-
-////////////////////////////////////////////////////////////////////////////////
-// Client destruction
-DLLEXPORT void manage_instance_mongoclient(WolframLibraryData libData,
-                                           mbool mode, mint id) {
-  // Only do destruction. Deal with creation later
-  if ((mode != 0) && (clientHandleMap.count(id) > 0)) {
-    // API: http://api.mongodb.org/c/current/mongoc_client_destroy.html
-    mongoc_client_destroy(clientHandleMap[id]);
-    clientHandleMap.erase(id);
-  }
-}
+#include "wl_common.h"
 
 ////////////////////////////////////////////////////////////////////////////////
 EXTERN_C DLLEXPORT int WL_ClientHandleCreate(WolframLibraryData libData,
                                              mint Argc, MArgument *Args,
                                              MArgument Res) {
   int client_handle_key = MArgument_getInteger(Args[0]);
-  char *connectionInfo = MArgument_getUTF8String(Args[1]);
+  int uri_handle_key = MArgument_getInteger(Args[1]);
 
-  auto client = mongoc_client_new(connectionInfo);
+  if (uriHandleMap.count(uri_handle_key) == 0) {
+    std::cout << "Error in WL_ClientHandleCreate: cannot find URI key."
+              << std::endl;
+    return LIBRARY_FUNCTION_ERROR;
+  }
+
+  auto client = mongoc_client_new_from_uri(uriHandleMap[uri_handle_key]);
 
   if (!client) {
     errorString = "Invalid URI. Cannot connect to client.";
@@ -31,8 +25,58 @@ EXTERN_C DLLEXPORT int WL_ClientHandleCreate(WolframLibraryData libData,
   }
   // If connection was successful, add to clientHandleMap
   clientHandleMap[client_handle_key] = client;
-  // Disown string
-  libData->UTF8String_disown(connectionInfo);
+  return LIBRARY_NO_ERROR;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+EXTERN_C DLLEXPORT int WL_ClientSetSSL(WolframLibraryData libData, mint Argc,
+                                       MArgument *Args, MArgument Res) {
+  int client_handle_key = MArgument_getInteger(Args[0]);
+  auto client = clientHandleMap[client_handle_key];
+
+  char *pem_file = MArgument_getUTF8String(Args[1]);
+  char *pem_pwd = MArgument_getUTF8String(Args[2]);
+  char *ca_file = MArgument_getUTF8String(Args[3]);
+  char *ca_dir = MArgument_getUTF8String(Args[4]);
+  char *crl_file = MArgument_getUTF8String(Args[5]);
+
+  mongoc_ssl_opt_t ssl_opts = {0};
+
+  // for now: don't allow weak_cert or invalid_hostname.
+  // See: http://mongoc.org/libmongoc/current/mongoc_ssl_opt_t.html
+  ssl_opts.weak_cert_validation = false;
+  ssl_opts.allow_invalid_hostname = false;
+
+  // if string length is not zero, set values.
+  if (strlen(pem_file) > 0)
+    ssl_opts.pem_file = pem_file;
+
+  if (strlen(pem_pwd) > 0)
+    ssl_opts.pem_pwd = pem_pwd;
+
+  if (strlen(ca_file) > 0)
+    ssl_opts.ca_file = ca_file;
+
+  if (strlen(ca_dir) > 0)
+    ssl_opts.ca_dir = ca_dir;
+
+  if (strlen(crl_file) > 0)
+    ssl_opts.crl_file = crl_file;
+
+  // Note: "As of 1.4.0, the mongoc_client_pool_set_ssl_opts() and
+  // mongoc_client_set_ssl_opts() will not only shallow copy the struct, but
+  // will also copy the const char*. It is therefore no longer needed to make
+  // sure the values remain valid after setting them."
+  // ~ http://mongoc.org/libmongoc/current/mongoc_ssl_opt_t.html
+  mongoc_client_set_ssl_opts(client, &ssl_opts);
+
+  // Free strings
+  libData->UTF8String_disown(pem_file);
+  libData->UTF8String_disown(pem_pwd);
+  libData->UTF8String_disown(ca_file);
+  libData->UTF8String_disown(ca_dir);
+  libData->UTF8String_disown(crl_file);
+
   return LIBRARY_NO_ERROR;
 }
 

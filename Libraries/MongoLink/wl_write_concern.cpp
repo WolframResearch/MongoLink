@@ -4,21 +4,7 @@
 // http://mongoc.org/libmongoc/current/mongoc_write_concern_t.html
 ////////////////////////////////////////////////////////////////////////////////
 
-#include "wl_write_concern.h"
-
-////////////////////////////////////////////////////////////////////////////////
-// Client destruction
-DLLEXPORT void manage_instance_mongowriteconcern(WolframLibraryData libData,
-                                                 mbool mode, mint id) {
-  // Destruction
-  if (mode != 0) {
-    mongoc_write_concern_destroy(writeConcernHandleMap[id]);
-    writeConcernHandleMap.erase(id);
-  }
-  // Creation
-  else
-    writeConcernHandleMap[id] = mongoc_write_concern_new();
-}
+#include "wl_common.h"
 
 ////////////////////////////////////////////////////////////////////////////////
 

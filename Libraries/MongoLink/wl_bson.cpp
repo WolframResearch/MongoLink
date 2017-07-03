@@ -3,18 +3,7 @@
 //	- For API guide, see: http://mongoc.org/libbson/current/index.html
 ////////////////////////////////////////////////////////////////////////////////
 
-#include "wl_bson.h"
-
-////////////////////////////////////////////////////////////////////////////////
-// Client destruction
-DLLEXPORT void manage_instance_mongobson(WolframLibraryData libData, mbool mode,
-                                         mint id) {
-  // Destruction
-  if ((mode != 0) && (bsonHandleMap.count(id) > 0)) {
-    bson_destroy(bsonHandleMap[id]);
-    bsonHandleMap.erase(id);
-  }
-}
+#include "wl_common.h"
 
 ////////////////////////////////////////////////////////////////////////////////
 

@@ -4,18 +4,7 @@
 // http://mongoc.org/libmongoc/current/mongoc_cursor_t.html
 ////////////////////////////////////////////////////////////////////////////////
 
-#include "wl_iterator.h"
-
-////////////////////////////////////////////////////////////////////////////////
-// Client destruction
-DLLEXPORT void manage_instance_mongoiterator(WolframLibraryData libData,
-                                             mbool mode, mint id) {
-  // Destruction
-  if ((mode != 0) && (iteratorHandleMap.count(id) > 0)) {
-    mongoc_cursor_destroy(iteratorHandleMap[id]);
-    iteratorHandleMap.erase(id);
-  }
-}
+#include "wl_common.h"
 
 ////////////////////////////////////////////////////////////////////////////////
 

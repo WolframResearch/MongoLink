@@ -5,6 +5,7 @@
 #include "wl_common.h"
 
 // Global handle Map Variables
+std::map<mint, mongoc_uri_t *> uriHandleMap;
 std::map<mint, mongoc_client_t *> clientHandleMap;
 std::map<mint, mongoc_database_t *> databaseHandleMap;
 std::map<mint, mongoc_collection_t *> collectionHandleMap;
@@ -58,14 +59,6 @@ void WLPrint(const char *fmtstr, ...) {
 void EnableLogging(WolframLibraryData libData) { debugLibData = libData; }
 
 ////////////////////////////////////////////////////////////////////////////////
-
-EXTERN_C DLLEXPORT int WL_MongoGetLastError(WolframLibraryData libData,
-                                            mint Argc, MArgument *Args,
-                                            MArgument Res) {
-  MArgument_setUTF8String(Res, const_cast<char *>(errorString.c_str()));
-  WLPrint("%d: %d", 5, 6);
-  return LIBRARY_NO_ERROR;
-}
 
 EXTERN_C DLLEXPORT int WL_EnableLogging(WolframLibraryData libData, mint Argc,
                                         MArgument *Args, MArgument Res) {

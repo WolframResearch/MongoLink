@@ -4,18 +4,7 @@
 // http://mongoc.org/libmongoc/current/mongoc_collection_t.html
 ////////////////////////////////////////////////////////////////////////////////
 
-#include "wl_collection.h"
-
-////////////////////////////////////////////////////////////////////////////////
-
-DLLEXPORT void manage_instance_mongocollection(WolframLibraryData libData,
-                                               mbool mode, mint id) {
-  // Only do destruction. Deal with creation later
-  if ((mode != 0) && (collectionHandleMap.count(id) > 0)) {
-    mongoc_collection_destroy(collectionHandleMap[id]);
-    collectionHandleMap.erase(id);
-  }
-}
+#include "wl_common.h"
 
 ////////////////////////////////////////////////////////////////////////////////
 // Collection handle creation

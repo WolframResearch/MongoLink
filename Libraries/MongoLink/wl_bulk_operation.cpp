@@ -2,17 +2,7 @@
 // Bulk-operation level functions
 ////////////////////////////////////////////////////////////////////////////////
 
-#include "wl_bulk_operation.h"
-
-////////////////////////////////////////////////////////////////////////////////
-DLLEXPORT void manage_instance_mongobulkoperation(WolframLibraryData libData,
-                                                  mbool mode, mint id) {
-  // Only do destruction. Deal with creation later
-  if ((mode != 0) && (bulkOperationHandleMap.count(id) > 0)) {
-    mongoc_bulk_operation_destroy(bulkOperationHandleMap[id]);
-    bulkOperationHandleMap.erase(id);
-  }
-}
+#include "wl_common.h"
 
 ////////////////////////////////////////////////////////////////////////////////
 EXTERN_C DLLEXPORT int WL_bulk_operation_insert(WolframLibraryData libData,

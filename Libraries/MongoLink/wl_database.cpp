@@ -4,17 +4,7 @@
 // http://mongoc.org/libmongoc/current/mongoc_database_t.html
 ////////////////////////////////////////////////////////////////////////////////
 
-#include "wl_database.h"
-
-////////////////////////////////////////////////////////////////////////////////
-DLLEXPORT void manage_instance_mongodatabase(WolframLibraryData libData,
-                                             mbool mode, mint id) {
-  // Only do destruction. Deal with creation later
-  if ((mode != 0) && (databaseHandleMap.count(id) > 0)) {
-    mongoc_database_destroy(databaseHandleMap[id]);
-    databaseHandleMap.erase(id);
-  }
-}
+#include "wl_common.h"
 
 ////////////////////////////////////////////////////////////////////////////////
 EXTERN_C DLLEXPORT int WL_DatabaseGetName(WolframLibraryData libData, mint Argc,
