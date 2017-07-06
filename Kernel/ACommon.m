@@ -3,7 +3,6 @@
 Common: global variables plus common utility functions
 
 *******************************************************************************)
-random change
 
 Package["MongoLink`"]
 
