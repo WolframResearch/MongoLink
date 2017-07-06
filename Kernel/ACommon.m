@@ -20,14 +20,26 @@ $MongoLinkLib = Switch[$OperatingSystem,
 		FileNameJoin[{$LibraryResources, "MongoLink.so"}]
 ]
 
+(***** Initialize Library *****)
+
+MongoInitialize = LibraryFunctionLoad[$MongoLinkLib, "WL_MongoInitialize", 
+	{
+	}, 
+	"Void"						
+	]	
+
+(* this needs to be called precisely once in a session *)
+If[!ValueQ[$MongoInitialized], $MongoInitialized = False];
+If[!TrueQ[$MongoInitialized], MongoInitialize[]; $MongoInitialized = True];
+
 (*----------------------------------------------------------------------------*)
 
 PackageScope["MongoGetLastError"]
 
 MongoGetLastError = LibraryFunctionLoad[$MongoLinkLib, "WL_MongoGetLastError", 
 	{
-	}, 
-	"UTF8String"						
+	},
+	"UTF8String"				
 	]	
 
 (*----------------------------------------------------------------------------*)
