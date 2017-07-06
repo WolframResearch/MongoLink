@@ -11,15 +11,6 @@ PackageImport["GeneralUtilities`"]
 (*----------------------------------------------------------------------------*)
 (****** Load Library Functions ******)
 
-uriCreateHostPort = LibraryFunctionLoad[$MongoLinkLib, "WL_URICreateHostPort", 
-	{
-		Integer,					(* uri handle *)
-		"UTF8String",				(* host *)
-		Integer						(* port *)
-	}, 
-	"Void"						
-]
-
 uriCreate = LibraryFunctionLoad[$MongoLinkLib, "WL_URICreate", 
 	{
 		Integer,					(* uri handle *)
@@ -27,48 +18,6 @@ uriCreate = LibraryFunctionLoad[$MongoLinkLib, "WL_URICreate",
 	}, 
 	"Void"						
 ]
-
-uriGetString = LibraryFunctionLoad[$MongoLinkLib, "WL_URI_Get_String", 
-	{
-		Integer					(* uri handle *)
-	}, 
-	"UTF8String"						
-]
-
-(* URI Setting functions *)
-
-uriSetUsername = LibraryFunctionLoad[$MongoLinkLib, "WL_uri_set_username", 
-	{
-		Integer,					(* uri handle *)
-		"UTF8String"		
-	}, 
-	"Void"						
-]
-
-uriSetPassword = LibraryFunctionLoad[$MongoLinkLib, "WL_uri_set_password", 
-	{
-		Integer,					(* uri handle *)
-		"UTF8String"		
-	}, 
-	"Void"						
-]
-
-uriSetAuthSource = LibraryFunctionLoad[$MongoLinkLib, "WL_uri_set_auth_source", 
-	{
-		Integer,					(* uri handle *)
-		"UTF8String"		
-	}, 
-	"Void"						
-]
-
-uriSetDatabase = LibraryFunctionLoad[$MongoLinkLib, "WL_uri_set_database", 
-	{
-		Integer,					(* uri handle *)
-		"UTF8String"		
-	}, 
-	"Void"						
-]
-
 
 (*----------------------------------------------------------------------------*)
 PackageExport["MongoURIObject"]
@@ -118,7 +67,7 @@ URIFromString[uri_String] := Module[
 
 (*----------------------------------------------------------------------------*)
 (* internal Function *)
-PackageExport["URIConstruct"]
+(*PackageExport["URIConstruct"]
 
 Options[URIConstruct] = {
 	"Username" -> None,
@@ -145,4 +94,4 @@ URIConstruct[host_String, port_Integer, opts:OptionsPattern[]] := Module[
 	If[database =!= None, uriSetDatabase[id, database]];	
 	
 	MongoURIObject[handle]
-]
+]*)
