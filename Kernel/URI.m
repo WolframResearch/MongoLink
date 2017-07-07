@@ -70,11 +70,11 @@ URIFromString[uri_String] := Module[
 (* internal Function *)
 PackageExport["URIConstruct"]
 
-SetUsage[URIConstruct,"
-URIConstruct[host$, port$] creates a URI string using string name host$ \
+SetUsage[MongoURIConstruct,"
+MongoURIConstruct[host$, port$] creates a URI string using string name host$ \
 and port port$.
-URIConstruct[host$] is equivalent to URIConstruct[host$, 27017].
-URIConstruct[] is equivalent to URIConstruct['localhost', 27017].
+MongoURIConstruct[host$] is equivalent to MongoURIConstruct[host$, 27017].
+MongoURIConstruct[] is equivalent to MongoURIConstruct['localhost', 27017].
 
 The following options are available:
 | 'Username' | None | The username to connect to MongoDB database. \
@@ -87,13 +87,13 @@ a dialog box opens that will prompt you for the password. |
 "
 ]
 
-Options[URIConstruct] = {
+Options[MongoURIConstruct] = {
 	"Username" -> None,
 	"Password" -> None,
 	"Database" -> None
 };
 
-URIConstruct[host_String, port_Integer, opts:OptionsPattern[]] := Module[
+MongoURIConstruct[host_String, port_Integer, opts:OptionsPattern[]] := Module[
 	{
 		username = OptionValue["Username"],
 		password = OptionValue["Password"],
@@ -123,11 +123,11 @@ URIConstruct[host_String, port_Integer, opts:OptionsPattern[]] := Module[
 	URIFromString[uri]
 ]
 
-URIConstruct[host_String, opts:OptionsPattern[]] := 
-	URIConstruct[host, 27017, opts]
+MongoURIConstruct[host_String, opts:OptionsPattern[]] := 
+	MongoURIConstruct[host, 27017, opts]
 
-URIConstruct[opts:OptionsPattern[]] := 
-	URIConstruct["localhost", 27017, opts]
+MongoURIConstruct[opts:OptionsPattern[]] := 
+	MongoURIConstruct["localhost", 27017, opts]
 
 (*----------------------------------------------------------------------------*)
 (* internal Function *)
