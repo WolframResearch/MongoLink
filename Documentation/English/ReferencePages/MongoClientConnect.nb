@@ -10,10 +10,10 @@
 NotebookFileLineBreakTest
 NotebookFileLineBreakTest
 NotebookDataPosition[       158,          7]
-NotebookDataLength[     26821,        741]
-NotebookOptionsPosition[     16937,        482]
-NotebookOutlinePosition[     18155,        518]
-CellTagsIndexPosition[     18076,        513]
+NotebookDataLength[     27007,        743]
+NotebookOptionsPosition[     17123,        484]
+NotebookOutlinePosition[     18341,        520]
+CellTagsIndexPosition[     18262,        515]
 WindowFrame->Normal*)
 
 (* Beginning of Notebook Content *)
@@ -193,7 +193,7 @@ Cell[TextData[{
  Cell[BoxData[
   RowBox[{"MongoClientConnect", "[", "]"}]], "InlineFormula",ExpressionUUID->
   "edb8cf5d-70f1-43c2-bca2-b93a9f4c50c3"],
- " \[LineSeparator]connects to a MongoDB database with hostname ",
+ " \[LineSeparator]Connects to a MongoDB database with hostname ",
  Cell[BoxData["\"\<\!\(\*
 StyleBox[\"localhost\", \"TI\"]\)\>\""], "InlineFormula",ExpressionUUID->
   "7fa79b1f-32dd-414a-96ea-4bfa7557c2b7"],
@@ -208,7 +208,7 @@ StyleBox[\"localhost\", \"TI\"]\)\>\""], "InlineFormula",ExpressionUUID->
   RowBox[{"MongoClientConnect", "[", 
    StyleBox["host", "TI"], "]"}]], "InlineFormula",ExpressionUUID->
   "121b9e22-b086-494e-ac3d-1bd514abeaec"],
- "\[LineSeparator]connects to a database with hostname ",
+ "\[LineSeparator]Connects to a database with hostname ",
  Cell[BoxData[
   StyleBox["host", "TI"]], "InlineFormula",ExpressionUUID->
   "6f58195b-5019-4a2e-90bd-7d01deaed40d"],
@@ -221,7 +221,7 @@ StyleBox[\"localhost\", \"TI\"]\)\>\""], "InlineFormula",ExpressionUUID->
     StyleBox["host", "TI"], ",", " ", 
     StyleBox["port", "TI"]}], "]"}]], "InlineFormula",ExpressionUUID->
   "4bf1b353-6931-4e2e-a5f1-bd60dda2c017"],
- "\[LineSeparator]connects to a database with hostname ",
+ "\[LineSeparator]Connects to a database with hostname ",
  Cell[BoxData[
   StyleBox["host", "TI"]], "InlineFormula",ExpressionUUID->
   "9f2b30a6-1183-41af-b874-4bf14f60ee7d"],
@@ -239,7 +239,7 @@ StyleBox[\"localhost\", \"TI\"]\)\>\""], "InlineFormula",ExpressionUUID->
      BaseStyle->"Link"], "[", 
     StyleBox["\[Ellipsis]", "TR"], "]"}], "]"}]], "InlineFormula",
   ExpressionUUID->"a2092a32-cc4b-4677-bc07-3b220a428dec"],
- "\[LineSeparator]connects to a client using the URI defined by the ",
+ "\[LineSeparator]Connects to a client using the URI defined by the ",
  Cell[BoxData[
   RowBox[{
    ButtonBox["MongoURIObject",
@@ -249,7 +249,8 @@ StyleBox[\"localhost\", \"TI\"]\)\>\""], "InlineFormula",ExpressionUUID->
  "."
 }], "Usage",
  CellChangeTimes->{{3.708447127043006*^9, 3.70844745477522*^9}, {
-  3.708447491200368*^9, 3.70844758560189*^9}},
+  3.708447491200368*^9, 3.70844758560189*^9}, {3.7084531980140657`*^9, 
+  3.708453207676488*^9}},
  CellID->982511436,ExpressionUUID->"22e6a30d-3c43-41df-96b5-5b037d73f39e"],
 
 Cell["The following credential options are available:", "Notes",
@@ -259,17 +260,18 @@ Cell["The following credential options are available:", "Notes",
 Cell[BoxData[GridBox[{
    {Cell["      ", "ModInfo",ExpressionUUID->
      "7ffb52b2-38b6-4f5e-bc33-d34a38b328c4"], "\"\<Username\>\"", "None", 
-    Cell["XXXX", "TableText",ExpressionUUID->
-     "1c2c40e7-3634-4e75-9248-086cc2a13ddc"]},
+    Cell["The username to connect to a MongoDB database.", "TableText",
+     ExpressionUUID->"1c2c40e7-3634-4e75-9248-086cc2a13ddc"]},
    {Cell["      ", "ModInfo",ExpressionUUID->
      "f747f8bb-47f2-49c8-b512-45e274a168de"], "\"\<Password\>\"", "None", 
-    Cell["XXXX", "TableText",ExpressionUUID->
-     "7853c4d6-a568-417e-844f-5035fa610ca0"]}
+    Cell["The password to connect to a MongoDB database.", "TableText",
+     ExpressionUUID->"7853c4d6-a568-417e-844f-5035fa610ca0"]}
   }]], "3ColumnTableMod",
  TaggingRules->{"Alphabetized" -> True},
  CellChangeTimes->{{3.708447648152384*^9, 3.7084477207755823`*^9}, {
   3.7084477657202387`*^9, 3.708447774664339*^9}, {3.708452223820318*^9, 
-  3.708452223820375*^9}, {3.708452517010147*^9, 3.7084525225431128`*^9}},
+  3.708452223820375*^9}, {3.708452517010147*^9, 3.7084525225431128`*^9}, {
+  3.708452903361754*^9, 3.7084529194965982`*^9}},
  CellID->1910375759,ExpressionUUID->"dbbdb656-3091-4054-a5a2-b976db38fcc6"],
 
 Cell["The following options for connecting via SSL are available:", "Notes",
@@ -482,7 +484,7 @@ Cell["XXXX", "FunctionEssay",
 },
 ScreenStyleEnvironment->"ExperimentalObject",
 WindowSize->{700, 770},
-WindowMargins->{{-716, Automatic}, {-122, Automatic}},
+WindowMargins->{{-1570, Automatic}, {-34, Automatic}},
 TaggingRules->{
  "DocuToolsSettingsInternal" -> {
    "$PacletVersion" -> "0.9.1871", "$MVersion" -> "11", "$FlaggedVersion" -> 
@@ -503,7 +505,7 @@ StyleDefinitions->FrontEnd`FileName[{"Wolfram"}, "FunctionPageStyles.nb",
 (*CellTagsOutline
 CellTagsIndex->{
  "ExtendedExamples"->{
-  Cell[13261, 374, 155, 2, 
+  Cell[13447, 376, 155, 2, 
   56, "ExtendedExamplesSection", "ExpressionUUID" -> "a43d132e-3ba4-46cf-bfde-
    fa25a9024554",
    CellTags->"ExtendedExamples",
@@ -512,7 +514,7 @@ CellTagsIndex->{
 *)
 (*CellTagsIndex
 CellTagsIndex->{
- {"ExtendedExamples", 17870, 504}
+ {"ExtendedExamples", 18056, 506}
  }
 *)
 (*NotebookFileOutline
@@ -619,127 +621,127 @@ Cell[CellGroupData[{
 Cell[5871, 186, 182, 2, 63, "ObjectName", "ExpressionUUID" -> \
 "4830cce5-6ef0-4f69-87fe-5c847c8f54cc",
  CellID->1224892054],
-Cell[6056, 190, 2457, 62, 192, "Usage", "ExpressionUUID" -> \
+Cell[6056, 190, 2508, 63, 192, "Usage", "ExpressionUUID" -> \
 "22e6a30d-3c43-41df-96b5-5b037d73f39e",
  CellID->982511436],
-Cell[8516, 254, 205, 2, 25, "Notes", "ExpressionUUID" -> \
+Cell[8567, 255, 205, 2, 25, "Notes", "ExpressionUUID" -> \
 "94936c0d-543c-4929-b8fa-016bf41553c4",
  CellID->366656557],
-Cell[8724, 258, 808, 14, 41, "3ColumnTableMod", "ExpressionUUID" -> \
+Cell[8775, 259, 943, 15, 77, "3ColumnTableMod", "ExpressionUUID" -> \
 "dbbdb656-3091-4054-a5a2-b976db38fcc6",
  CellID->1910375759],
-Cell[9535, 274, 217, 2, 25, "Notes", "ExpressionUUID" -> \
+Cell[9721, 276, 217, 2, 25, "Notes", "ExpressionUUID" -> \
 "79411041-23e9-44b7-b433-a51f5d832b8d",
  CellID->117007949],
-Cell[9755, 278, 1672, 32, 133, "3ColumnTableMod", "ExpressionUUID" -> \
+Cell[9941, 280, 1672, 32, 133, "3ColumnTableMod", "ExpressionUUID" -> \
 "d69aaf2f-b065-4f45-b423-e62be4db755f",
  CellID->1248571547]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[11464, 315, 112, 1, 44, "TutorialsSection", "ExpressionUUID" -> \
+Cell[11650, 317, 112, 1, 44, "TutorialsSection", "ExpressionUUID" -> \
 "3ac71aa1-fc0a-4902-9817-841d97233558",
  CellID->250839057],
-Cell[11579, 318, 100, 1, 16, "Tutorials", "ExpressionUUID" -> \
+Cell[11765, 320, 100, 1, 16, "Tutorials", "ExpressionUUID" -> \
 "77283c18-b707-4803-b76b-479a5e314f0b",
  CellID->341631938]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[11716, 324, 138, 1, 31, "RelatedDemonstrationsSection", "ExpressionUUID" \
+Cell[11902, 326, 138, 1, 31, "RelatedDemonstrationsSection", "ExpressionUUID" \
 -> "d1414b82-34f6-442e-8812-377759228dcb",
  CellID->1268215905],
-Cell[11857, 327, 113, 1, 16, "RelatedDemonstrations", "ExpressionUUID" -> \
+Cell[12043, 329, 113, 1, 16, "RelatedDemonstrations", "ExpressionUUID" -> \
 "7c39b682-5fe1-46d3-9910-83ad09766f1c",
  CellID->1129518860]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[12007, 333, 120, 1, 31, "RelatedLinksSection", "ExpressionUUID" -> \
+Cell[12193, 335, 120, 1, 31, "RelatedLinksSection", "ExpressionUUID" -> \
 "993ff373-2bc1-4fc7-a200-1f2ac7f43009",
  CellID->1584193535],
-Cell[12130, 336, 104, 1, 16, "RelatedLinks", "ExpressionUUID" -> \
+Cell[12316, 338, 104, 1, 16, "RelatedLinks", "ExpressionUUID" -> \
 "35f39988-f431-4030-a9cd-c0245057ee09",
  CellID->1038487239]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[12271, 342, 110, 1, 31, "SeeAlsoSection", "ExpressionUUID" -> \
+Cell[12457, 344, 110, 1, 31, "SeeAlsoSection", "ExpressionUUID" -> \
 "3d2d6392-3ffe-4147-b1f4-00e4a904208e",
  CellID->1255426704],
-Cell[12384, 345, 164, 2, 16, "SeeAlso", "ExpressionUUID" -> \
+Cell[12570, 347, 164, 2, 16, "SeeAlso", "ExpressionUUID" -> \
 "8c980bab-0320-4917-ab5e-49dce3577a51",
  CellID->929782353]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[12585, 352, 112, 1, 31, "MoreAboutSection", "ExpressionUUID" -> \
+Cell[12771, 354, 112, 1, 31, "MoreAboutSection", "ExpressionUUID" -> \
 "315ccb4e-a5e6-4597-b1c9-f92a49007362",
  CellID->38303248],
-Cell[12700, 355, 110, 1, 16, "MoreAbout", "ExpressionUUID" -> \
+Cell[12886, 357, 110, 1, 16, "MoreAbout", "ExpressionUUID" -> \
 "bb5b1d0e-e697-4f67-b3ad-546f609d2ead",
  CellID->1665078683]
 }, Open  ]],
-Cell[12825, 359, 411, 11, 70, "PrimaryExamplesSection", "ExpressionUUID" -> \
+Cell[13011, 361, 411, 11, 70, "PrimaryExamplesSection", "ExpressionUUID" -> \
 "8f1d570a-8e93-4ed6-a9cb-88203fc83e7e",
  CellID->880084151],
 Cell[CellGroupData[{
-Cell[13261, 374, 155, 2, 56, "ExtendedExamplesSection", "ExpressionUUID" -> \
+Cell[13447, 376, 155, 2, 56, "ExtendedExamplesSection", "ExpressionUUID" -> \
 "a43d132e-3ba4-46cf-bfde-fa25a9024554",
  CellTags->"ExtendedExamples",
  CellID->1854448968],
-Cell[13419, 378, 242, 5, 33, "ExampleSection", "ExpressionUUID" -> \
+Cell[13605, 380, 242, 5, 33, "ExampleSection", "ExpressionUUID" -> \
 "cf7cc153-735d-4cd7-a97f-6bf129ded253",
  CellID->1293636265],
-Cell[13664, 385, 265, 5, 21, "ExampleSection", "ExpressionUUID" -> \
+Cell[13850, 387, 265, 5, 21, "ExampleSection", "ExpressionUUID" -> \
 "88b64c85-a129-4b9a-b06f-7efae9e3ba73",
  CellID->1020263627],
 Cell[CellGroupData[{
-Cell[13954, 394, 244, 5, 21, "ExampleSection", "ExpressionUUID" -> \
+Cell[14140, 396, 244, 5, 21, "ExampleSection", "ExpressionUUID" -> \
 "6004394c-ea12-4247-8ca1-004ac91c22ef",
  CellID->2061341341],
-Cell[14201, 401, 247, 5, 70, "ExampleSubsection", "ExpressionUUID" -> \
+Cell[14387, 403, 247, 5, 70, "ExampleSubsection", "ExpressionUUID" -> \
 "49984477-c6c7-4974-8157-c70bf379233b",
  CellID->1757724783],
-Cell[14451, 408, 247, 5, 70, "ExampleSubsection", "ExpressionUUID" -> \
+Cell[14637, 410, 247, 5, 70, "ExampleSubsection", "ExpressionUUID" -> \
 "713f4b1c-1046-4a4d-a727-4f240daff866",
  CellID->1295379749]
 }, Closed]],
-Cell[14713, 416, 248, 5, 21, "ExampleSection", "ExpressionUUID" -> \
+Cell[14899, 418, 248, 5, 21, "ExampleSection", "ExpressionUUID" -> \
 "a4d2a3ac-727e-4b58-ae9a-a38d0522a37a",
  CellID->258228157],
-Cell[14964, 423, 259, 5, 21, "ExampleSection", "ExpressionUUID" -> \
+Cell[15150, 425, 259, 5, 21, "ExampleSection", "ExpressionUUID" -> \
 "043a61cc-082b-4526-9f85-55f17a82dbbf",
  CellID->2123667759],
-Cell[15226, 430, 252, 5, 21, "ExampleSection", "ExpressionUUID" -> \
+Cell[15412, 432, 252, 5, 21, "ExampleSection", "ExpressionUUID" -> \
 "d50bb8d5-dd45-42ec-919f-2528c854d614",
  CellID->1305812373],
-Cell[15481, 437, 257, 5, 21, "ExampleSection", "ExpressionUUID" -> \
+Cell[15667, 439, 257, 5, 21, "ExampleSection", "ExpressionUUID" -> \
 "7e15f4be-20d9-495a-a27a-2cf4f6a01931",
  CellID->1653164318],
-Cell[15741, 444, 249, 5, 21, "ExampleSection", "ExpressionUUID" -> \
+Cell[15927, 446, 249, 5, 21, "ExampleSection", "ExpressionUUID" -> \
 "4310886b-f415-4759-931e-34acd9cabc3f",
  CellID->589267740]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[16027, 454, 128, 1, 79, "DesignDiscussionSection", "ExpressionUUID" -> \
+Cell[16213, 456, 128, 1, 79, "DesignDiscussionSection", "ExpressionUUID" -> \
 "d467e18e-bd89-4d84-b77d-12ed7a956390",
  CellID->1775809863],
-Cell[16158, 457, 107, 1, 16, "DesignDiscussion", "ExpressionUUID" -> \
+Cell[16344, 459, 107, 1, 16, "DesignDiscussion", "ExpressionUUID" -> \
 "5f7ff201-ec1e-4304-b62a-0a3ff8ba4a5d",
  CellID->308641435]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[16302, 463, 128, 1, 31, "ApplicationNotesSection", "ExpressionUUID" -> \
+Cell[16488, 465, 128, 1, 31, "ApplicationNotesSection", "ExpressionUUID" -> \
 "7f8731be-66d8-4a59-bcf3-fdb8125bd210",
  CellID->1163590540],
-Cell[16433, 466, 108, 1, 16, "ApplicationNotes", "ExpressionUUID" -> \
+Cell[16619, 468, 108, 1, 16, "ApplicationNotes", "ExpressionUUID" -> \
 "b450c7dd-3f53-4d1f-853d-aef5d57a0bed",
  CellID->1480116198]
 }, Open  ]],
-Cell[16556, 470, 113, 1, 31, "TestCasesSection", "ExpressionUUID" -> \
+Cell[16742, 472, 113, 1, 31, "TestCasesSection", "ExpressionUUID" -> \
 "3d83297e-2ab7-4912-941e-ba90976ff9c5",
  CellID->725748110],
 Cell[CellGroupData[{
-Cell[16694, 475, 120, 1, 70, "FunctionEssaySection", "ExpressionUUID" -> \
+Cell[16880, 477, 120, 1, 70, "FunctionEssaySection", "ExpressionUUID" -> \
 "90aaab02-6915-4c7d-bb51-9b97d51ca6f7",
  CellID->37427227],
-Cell[16817, 478, 104, 1, 70, "FunctionEssay", "ExpressionUUID" -> \
+Cell[17003, 480, 104, 1, 70, "FunctionEssay", "ExpressionUUID" -> \
 "87212f23-8e4e-41e6-9a9b-8916a6b3e852",
  CellID->356990964]
 }, Open  ]]
