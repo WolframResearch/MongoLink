@@ -106,10 +106,16 @@ URIConstruct[host_String, port_Integer, opts:OptionsPattern[]] := Module[
 			DatabaseLink`UI`Private`PasswordDialog[{username, ""}]
 	];
 	
-	If[username =!= None && password =!= None, cred=StringJoin[URLEncode[username],":",URLEncode[password],"@"], cred=""];
-	If[database =!= None, database=StringJoin["/", URLEncode[database]], database=""];	
+	If[(username =!= None) && (password =!= None), 
+		cred = StringJoin[URLEncode[username], ":", 
+		URLEncode[password], "@"], cred = ""
+		];
+	If[database =!= None, 
+		database = StringJoin["/", URLEncode[database]], 
+		database = ""
+		];	
 
-	uri = StringJoin["mongodb://", cred, host,":", ToString[port], database];
+	uri = StringJoin["mongodb://", cred, host, ":", ToString[port], database];
 	If[LibraryFunctionFailureQ[res], 
 		Return[$Failed]
 	];	
