@@ -45,22 +45,22 @@ DefineCustomBoxes[MongoURIObject,
 ]];
 
 (*----------------------------------------------------------------------------*)
-PackageExport["URIFromString"]
+PackageExport["MongoURIFromString"]
 
 (*SetUsage[URIFromString,
 "URIFromString[uri$] creates a MongoURIObject[$$] from a uri$ string. 
 "
 ]*)
-URIFromString::inv = "Invalid URI."
+MongoURIFromString::inv = "Invalid URI."
 
-URIFromString[uri_String] := Module[
+MongoURIFromString[uri_String] := Module[
 	{
 		handle = CreateManagedLibraryExpression["MongoURI", MongoURI],
 		res
 	},
 	res = uriCreate[ManagedLibraryExpressionID[handle], uri];
 	If[LibraryFunctionFailureQ[res], 
-		Message[URIFromString::inv];
+		Message[MongoURIFromString::inv];
 		Return[$Failed]
 	];
 	MongoURIObject[handle, uri]
@@ -68,7 +68,7 @@ URIFromString[uri_String] := Module[
 
 (*----------------------------------------------------------------------------*)
 (* internal Function *)
-PackageExport["URIConstruct"]
+PackageExport["MongoURIConstruct"]
 
 SetUsage[MongoURIConstruct,"
 MongoURIConstruct[host$, port$] creates a URI string using string name host$ \
@@ -107,9 +107,9 @@ MongoURIConstruct[host_String, port_Integer, opts:OptionsPattern[]] := Module[
 	];
 	
 	If[(username =!= None) && (password =!= None), 
-		cred = StringJoin[URLEncode[username], ":", 
-		URLEncode[password], "@"], cred = ""
-		];
+		cred = StringJoin[URLEncode[username], ":", URLEncode[password], "@"], 
+	cred = ""
+	];
 	If[database =!= None, 
 		database = StringJoin["/", URLEncode[database]], 
 		database = ""
@@ -118,9 +118,9 @@ MongoURIConstruct[host_String, port_Integer, opts:OptionsPattern[]] := Module[
 	uri = StringJoin["mongodb://", cred, host, ":", ToString[port], database];
 	If[LibraryFunctionFailureQ[res], 
 		Return[$Failed]
-	];	
+	];
 	
-	URIFromString[uri]
+	MongoURIFromString[uri]
 ]
 
 MongoURIConstruct[host_String, opts:OptionsPattern[]] := 
@@ -128,34 +128,3 @@ MongoURIConstruct[host_String, opts:OptionsPattern[]] :=
 
 MongoURIConstruct[opts:OptionsPattern[]] := 
 	MongoURIConstruct["localhost", 27017, opts]
-
-(*----------------------------------------------------------------------------*)
-(* internal Function *)
-(*PackageExport["URIConstruct"]
-
-Options[URIConstruct] = {
-	"Username" -> None,
-	"Password" -> None,
-	"Database" -> None
-};
-
-URIConstruct[host_String, port_Integer, opts:OptionsPattern[]] := Module[
-	{
-		username = OptionValue["Username"],
-		password = OptionValue["Password"],
-		database = OptionValue["Database"],
-		handle = CreateManagedLibraryExpression["MongoURI", MongoURI],
-		id, res
-	},
-	id = ManagedLibraryExpressionID[handle];
-	res = uriCreateHostPort[ManagedLibraryExpressionID[handle], host, port];
-	If[LibraryFunctionFailureQ[res], 
-		Return[$Failed]
-	];
-	
-	If[username =!= None, uriSetUsername[id, username]];
-	If[password =!= None, uriSetPassword[id, password]];
-	If[database =!= None, uriSetDatabase[id, database]];	
-	
-	MongoURIObject[handle]
-]*)
