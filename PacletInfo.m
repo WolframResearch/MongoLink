@@ -1,13 +1,14 @@
 Paclet[
 	Name -> "MongoLink",
-	Version -> "10.4",
-	MathematicaVersion -> "10.4+",
+	Version -> "12",
+	MathematicaVersion -> "11.1+",
 	Description -> "Link to MongoDB C driver.",
 	Loading -> Automatic,
-	Creator -> "Sebastian Bodenstein <sebastianb@wolfram.com>",
+	Creator -> 
+		"Meghan Rieu-Werden <meghanr@wolfram.com>, Sebastian Bodenstein <sebastianb@wolfram.com>",
 	Extensions -> {
-		{"Kernel", Context -> {"MongoLink`"}, Symbols -> {
-		}},
+		{"Kernel", Context -> "MongoLink`"}, 
+		{"Documentation", Language -> "English"},
 		{"LibraryLink"}
 	}
 ]

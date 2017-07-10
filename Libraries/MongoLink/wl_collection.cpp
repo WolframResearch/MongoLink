@@ -11,8 +11,7 @@
 EXTERN_C DLLEXPORT int WL_CollectionGetName(WolframLibraryData libData,
                                             mint Argc, MArgument *Args,
                                             MArgument Res) {
-
-  auto collection = collectionHandleMap[MArgument_getInteger(Args[0])];
+  COLLECTION_GET(collection, 0)
   // Set global returnString to name
   // Api: http://api.mongodb.org/c/current/mongoc_collection_get_name.html
   returnString = mongoc_collection_get_name(collection);
@@ -26,8 +25,9 @@ EXTERN_C DLLEXPORT int WL_CollectionGetName(WolframLibraryData libData,
 EXTERN_C DLLEXPORT int WL_MongoCollectionCount(WolframLibraryData libData,
                                                mint Argc, MArgument *Args,
                                                MArgument Res) {
-  auto collection = collectionHandleMap[MArgument_getInteger(Args[0])];
-  auto query = bsonHandleMap[MArgument_getInteger(Args[1])];
+  COLLECTION_GET(collection, 0)
+  BSON_GET(query, 1)
+
   bson_error_t error;
   mint count = mongoc_collection_count(collection, MONGOC_QUERY_NONE, query, 0,
                                        0, NULL, &error);
@@ -45,16 +45,13 @@ EXTERN_C DLLEXPORT int WL_MongoCollectionCount(WolframLibraryData libData,
 EXTERN_C DLLEXPORT int WL_MongoCollectionFind(WolframLibraryData libData,
                                               mint Argc, MArgument *Args,
                                               MArgument Res) {
-  auto collection = collectionHandleMap[MArgument_getInteger(Args[0])];
-  // ignore mongoc_query_flags_t for now
-  uint32_t skip = MArgument_getInteger(Args[1]);
-  uint32_t limit = MArgument_getInteger(Args[2]);
-  uint32_t batch_size = MArgument_getInteger(Args[3]);
-  auto query = bsonHandleMap[MArgument_getInteger(Args[4])];
-  auto fields = bsonHandleMap[MArgument_getInteger(Args[5])];
-  mint outputIteratorHandleKey = MArgument_getInteger(Args[6]);
-  auto cursor = mongoc_collection_find(collection, MONGOC_QUERY_NONE, skip,
-                                       limit, batch_size, query, fields, NULL);
+  COLLECTION_GET(collection, 0)
+  BSON_GET(filter, 1)
+  BSON_GET(opts, 2)
+  mint outputIteratorHandleKey = MArgument_getInteger(Args[3]);
+
+  auto cursor =
+      mongoc_collection_find_with_opts(collection, filter, opts, NULL);
   // Cursor can return Null if invalid parameters. Check
   if (!cursor) {
     errorString = "Unable to do perform query.";
@@ -70,9 +67,9 @@ EXTERN_C DLLEXPORT int
 WL_MongoCollectionCreateBulkOp(WolframLibraryData libData, mint Argc,
                                MArgument *Args, MArgument Res) {
   // Inputs
-  auto collection = collectionHandleMap[MArgument_getInteger(Args[0])];
+  COLLECTION_GET(collection, 0)
   bool ordered = MArgument_getInteger(Args[1]);
-  auto writeconcern = writeConcernHandleMap[MArgument_getInteger(Args[2])];
+  WRITE_CONCERN_GET(writeconcern, 2)
   mint output_bulk_key = MArgument_getInteger(Args[3]);
   bulkOperationHandleMap[output_bulk_key] =
       mongoc_collection_create_bulk_operation(collection, ordered, NULL);
@@ -85,12 +82,13 @@ EXTERN_C DLLEXPORT int WL_MongoCollectionUpdate(WolframLibraryData libData,
                                                 mint Argc, MArgument *Args,
                                                 MArgument Res) {
   // Inputs
-  auto collection = collectionHandleMap[MArgument_getInteger(Args[0])];
-  auto selector = bsonHandleMap[MArgument_getInteger(Args[1])];
-  auto update = bsonHandleMap[MArgument_getInteger(Args[2])];
-  auto write_concern = writeConcernHandleMap[MArgument_getInteger(Args[3])];
+  COLLECTION_GET(collection, 0)
+  BSON_GET(selector, 1)
+  BSON_GET(update, 2)
+  WRITE_CONCERN_GET(write_concern, 3)
   bool upsert = MArgument_getInteger(Args[4]);
   bool multi = MArgument_getInteger(Args[5]);
+
   // Deal with update flags
   mongoc_update_flags_t updateFlag = MONGOC_UPDATE_NONE;
   if (upsert)

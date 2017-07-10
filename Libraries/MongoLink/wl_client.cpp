@@ -9,16 +9,9 @@ EXTERN_C DLLEXPORT int WL_ClientHandleCreate(WolframLibraryData libData,
                                              mint Argc, MArgument *Args,
                                              MArgument Res) {
   int client_handle_key = MArgument_getInteger(Args[0]);
-  int uri_handle_key = MArgument_getInteger(Args[1]);
+  URI_GET(uri, 1)
 
-  if (uriHandleMap.count(uri_handle_key) == 0) {
-    std::cout << "Error in WL_ClientHandleCreate: cannot find URI key."
-              << std::endl;
-    return LIBRARY_FUNCTION_ERROR;
-  }
-
-  auto client = mongoc_client_new_from_uri(uriHandleMap[uri_handle_key]);
-
+  auto client = mongoc_client_new_from_uri(uri);
   if (!client) {
     errorString = "Invalid URI. Cannot connect to client.";
     return LIBRARY_FUNCTION_ERROR;
@@ -31,21 +24,19 @@ EXTERN_C DLLEXPORT int WL_ClientHandleCreate(WolframLibraryData libData,
 ////////////////////////////////////////////////////////////////////////////////
 EXTERN_C DLLEXPORT int WL_ClientSetSSL(WolframLibraryData libData, mint Argc,
                                        MArgument *Args, MArgument Res) {
-  int client_handle_key = MArgument_getInteger(Args[0]);
-  auto client = clientHandleMap[client_handle_key];
-
+  CLIENT_GET(client, 0)
   char *pem_file = MArgument_getUTF8String(Args[1]);
   char *pem_pwd = MArgument_getUTF8String(Args[2]);
   char *ca_file = MArgument_getUTF8String(Args[3]);
   char *ca_dir = MArgument_getUTF8String(Args[4]);
   char *crl_file = MArgument_getUTF8String(Args[5]);
+  bool weak_cert = static_cast<bool>(MArgument_getInteger(Args[6]));
+  bool inv_hostname = static_cast<bool>(MArgument_getInteger(Args[7]));
 
   mongoc_ssl_opt_t ssl_opts = {0};
 
-  // for now: don't allow weak_cert or invalid_hostname.
-  // See: http://mongoc.org/libmongoc/current/mongoc_ssl_opt_t.html
-  ssl_opts.weak_cert_validation = false;
-  ssl_opts.allow_invalid_hostname = false;
+  ssl_opts.weak_cert_validation = weak_cert;
+  ssl_opts.allow_invalid_hostname = inv_hostname;
 
   // if string length is not zero, set values.
   if (strlen(pem_file) > 0)
@@ -127,7 +118,7 @@ EXTERN_C DLLEXPORT int WL_GetDatabaseNames(WolframLibraryData libData,
 EXTERN_C DLLEXPORT int WL_ClientGetCollection(WolframLibraryData libData,
                                               mint Argc, MArgument *Args,
                                               MArgument Res) {
-  int client_handle_key = MArgument_getInteger(Args[0]);
+  CLIENT_GET(client, 0)
   int collection_handle_key = MArgument_getInteger(Args[1]);
   char *databaseName = MArgument_getUTF8String(Args[2]);
   char *collectionName = MArgument_getUTF8String(Args[3]);
@@ -135,8 +126,8 @@ EXTERN_C DLLEXPORT int WL_ClientGetCollection(WolframLibraryData libData,
   // Create collection handle, append to collectionHandleMap if successfully
   // created.
   // API: http://api.mongodb.org/c/current/mongoc_client_get_collection.html
-  auto collection = mongoc_client_get_collection(
-      clientHandleMap[client_handle_key], databaseName, collectionName);
+  auto collection =
+      mongoc_client_get_collection(client, databaseName, collectionName);
 
   if (!collection) {
     errorString = "Cannot connect to collection.";

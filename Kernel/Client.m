@@ -15,7 +15,21 @@ PackageImport["DatabaseLink`"]
 clientHandleCreate = LibraryFunctionLoad[$MongoLinkLib, "WL_ClientHandleCreate", 
 	{
 		Integer,					(* client handle *)
-		"UTF8String"				(* connection info *)
+		Integer						(* uri handle *)
+	},
+	"Void"						
+]
+
+clientSetSSL = LibraryFunctionLoad[$MongoLinkLib, "WL_ClientSetSSL", 
+	{
+		Integer,						(* handle key *)
+		"UTF8String",					(* pem_file *)
+		"UTF8String",					(* pem_pwd *)
+		"UTF8String",					(* ca_file *)
+		"UTF8String",					(* ca_dir *)
+		"UTF8String",					(* crl_file *)
+		Integer,						(* weak cert validation *)
+		Integer							(* inv hostname *)
 	}, 
 	"Void"						
 ]
@@ -39,125 +53,98 @@ DefineCustomBoxes[MongoClientObject,
 	]
 ]];
 
-MongoClientObject[id_][database_String] := DatabaseConnect[id, database]
+MongoClientObject[id_][database_String] := MongoGetDatabase[MongoClientObject[id], database]
 
 (*----------------------------------------------------------------------------*)
-PackageExport["ClientConnect"]
+PackageExport["MongoClientConnect"]
 
-SetUsage[ClientConnect,
-"
-ClientConnect[MongoURIObject[$$]] connects to a client using the URI defined \
-by the MongoURIObject[$$].
-ClientConnect[host$, port$] connects to the host with string name host$ \
-via the port port$.
-ClientConnect[host$] is equivalent to ClientConnect[host$, 27017].
-ClientConnect[] is equivalent to ClientConnect['localhost', 27017].
+MongoClientConnect::winpem = "Support for encrypted PEM files requiring \
+a PemFilePassword is not available on Windows."
 
-The following SSL configuration options are available:
-|'SSL' | False | If True, connect to the server using SSL. |
-|'SSLCertificateFile' | None | The certificate file used to identify the local \
-connection against mongod. Implies 'SSL' is True.  |
-|'SSLKeyFile' | None | If True, connect to the server using SSL |
-|'SSLCertificateRequire' | True | Specifies whether a certificate is required \
-from the other side of the connection. If True, implies 'SSL' is True. |
-|'SSLPEMFilePassword' | None | The password or passphrase for decrypting the \
-private key in 'SSLCertificateFile' or 'SSLKeyFile'. Only necessary if the private key is encrypted. |
-|'SSLCertificateRevocationList' | None | The path to a PEM or DER formatted certificate revocation list. |
-The following options are only available when a URI is not specified:
-| 'Username' | None | The username to connect with. |
-| 'Password' | None | The password to connect with. If you enter '$Prompt' as \
-a password, a dialog box opens that will prompt you for the password. \
-This helps keep the password more secure. |
-Note: ClientConnect will not block, it will return immediately. Thus there is \
-no guarantee of there being no server error if ClientConnect returns a ClientObject.
-"
-]
 
-ClientConnect::pemfile = "PEM File not found.";
-ClientConnect::cafile = "CA File not found.";
-
-Options[ClientConnect] = {
+Options[MongoClientConnect] = {
 	"Username" -> None,
 	"Password" -> None,
-	"SSL" -> False,
+	"SSL" -> Automatic,
 	"PEMFile" -> None,
 	"PEMFilePassword" -> None,
 	"CAFile" -> None,
 	"CertificateRevocationList" -> None,	
-	VerifySecurityCertificates -> True
+	VerifySecurityCertificates -> True,
+	"AllowInvalidHostname" -> False
 };
 
-ClientConnect[host_String, port_Integer, opts:OptionsPattern[]] := Module[
+(* URI Client connect *)
+MongoClientConnect[MongoURIObject[uri_, _], opts:OptionsPattern[]] := Catch @ Module[
 	{
-		clientHandle, result,
+		ssl = OptionValue["SSL"],
+		pemFile = fileConform[MongoURIObject, OptionValue["PEMFile"]],
+		pemFilePassword = OptionValue["PEMFilePassword"],
+		caFile = fileConform[MongoURIObject, OptionValue["CAFile"]],
+		crList = fileConform[MongoURIObject, OptionValue["CertificateRevocationList"]],
+		verifyCert = OptionValue[VerifySecurityCertificates],
+		invHost = OptionValue["AllowInvalidHostname"],
+		clientHandle = CreateManagedLibraryExpression["MongoClient", MongoClient],
+		clientID, result
+	},
+	clientID = ManagedLibraryExpressionID[clientHandle];
+	result = safeLibraryInvoke[clientHandleCreate, clientID, ManagedLibraryExpressionID[uri]];
+	
+	(***** SSL Opts ******)
+	(* See http://mongoc.org/libmongoc/current/mongoc_ssl_opt_t.html for 
+		this issue *)
+	If[($OperatingSystem === "Windows") && (pemFilePassword =!= None),
+		Message[MongoClientConnect::winpem];
+		Return[$Failed]
+	];
+	If[(ssl =!= False) && ((pemFile =!= "") || (caFile =!= "") || (crList =!= "")),
+		 safeLibraryInvoke[clientSetSSL, 
+		 	clientID,
+		 	pemFile,
+		 	Replace[pemFilePassword, None -> ""],
+		 	caFile,
+		 	"", (* ca_dir: not going to support *)
+		 	crList,
+		 	Boole[verifyCert],
+		 	Boole[invHost]
+		 ]
+	];
+	
+	(* return client object *)
+	MongoClientObject[clientHandle]
+]
+
+MongoClientConnect[host_String, port_Integer, opts:OptionsPattern[]] := Module[
+	{
 		username = OptionValue["Username"],
 		password = OptionValue["Password"],
-		ssl = OptionValue["SSL"],
-		pemFile = OptionValue["PEMFile"],
-		pemFilePassword = OptionValue["PEMFilePassword"],
-		caFile = OptionValue["CAFile"],
-		crList = OptionValue["CertificateRevocationList"],
-		verifyCert = OptionValue[VerifySecurityCertificates]
+		uri
 	},
-
-	If[(pemFile =!= None) && !FileExistsQ[pemFile],
-		Message[ClientConnect::pemfile];
-		Return[$Failed];
-	];
-	If[(caFile =!= None) && !FileExistsQ[caFile],
-		Message[ClientConnect::cafile];
-		Return[$Failed];
-	];
 
 	If[password === "$Prompt",
 		{username, password} = 
 			DatabaseLink`UI`Private`PasswordDialog[{username, ""}]
 	];
-
-
-
-
-	clientHandle = CreateManagedLibraryExpression["MongoClient", MongoClient];
-	result = clientHandleCreate[ManagedLibraryExpressionID[clientHandle], host];
-	If[LibraryFunctionFailureQ[result], 
-		MongoFailureMessage[ClientConnect]; 
-		Return[$Failed]
-	];
-	MongoClientObject[clientHandle]
+	
+	(* this should never fail *)
+	uri = MongoURIConstruct[host, port, "Username" -> username, "Password" -> password];
+	MongoClientConnect[uri, opts]
 ]
 
-ClientConnect[host_String, opts:OptionsPattern[]] := 
-	ClientConnect[host, 27017, opts]
+MongoClientConnect[host_String, opts:OptionsPattern[]] := 
+	MongoClientConnect[host, 27017, opts]
 	
-ClientConnect[opts:OptionsPattern[]] := 
-	ClientConnect["localhost", 27017, opts]
-
-(* URI Client connect *)
-ClientConnect[uri_MongoURIObject, opts:OptionsPattern[]] := Module[
-	{},
-	1
-	
-]
-
-
-ClientConnect["localhost", 27017, opts]
-
+MongoClientConnect[opts:OptionsPattern[]] := 
+	MongoClientConnect["localhost", 27017, opts]
 
 (*----------------------------------------------------------------------------*)
-PackageExport["ClientDatabaseNames"]
+PackageExport["MongoDatabaseNames"]
 
-SetUsage[ClientDatabaseNames,
-"ClientDatabaseNames[MongoClientObject[$$]] returns a list of databases on the \
+SetUsage[MongoDatabaseNames,
+"MongoDatabaseNames[MongoClientObject[$$]] returns a list of databases on the \
 connected server. 
 "
 ]
 
-ClientDatabaseNames[MongoClientObject[database_MongoClient]] := Module[
-	{result},
-	result = getDatabaseNames[ManagedLibraryExpressionID[database]];
-	If[LibraryFunctionFailureQ[result], 
-		MongoFailureMessage[ClientDatabaseNames]; 
-		Return[$Failed]
-	];
-	result
-]
+MongoDatabaseNames[MongoClientObject[database_MongoClient]] := 
+	Catch @ safeLibraryInvoke[getDatabaseNames, ManagedLibraryExpressionID[database]]

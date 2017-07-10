@@ -29,7 +29,7 @@ BuildMongoLink[includeDir_List, libDir_List, opts:OptionsPattern[]] := Catch @ M
 	 libNames, fullIncl
 	}
 	,
-	If[Not @ FileExistsQ[#],
+	If[(includeDir =!= Automatic) && (Not @ FileExistsQ[#]),
 		Print[# <> " is not a valid file."];
 		Throw[$Failed];
 	]& /@ Join[includeDir, libDir];

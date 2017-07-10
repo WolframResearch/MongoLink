@@ -53,16 +53,12 @@ PackageExport["MongoURIFromString"]
 ]*)
 MongoURIFromString::inv = "Invalid URI."
 
-MongoURIFromString[uri_String] := Module[
+MongoURIFromString[uri_String] := Catch @ Module[
 	{
 		handle = CreateManagedLibraryExpression["MongoURI", MongoURI],
 		res
 	},
-	res = uriCreate[ManagedLibraryExpressionID[handle], uri];
-	If[LibraryFunctionFailureQ[res], 
-		Message[MongoURIFromString::inv];
-		Return[$Failed]
-	];
+	res = safeLibraryInvoke[uriCreate, ManagedLibraryExpressionID[handle], uri];
 	MongoURIObject[handle, uri]
 ]
 
@@ -90,7 +86,8 @@ a dialog box opens that will prompt you for the password. |
 Options[MongoURIConstruct] = {
 	"Username" -> None,
 	"Password" -> None,
-	"Database" -> None
+	"Database" -> None,
+	"SSL" -> Automatic
 };
 
 MongoURIConstruct[host_String, port_Integer, opts:OptionsPattern[]] := Module[
@@ -98,7 +95,8 @@ MongoURIConstruct[host_String, port_Integer, opts:OptionsPattern[]] := Module[
 		username = OptionValue["Username"],
 		password = OptionValue["Password"],
 		database = OptionValue["Database"],
-		res, cred, uri
+		ssl = OptionValue["SSL"],
+		cred, uri
 	},
 
 	If[password === "$Prompt",
@@ -108,16 +106,19 @@ MongoURIConstruct[host_String, port_Integer, opts:OptionsPattern[]] := Module[
 	
 	If[(username =!= None) && (password =!= None), 
 		cred = StringJoin[URLEncode[username], ":", URLEncode[password], "@"], 
-	cred = ""
+		cred = ""
 	];
 	If[database =!= None, 
 		database = StringJoin["/", URLEncode[database]], 
 		database = ""
-		];	
+	];
 
 	uri = StringJoin["mongodb://", cred, host, ":", ToString[port], database];
-	If[LibraryFunctionFailureQ[res], 
-		Return[$Failed]
+	
+	(* ssl options: add to URI if True or False, but not Automatic *)
+	If[ssl,
+		uri = StringJoin[uri, "/?ssl=true"],
+		uri = StringJoin[uri, "/?ssl=false"]
 	];
 	
 	MongoURIFromString[uri]

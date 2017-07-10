@@ -119,3 +119,18 @@ EXTERN_C DLLEXPORT int WL_DatabaseGetCollection(WolframLibraryData libData,
   libData->UTF8String_disown(collectionName);
   return LIBRARY_NO_ERROR;
 }
+
+////////////////////////////////////////////////////////////////////////////
+EXTERN_C DLLEXPORT int WL_mongoc_database_drop(WolframLibraryData libData,
+                                               mint Argc, MArgument *Args,
+                                               MArgument Res) {
+
+  bson_error_t error;
+  DATABASE_GET(db, 0)
+  auto res = mongoc_database_drop(db, &error);
+  if (!res) {
+    errorString = error.message;
+    return LIBRARY_FUNCTION_ERROR;
+  }
+  return LIBRARY_NO_ERROR;
+}

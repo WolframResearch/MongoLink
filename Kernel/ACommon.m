@@ -58,18 +58,33 @@ PackageScope["LibraryFunctionFailureQ"]
 LibraryFunctionFailureQ[call_] :=
 	If[Head[call] === LibraryFunctionError, True, False]
 
-(*----------------------------------------------------------------------------*)
-PackageScope["MongoFailureMessage"]
 
-MongoFailureMessage[parentSymbol_] := Module[
+(*----------------------------------------------------------------------------*)
+General::mongolibuneval = "Library function `` with args `` did not evaluate.";
+
+PackageScope["safeLibraryInvoke"]
+
+safeLibraryInvoke[func_, args___] :=
+    Replace[
+        func[args], 
+        {
+            _LibraryFunctionError :> MongoPanic[],
+            _LibraryFunction[___] :> 
+            	(Message[General::mongolibuneval, func[[2]], {args}];
+            	Throw[$Failed])	
+        }
+    ];
+
+MongoPanic[] := Module[
 	{lastError},
 	lastError = MongoGetLastError[];
 	lastError = If[TrueQ @ LibraryFunctionFailureQ[lastError], 
 		"Unknown Error", 
 		lastError
 	];
-	parentSymbol::mongoError = lastError;
-	Message[parentSymbol::mongoError];
+	General::mongoError = lastError;
+	Message[General::mongoError];
+	Throw[$Failed]
 ]
 
 (*----------------------------------------------------------------------------*)
@@ -88,6 +103,26 @@ PackageScope["ToMillisecondUnixTime"]
 
 ToMillisecondUnixTime[date_DateObject] := 1000 * (UnixTime[date] + FractionalPart[date["Second"]])
 
-
 (******************************************************************************)
+PackageScope["fileConform"]
 
+(* this takes a file *)
+fileConform[file_String] := Module[
+	{parentSymbol::invfile = "The file `` doesn't exist."},
+	If[!FileExistsQ[file],
+		Message[parentSymbol::invfile, file];
+		Throw[$Failed]
+	];
+	file
+]
+
+fileConform[parentSymbol_, File[file_]] := fileConform[parentSymbol, file]
+fileConform[_, None] := "";
+
+fileConform[parent_, obj_] := Module[
+	{
+		parent::invfile = "Object `` is not a String, File[...] or None."
+	},
+	Message[parent::invfile, obj];
+	Throw[$Failed]
+]

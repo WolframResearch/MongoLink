@@ -46,15 +46,12 @@ mongoCollectionFind = LibraryFunctionLoad[$MongoLinkLib,
 	"WL_MongoCollectionFind", 
 	{
 		Integer,		(* connection handle *)
-		Integer,		(* skip *)
-		Integer,		(* limit *)
-		Integer,		(* batch_size *)
-		Integer,		(* query bson handle *)
-		Integer,		(* fields bson handle *)		
+		Integer,		(* query *)
+		Integer,		(* opts *)		
 		Integer			(* output iterator handle *)
 	}, 
 	"Void"				
-]	
+]
 
 mongoCollectionName = LibraryFunctionLoad[$MongoLinkLib, 
 	"WL_CollectionGetName", 
@@ -73,7 +70,7 @@ mongoCollectionCreateBulkOp = LibraryFunctionLoad[$MongoLinkLib,
 		Integer			(* output bulk op handle key *)
 	}, 
 	"Void"				
-]	
+]
 
 mongoCollectionUpdate = LibraryFunctionLoad[$MongoLinkLib, 
 	"WL_MongoCollectionUpdate", 
@@ -110,119 +107,114 @@ mongoCollectionAggregate = LibraryFunctionLoad[$MongoLinkLib,
 	"Void"				
 ]
 
+(*----------------------------------------------------------------------------*)
+PackageExport["MongoCollectionObject"]
 
+(* This is a utility function defined in GeneralUtilities, which makes a nicely
+formatted display box *)
+DefineCustomBoxes[MongoCollectionObject, 
+	e:MongoCollectionObject[handle_, dbasename_, collname_, base_] :> Block[{},
+	BoxForm`ArrangeSummaryBox[
+		MongoCollectionObject, e, None, 
+		{
+			BoxForm`SummaryItem[{"ID: ", ManagedLibraryExpressionID[handle]}],
+			BoxForm`SummaryItem[{"Name: ", collname}],
+			BoxForm`SummaryItem[{"Database: ", dbasename}]
+		},
+		{},
+		StandardForm
+	]
+]];
 
-(******************************************************************************)
-PakageExport["CollectionConnect"]
+PackageExport["MongoCollectionName"]
+MongoCollectionName[MongoCollectionObject[_, _, _, collname_, _]] := collname;
+MongoCollectionName[___] := $Failed
 
-CollectionConnect::noCollection = "No collection by that name exists."
+MongoCollectionObject /: RandomSample[coll_MongoCollectionObject, n_] := Module[
+	{pipeline}
+	,
+	pipeline = {<|"$sample" -> <|"size" -> n|>|>};
+	MongoCollectionAggregate[coll, pipeline]
+]
 
-CollectionConnect[database_MongoDatabase, collectionName_String] := Module[
+(*----------------------------------------------------------------------------*)
+PackageExport["MongoGetCollection"]
+
+MongoGetCollection[database_MongoDatabaseObject, collectionName_String] := Catch @ Module[
 	{collectionHandle, result},
 	(* Check that collectionName is in database *)
-	If[Not @ MemberQ[DatabaseCollectionNames[database], collectionName], 
-		Message[CollectionConnect::noCollection];
-		Return[$Failed]
-	];
+ 
 	collectionHandle = CreateManagedLibraryExpression["MongoCollection", MongoCollection];
-	result = databaseGetCollection[
-		ManagedLibraryExpressionID[database], 
+	result = safeLibraryInvoke[databaseGetCollection,
+		ManagedLibraryExpressionID @ MongoDatabaseHandle[database], 
 		ManagedLibraryExpressionID[collectionHandle],
 		collectionName
 	];
-	If[LibraryFunctionFailureQ[result], 
-		MongoFailureMessage[CollectionConnect]; 
-		Return[$Failed]
-	];
-	MongoCollectionObject[collectionHandle, collectionName]
+	MongoCollectionObject[collectionHandle, MongoDatabaseName[database], collectionName, database]
 ]
 
-CollectionConnect[client_MongoClient, databaseName_String, collectionName_String] := Module[
+MongoGetCollection[client_MongoClientObject, databaseName_String, collectionName_String] := Catch @ Module[
 	{collectionHandle, result},
 	collectionHandle = CreateManagedLibraryExpression["MongoCollection", MongoCollection];
-	result = clientGetCollection[
+	result = safeLibraryInvoke[clientGetCollection,
 		ManagedLibraryExpressionID[client], 
 		ManagedLibraryExpressionID[collectionHandle],
 		databaseName, 
 		collectionName
 	];
-	If[LibraryFunctionFailureQ[result], 
-		MongoFailureMessage[CollectionConnect]; 
-		Return[$Failed]
-	];
-	collectionHandle
+	MongoCollectionObject[collectionHandle, databaseName, collectionName, client]
 ]
 
-(******************************************************************************)
-PakageExport["CollectionName"]
+(*----------------------------------------------------------------------------*)
+PackageExport["MongoCollectionName"]
 
-CollectionName[collection_MongoCollection] := Module[
-	{result},
-	result = mongoCollectionName[ManagedLibraryExpressionID[collection]];
-	If[LibraryFunctionFailureQ[result], 
-		MongoFailureMessage[CollectionConnect]; 
-		Return[$Failed]
-	];
-	result
-]
+MongoCollectionName[MongoCollectionObject[handle_, ___]] := Catch @ 
+	safeLibraryInvoke[mongoCollectionName, ManagedLibraryExpressionID[handle]];
 
-(******************************************************************************)
+(*----------------------------------------------------------------------------*)
+PackageExport["MongoCollectionCount"]
 
-CollectionCount[connection_MongoCollection, query_] := Module[
-	{bsonQuery, result},
+MongoCollectionCount[MongoCollectionObject[handle_, ___], query_Association] := Catch @ Module[
+	{bsonQuery},
 	bsonQuery = BSONCreate[query];
-	result = mongoCollectionCount[
-		ManagedLibraryExpressionID[connection], 
-		ManagedLibraryExpressionID[bsonQuery]
-	];
-	If[LibraryFunctionFailureQ[result], 
-		MongoFailureMessage[ConnectionCount]; 
-		Return[$Failed]
-	];
-	result
+	If[FailureQ[bsonQuery], Return[$Failed]];
+	safeLibraryInvoke[mongoCollectionCount,
+		ManagedLibraryExpressionID[handle], 
+		ManagedLibraryExpressionID[First @ bsonQuery]
+	]
 ]
 
-CollectionCount[connection_MongoCollection] := 
-	CollectionCount[connection, <||>]
+MongoCollectionCount[collection_MongoCollectionObject] := 
+	MongoCollectionCount[collection, <||>]
 
-(******************************************************************************)
+(*----------------------------------------------------------------------------*)
+PackageExport["MongoCollectionFind"]
 
-Options[CollectionFind] = {
-	"Fields" -> <||>,
-	"BatchSize" -> Automatic,
-	"Skip" -> Automatic,
-	"Limit" -> Automatic
+Options[MongoCollectionFind] = {
 };
 
-CollectionFind[collection_MongoCollection, query_, opts:OptionsPattern[]] := Module[
-	{queryBSON, fields, batchSize, skip, limit, result, iteratorHandle},
+MongoCollectionFind[collection_MongoCollectionObject, query_, opts:OptionsPattern[]] := Catch @ Module[
+	{queryBSON, optsBSON, iteratorHandle, optsAssoc},
 	
 	iteratorHandle = CreateManagedLibraryExpression["MongoIterator", MongoIterator];
 	(* Get default settings. Note Mongo uses 0 as defaults for BatchSize, skip + limit. We'll use their 
 		defaults *)
-	{fields, batchSize, skip, limit} = 
-		ReplaceAll[OptionValue[{"Fields", "BatchSize", "Skip", "Limit"}], Automatic -> 0];
 		
 	(* Create BSON query + field docs *)
 	queryBSON = BSONCreate[query];
-	fields = BSONCreate[fields];
+	optsAssoc = <||>; (* add this in future! *)
+	optsBSON = BSONCreate[optsAssoc];
+	
 	If[FailureQ[query], Return[query]];
-	If[FailureQ[fields], Return[fields]];
+	If[FailureQ[optsBSON], Return[optsBSON]];
 
-	result = mongoCollectionFind[
-		ManagedLibraryExpressionID[collection], 
-		skip, 
-		limit, 
-		batchSize,
-		ManagedLibraryExpressionID[queryBSON],
-		ManagedLibraryExpressionID[fields],
+	safeLibraryInvoke[mongoCollectionFind,
+		ManagedLibraryExpressionID[First @ collection], 
+		ManagedLibraryExpressionID[First @ queryBSON],
+		ManagedLibraryExpressionID[First @ optsBSON],
 		ManagedLibraryExpressionID[iteratorHandle]
 	];
 	
-	If[LibraryFunctionFailureQ@result, 
-		MongoFailureMessage[CollectionFind]; 
-		Return[$Failed]
-	];
 	(* Return iterator object *)
 	NewIterator[
 		MongoIterator, 
@@ -234,38 +226,38 @@ CollectionFind[collection_MongoCollection, query_, opts:OptionsPattern[]] := Mod
 	]
 ]
 
-CollectionFind[collection_MongoCollection, opts:OptionsPattern[]] := 
-	CollectionFind[collection, <||>, opts]
+MongoCollectionFind[collection_MongoCollectionObject, opts:OptionsPattern[]] := 
+	MongoCollectionFind[collection, <||>, opts]
 
-(******************************************************************************)
+(*----------------------------------------------------------------------------*)
+PackageExport["MongoCollectionInsert"]
 
-Options[CollectionInsert] = {
-	"WriteConcern" -> Automatic,
-	"Journal" -> Automatic,
-	"Timeout" -> Automatic,
+Options[MongoCollectionInsert] = {
+	"WriteConcern" -> 1,
+	"Journal" -> True,
+	"Timeout" -> None,
 	"Ordered" -> True
 };
 
-CollectionInsert[
-	collection_MongoCollection, docs_, opts:OptionsPattern[]] := Module[
+MongoCollectionInsert[
+	collection_MongoCollectionObject, docs_List, opts:OptionsPattern[]] := Catch @ Module[
 	{
 		wc, journal, timeout, ordered, 
-		writeConcern, result, bulkHandle
+		writeConcern, bulkHandle
 	}
 	,
 	{wc, journal, timeout, ordered} = 
 		OptionValue[{"WriteConcern", "Journal", "Timeout", "Ordered"}];
 	(* Write concern *)
-	writeConcern = WriteConcernCreate[
-		"WriteConcern" -> wc, 
+	writeConcern = WriteConcernCreate[wc,
 		"Journal" -> journal, 
 		"Timeout" -> timeout
 	];
-	If[writeConcern == $Failed, Return[$Failed]];
+	
 	(* Create bulk op *)
 	bulkHandle = CreateManagedLibraryExpression["MongoBulkOperation", MongoBulkOperation];
-	result = mongoCollectionCreateBulkOp[
-		ManagedLibraryExpressionID[collection],
+	safeLibraryInvoke[mongoCollectionCreateBulkOp,
+		ManagedLibraryExpressionID[First @ collection],
 		Boole[ordered],
 		ManagedLibraryExpressionID[writeConcern],
 		ManagedLibraryExpressionID[bulkHandle]
@@ -274,11 +266,11 @@ CollectionInsert[
 	Which[
 		(* Single document case *)
 		AssociationQ[docs] || StringQ[docs],
-			result = BulkOperationInsert[bulkHandle, docs]
+			BulkOperationInsert[bulkHandle, docs]
 		,
 		ListQ[docs] || (Head[docs] === Dataset),
-			result = Scan[
-				If[BulkOperationInsert[bulkHandle, #] === $Failed, Return[$Failed]]&, 
+			Scan[
+				BulkOperationInsert[bulkHandle, #]&,
 				docs
 			];
 		,
@@ -287,23 +279,16 @@ CollectionInsert[
 			Return[$Failed]
 	];
 
-	(* Check for errors *)
-	If[FailureQ[result], Return[result]];
-
 	(* Execute *)
-	result = BulkOperationExecute[bulkHandle];
-	
-	(* Check for errors *)
-	If[LibraryFunctionFailureQ[result], 
-		MongoFailureMessage[CollectionInsert]; 
-		Return[$Failed]
-	];
-	result
+	BulkOperationExecute[bulkHandle]
 ]
+
+MongoCollectionInsert[coll_MongoCollectionObject, docs_Dataset, opts:OptionsPattern[]] := 
+	MongoCollectionInsert[coll, Normal[docs], opts]
 
 CollectionInsert::unknownType = "Unknown type for document.";
 
-(******************************************************************************)
+(*----------------------------------------------------------------------------*)
 
 PackageExport["CollectionUpdate"]
 
@@ -328,7 +313,7 @@ CollectionUpdate[collection_MongoCollection, selector_, updaterDoc_, OptionsPatt
 	UnpackOptions[writeConcern, journal, timeout, upsert, multiDocumentUpdate];
 		
 	(* Write concern *)
-	writeConcern = WriteConcernCreate[
+	writeConcern = MongoWriteConcernCreate[
 		"WriteConcern" -> writeConcern, 
 		"Journal" -> journal, 
 		"Timeout" -> timeout
@@ -360,7 +345,7 @@ CollectionUpdate[collection_MongoCollection, selector_, updaterDoc_, OptionsPatt
 	result
 ]
 
-(******************************************************************************)
+(*----------------------------------------------------------------------------*)
 
 PackageExport["CollectionRemove"]
 
@@ -383,7 +368,7 @@ CollectionRemove[collection_MongoCollection, selector_, OptionsPattern[]] := Sco
 	UnpackOptions[writeConcern, journal, timeout, multiDocumentUpdate];
 		
 	(* Write concern *)
-	writeConcern = WriteConcernCreate[
+	writeConcern = MongoWriteConcernCreate[
 		"WriteConcern" -> writeConcern, 
 		"Journal" -> journal, 
 		"Timeout" -> timeout
@@ -409,25 +394,19 @@ CollectionRemove[collection_MongoCollection, selector_, OptionsPattern[]] := Sco
 	result
 ]
 
-(******************************************************************************)
-PackageExport["CollectionAggregate"]
+(*----------------------------------------------------------------------------*)
+PackageExport["MongoCollectionAggregate"]
 
-CollectionAggregate[collection_MongoCollection, pipeline_] := Module[
-	{iteratorHandle, pipelineBSON, result},
-	
+MongoCollectionAggregate[collection_MongoCollection, pipeline_] := Module[
+	{iteratorHandle, pipelineBSON},
 	iteratorHandle = CreateManagedLibraryExpression["MongoIterator", MongoIterator];
-	pipelineBSON = BSONCreate@<|"pipeline" -> pipeline|>;
-	If[FailureQ@pipelineBSON, Return@pipelineBSON];
+	pipelineBSON = BSONCreate[<|"pipeline" -> pipeline|>];
+	If[FailureQ[pipelineBSON], Return[pipelineBSON]];
 
-	result = mongoCollectionAggregate[
-		ManagedLibraryExpressionID@collection, 
-		ManagedLibraryExpressionID@pipelineBSON, 
-		ManagedLibraryExpressionID@iteratorHandle
-	];
-	
-	If[LibraryFunctionFailureQ@result, 
-		MongoFailureMessage[CollectionFind]; 
-		Return@$Failed
+	safeLibraryInvoke[mongoCollectionAggregate,
+		ManagedLibraryExpressionID[collection], 
+		ManagedLibraryExpressionID[pipelineBSON], 
+		ManagedLibraryExpressionID[iteratorHandle]
 	];
 	(* Return iterator object *)
 	NewIterator[
@@ -440,14 +419,7 @@ CollectionAggregate[collection_MongoCollection, pipeline_] := Module[
 	]
 ]
 
-MongoCollection /: RandomSample[coll_MongoCollection, n_] := Module[
-	{pipeline}
-	,
-	pipeline = {<|"$sample" -> <|"size" -> n|>|>};
-	CollectionAggregate[coll, pipeline]
-]
-
-(******************************************************************************)
+(*----------------------------------------------------------------------------*)
 PackageExport["MongoReferenceGet"]
 
 SetUsage[MongoReferenceGet, "
@@ -457,7 +429,7 @@ referenced by MongoReference[$$].
 ]
 
 MongoReferenceGet[database_MongoDatabase, mong_MongoReference] := Scope[
-	coll = CollectionConnect[database, First@mong];
+	coll = MongoGetCollection[database, First@mong];
 	docIter = CollectionFind[coll, <|"_id" -> Last@mong|>];
 	If[FailureQ@doc, Return@$Failed];
 	Read@docIter

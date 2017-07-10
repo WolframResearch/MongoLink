@@ -1,0 +1,62 @@
+Notebook[{
+
+Cell[CellGroupData[{
+Cell["RunTests", \
+"Title",ExpressionUUID->"d769145f-c440-4a77-b886-4d6ad721b9ee"],
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"PacletDirectoryAdd", "[", 
+   RowBox[{"{", 
+    RowBox[{"ParentDirectory", "[", 
+     RowBox[{"NotebookDirectory", "[", "]"}], "]"}], "}"}], "]"}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{"<<", "MongoLink`"}], "\[IndentingNewLine]", 
+ RowBox[{"Get", "[", 
+  RowBox[{"FileNameJoin", "[", 
+   RowBox[{"{", 
+    RowBox[{
+     RowBox[{"NotebookDirectory", "[", "]"}], ",", 
+     "\"\<RunTestsCommon.m\>\""}], "}"}], "]"}], 
+  "]"}]}], "Input",ExpressionUUID->"4fda19a9-2056-42fc-9758-43720ed701af"],
+
+Cell["\<\
+Run one test for a specific file and print only failed tests:\
+\>", "Item",ExpressionUUID->"b8d925e6-93f0-484b-9281-105b3fd87463"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"runOneTest", "[", 
+  RowBox[{"\"\<BSON.wlt\>\"", ",", 
+   RowBox[{"NotebookDirectory", "[", "]"}]}], 
+  "]"}]], "Input",ExpressionUUID->"cf478c91-be70-478d-abbb-a30732a4f4cc"],
+
+Cell[BoxData["\<\"Success!\"\>"], \
+"Output",ExpressionUUID->"1131cf31-03ff-47c6-8208-3f29c1006b95"]
+}, Open  ]],
+
+Cell["Run all tests, and print only failed tests:", \
+"Item",ExpressionUUID->"d0000433-65a4-4aaa-98c7-cf179be3f2e7"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"runAllTests", "[", 
+  "]"}]], "Input",ExpressionUUID->"6993456a-003b-4fee-b68b-93f720c7dffa"],
+
+Cell[BoxData["\<\"BSON.wlt\"\>"], \
+"Print",ExpressionUUID->"f69e5ab2-c63d-42fe-ab59-c3b5c4e55c79"],
+
+Cell[BoxData["\<\"Success!\"\>"], \
+"Output",ExpressionUUID->"7cc04c80-db38-425a-99ab-2375273ded11"]
+}, Open  ]]
+}, Open  ]]
+},
+WindowSize->{1720, 1328},
+WindowMargins->{{Automatic, 0}, {Automatic, 0}},
+FrontEndVersion->"11.1 for Mac OS X x86 (32-bit, 64-bit Kernel) (April 18, \
+2017)",
+StyleDefinitions->"Default.nb"
+]
+

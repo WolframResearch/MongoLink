@@ -42,22 +42,7 @@ WriteConcernGetInfo = LibraryFunctionLoad[$MongoLinkLib, "WL_WriteConcernGetInfo
 ]
 
 (*----------------------------------------------------------------------------*)
-PackageExport["MongoWriteConcernObject"]
-
-(* This is a utility function defined in GeneralUtilities, which makes a nicely
-formatted display box *)
-DefineCustomBoxes[MongoWriteConcernObject, 
-	e:MongoWriteConcernObject[id_] :> Block[{},
-	BoxForm`ArrangeSummaryBox[
-		MongoWriteConcernObject, e, None, 
-		{BoxForm`SummaryItem[{"ID: ", ManagedLibraryExpressionID[id]}]},
-		{},
-		StandardForm
-	]
-]];
-
-(*----------------------------------------------------------------------------*)
-PackageExport["WriteConcernCreate"]
+PackageScope["WriteConcernCreate"]
 
 SetUsage[WriteConcernCreate,
 "WriteConcernCreate[] creates an immutable WriteConcernObject[$$] with the default settings.
@@ -91,28 +76,19 @@ WriteConcernCreate[concern_Integer:1, opts:OptionsPattern[]] := Module[
 	,
 	handle = CreateManagedLibraryExpression["MongoWriteConcern", MongoWriteConcern];
 	{journal, timeout} = OptionValue[{"Journal", "Timeout"}];
-	If[(timeout =!= None) || !IntegerQ[timeout] || (timeout < 0),
-		Message[WriteConcernCreate::"Invalid Timeout Option value."];
-		Return[$Failed]
-	];
-
-	If[concern < 0,
-		Message[WriteConcernCreate::"The write concern must be a positive integer"];
-		Return[$Failed]
-	];
 	
-	WriteConcernSet[ManagedLibraryExpressionID[handle], concern];
-	WriteConcernSetJournal[ManagedLibraryExpressionID[handle], Boole[journal]];
+	safeLibraryInvoke[WriteConcernSet, ManagedLibraryExpressionID[handle], concern];
+	safeLibraryInvoke[WriteConcernSetJournal, ManagedLibraryExpressionID[handle], Boole[journal]];
 
 	If[timeout =!= None,
-		WriteConcernSetWtimeout[ManagedLibraryExpressionID@handle, timeout]
+		safeLibraryInvoke[WriteConcernSetWtimeout, ManagedLibraryExpressionID[handle], timeout]
 	];
 	(* Return handle to write concern *)
 	handle
 ]
 
 (*----------------------------------------------------------------------------*)
-PackageExport["WriteConcernGetInfo"]
+PackageScope["WriteConcernGetInfo"]
 
 WriteConcernInfo[MongoWriteConcernObject[writeConcernObject_]] := Module[
 	{handle, al, journal, timeout}
@@ -123,15 +99,15 @@ WriteConcernInfo[MongoWriteConcernObject[writeConcernObject_]] := Module[
 	
 	(* Check if we need to change the mongoDB defaults *)
 	If[al =!= Automatic ,
-		WriteConcernSet[ManagedLibraryExpressionID@handle, al]
+		safeLibraryInvoke[WriteConcernSet, ManagedLibraryExpressionID[handle], al]
 	];
 	
 	If[journal =!= Automatic,
-		WriteConcernSetJournal[ManagedLibraryExpressionID@handle, Boole@journal]
+		safeLibraryInvoke[WriteConcernSetJournal, ManagedLibraryExpressionID[handle], Boole[journal]]
 	];
 	
 	If[timeout =!= Automatic,
-		WriteConcernSetWtimeout[ManagedLibraryExpressionID@handle, timeout]
+		safeLibraryInvoke[WriteConcernSetWtimeout, ManagedLibraryExpressionID[handle], timeout]
 	];
 	(* Return handle to write concern *)
 	handle

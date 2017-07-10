@@ -6,12 +6,7 @@ Bulk Operation level functions
 
 Package["MongoLink`"]
 
-(*** Package Exports ***)
-PackageExport["MongoClient"]
-
-PackageExport["MongoBulkOperation"]
-PackageExport["BulkOperationInsert"]
-PackageExport["BulkOperationExecute"]
+PackageScope["MongoBulkOperation"]
 
 (******************************************************************************)
 
@@ -32,32 +27,30 @@ bulkOperationExecute = LibraryFunctionLoad[$MongoLinkLib, "WL_mongoc_bulk_operat
 	"UTF8String"				(* result string *)			
 ]
 
-(******************************************************************************)
+(*----------------------------------------------------------------------------*)
+PackageScope["BulkOperationInsert"]
+
+BulkOperationInsert::fail = "Failed to evaluate BulkOperationInsert."
 
 BulkOperationInsert[bulkop_MongoBulkOperation, doc_ /; (AssociationQ@doc || StringQ@doc)] := Module[
-	{bson, result},
-	bson = BSONCreate@doc;
-	
-	If[FailureQ@bson, Return@bson];
-	
-	result = bulkOperationInsert[
-		ManagedLibraryExpressionID@bulkop, 
-		ManagedLibraryExpressionID@bson
+	{bson},
+	bson = BSONCreate[doc];
+	If[FailureQ[bson], 
+		Message[BulkOperationInsert::fail];
+		Throw[$Failed]
 	];
-	If[LibraryFunctionFailureQ@result, 
-		MongoFailureMessage[BulkOperationInsert]; 
-		Return@$Failed
+	safeLibraryInvoke[bulkOperationInsert,
+		ManagedLibraryExpressionID[bulkop], 
+		ManagedLibraryExpressionID[First @ bson]
 	];
+	bulkop
 ]
 
-(******************************************************************************)
+(*----------------------------------------------------------------------------*)
+PackageScope["BulkOperationExecute"]
 
 BulkOperationExecute[bulkop_MongoBulkOperation] := Module[
 	{result},
-	result = bulkOperationExecute[ManagedLibraryExpressionID@bulkop];
-	If[LibraryFunctionFailureQ@result, 
-		MongoFailureMessage[BulkOperationInsert]; 
-		Return@$Failed
-	];
-	Developer`ReadRawJSONString@result
+	result = safeLibraryInvoke[bulkOperationExecute, ManagedLibraryExpressionID[bulkop]];
+	Developer`ReadRawJSONString[result]
 ]
