@@ -125,19 +125,19 @@ Options[MongoCreateCollection] =
 	"Options" -> <||>
 };
 
-MongoCreateCollection[db_MongoDatabaseObject, 
+MongoCreateCollection[MongoDatabaseObject[handle_, dbname_, client_], 
 	collectionName_String, opts:OptionsPattern[]] := Catch @ Module[
 	{result, options, collection},
 	
 	options = BSONCreate @ OptionValue["Options"];
 	collection = CreateManagedLibraryExpression["MongoCollection", MongoCollection];
 	result = safeLibraryInvoke[databaseCreateCollection,
-		ManagedLibraryExpressionID[First @ db],
+		ManagedLibraryExpressionID[handle],
 		collectionName,
 		ManagedLibraryExpressionID[First @ options],
 		ManagedLibraryExpressionID[collection]
 	];
-	MongoCollectionObject[collection, databaseName, collectionName, db]
+	MongoCollectionObject[collection, dbname, collectionName, MongoDatabaseObject[handle, dbname, client]]
 ]
 
 (*----------------------------------------------------------------------------*)
