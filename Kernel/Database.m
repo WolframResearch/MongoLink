@@ -108,8 +108,8 @@ collection names in the database MongoDatabaseObject[$$].
 "
 ]
 
-MongoCollectionNames[MongoDatabaseObject[_, _, database_]] := 
-	Catch @ safeLibraryInvoke[getCollectionNames, ManagedLibraryExpressionID[database]];
+MongoCollectionNames[MongoDatabaseObject[handle_, _, _]] := 
+	Catch @ safeLibraryInvoke[getCollectionNames, ManagedLibraryExpressionID[handle]];
 
 (*----------------------------------------------------------------------------*)
 PackageExport[MongoCreateCollection]
