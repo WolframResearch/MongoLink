@@ -290,10 +290,10 @@ CollectionInsert::unknownType = "Unknown type for document.";
 
 (*----------------------------------------------------------------------------*)
 
-PackageExport["CollectionUpdate"]
+PackageExport["MongoCollectionUpdate"]
 
-SetUsage[CollectionUpdate, "
-CollectionUpdate[MongoCollection[$$], query$, update$] update a single document in the \
+SetUsage[MongoCollectionUpdate, "
+MongoCollectionUpdate[MongoCollection[$$], query$, update$] update a single document in the \
 collection MongoCollection[$$] which satisfies the query$ association. The update$ document \
 will replace the contents of the matched document (exept for _id field). To update only \
 individual fields, use the $set operator. If no document satisfies query$, nothing is done, unless \
@@ -301,7 +301,7 @@ the Option \"Upsert\" is set to True. To update all documents satisfying the que
 \"MultiDocumentUpdate\" to True."
 ]
 
-Options[CollectionUpdate] = {
+Options[MongoCollectionUpdate] = {
 	"WriteConcern" -> Automatic,
 	"Journal" -> Automatic,
 	"Timeout" -> Automatic,
@@ -309,7 +309,7 @@ Options[CollectionUpdate] = {
 	"MultiDocumentUpdate" -> False
 };
 
-CollectionUpdate[collection_MongoCollection, selector_, updaterDoc_, OptionsPattern[]] := Scope[
+MongoCollectionUpdate[collection_MongoCollection, selector_, updaterDoc_, OptionsPattern[]] := Scope[
 	UnpackOptions[writeConcern, journal, timeout, upsert, multiDocumentUpdate];
 		
 	(* Write concern *)
@@ -339,7 +339,7 @@ CollectionUpdate[collection_MongoCollection, selector_, updaterDoc_, OptionsPatt
 	
 	(* Check for errors *)
 	If[LibraryFunctionFailureQ@result, 
-		MongoFailureMessage[CollectionUpdate]; 
+		MongoFailureMessage[MongoCollectionUpdate]; 
 		Return@$Failed
 	];
 	result
