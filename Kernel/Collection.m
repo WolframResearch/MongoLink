@@ -323,7 +323,7 @@ MongoCollectionUpdate[collection_MongoCollection, selector_, updaterDoc_, Option
 	(* Create BSON query + update docs *)
 	queryBSON = BSONCreate@selector;
 	updaterDocBSON = BSONCreate@updaterDoc;
-	If[FailureQ@query, Return@queryBSON];
+	(*If[FailureQ@query, Return@queryBSON];*)
 	If[FailureQ@updaterDocumentBSON, Return@updaterDocumentBSON];
 
 
@@ -344,7 +344,7 @@ MongoCollectionUpdate[collection_MongoCollection, selector_, updaterDoc_, Option
 	];
 	result
 ]
-
+	
 (*----------------------------------------------------------------------------*)
 
 PackageExport["CollectionRemove"]
@@ -397,17 +397,18 @@ CollectionRemove[collection_MongoCollection, selector_, OptionsPattern[]] := Sco
 (*----------------------------------------------------------------------------*)
 PackageExport["MongoCollectionAggregate"]
 
-MongoCollectionAggregate[collection_MongoCollection, pipeline_] := Module[
+MongoCollectionAggregate[collection_MongoCollectionObject, pipeline_] := Module[
 	{iteratorHandle, pipelineBSON},
 	iteratorHandle = CreateManagedLibraryExpression["MongoIterator", MongoIterator];
 	pipelineBSON = BSONCreate[<|"pipeline" -> pipeline|>];
 	If[FailureQ[pipelineBSON], Return[pipelineBSON]];
 
 	safeLibraryInvoke[mongoCollectionAggregate,
-		ManagedLibraryExpressionID[collection], 
-		ManagedLibraryExpressionID[pipelineBSON], 
+		ManagedLibraryExpressionID[First @ collection], 
+		ManagedLibraryExpressionID[First @ pipelineBSON], 
 		ManagedLibraryExpressionID[iteratorHandle]
 	];
+
 	(* Return iterator object *)
 	NewIterator[
 		MongoIterator, 
