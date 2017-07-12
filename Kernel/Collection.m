@@ -321,13 +321,10 @@ Options[MongoCollectionUpdate] = {
 
 MongoCollectionUpdate[MongoCollectionObject[handle_, ___], selector_, updaterDoc_, OptionsPattern[]] := Catch @ Module[
 	{queryBSON, updaterDocBSON},
-	
-	Echo@handle;
-	Echo@selector;
-	Echo@updaterDoc;		
+		
 	(* Write concern *)
 	writeConcern = WriteConcernCreate[
-		Echo@OptionValue["WriteConcern"], 
+		OptionValue["WriteConcern"], 
 		"Journal" -> OptionValue["Journal"], 
 		"Timeout" -> OptionValue["Timeout"]
 	];
@@ -338,8 +335,6 @@ MongoCollectionUpdate[MongoCollectionObject[handle_, ___], selector_, updaterDoc
 	updaterDocBSON = BSONCreate[updaterDoc];
 	(*If[FailureQ@query, Return@queryBSON];*)
 	If[FailureQ@updaterDocumentBSON, Return@updaterDocumentBSON];
-	Echo@queryBSON;
-	Echo@updaterDocBSON;
 
 	upsert = OptionValue["Upsert"];
 	multiDocumentUpdate = OptionValue["MultiDocumentUpdate"];
