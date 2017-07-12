@@ -127,7 +127,7 @@ DefineCustomBoxes[MongoCollectionObject,
 ]];
 
 PackageExport["MongoCollectionName"]
-MongoCollectionName[MongoCollectionObject[_, _, _, collname_, _]] := collname;
+MongoCollectionName[MongoCollectionObject[__, collname_, _]] := collname;
 MongoCollectionName[___] := $Failed
 
 MongoCollectionObject /: RandomSample[coll_MongoCollectionObject, n_] := Module[
@@ -204,7 +204,6 @@ MongoCollectionFind[collection_MongoCollectionObject, query_, opts:OptionsPatter
 	queryBSON = BSONCreate[query];
 	optsAssoc = <||>; (* add this in future! *)
 	optsBSON = BSONCreate[optsAssoc];
-	
 	If[FailureQ[query], Return[query]];
 	If[FailureQ[optsBSON], Return[optsBSON]];
 
@@ -289,7 +288,18 @@ MongoCollectionInsert[coll_MongoCollectionObject, docs_Dataset, opts:OptionsPatt
 CollectionInsert::unknownType = "Unknown type for document.";
 
 (*----------------------------------------------------------------------------*)
-
+(*mongoCollectionUpdate = LibraryFunctionLoad[$MongoLinkLib, 
+	"WL_MongoCollectionUpdate", 
+	{
+		Integer,		(* collection handle *)
+		Integer,		(* selector bson handle *)
+		Integer,		(* update bson handle *)
+		Integer,		(* write concern handle *)
+		Integer,		(* upsert *)
+		Integer			(* Multi *)
+	}, 
+	"Void"				
+]	*)
 PackageExport["MongoCollectionUpdate"]
 
 SetUsage[MongoCollectionUpdate, "
@@ -302,49 +312,50 @@ the Option \"Upsert\" is set to True. To update all documents satisfying the que
 ]
 
 Options[MongoCollectionUpdate] = {
-	"WriteConcern" -> Automatic,
-	"Journal" -> Automatic,
-	"Timeout" -> Automatic,
+	"WriteConcern" -> 1,
+	"Journal" -> True,
+	"Timeout" -> None,
 	"Upsert" -> False,
 	"MultiDocumentUpdate" -> False
 };
 
-MongoCollectionUpdate[collection_MongoCollection, selector_, updaterDoc_, OptionsPattern[]] := Scope[
-	UnpackOptions[writeConcern, journal, timeout, upsert, multiDocumentUpdate];
-		
+MongoCollectionUpdate[MongoCollectionObject[handle_, ___], selector_, updaterDoc_, OptionsPattern[]] := Catch @ Module[
+	{queryBSON, updaterDocBSON},
+	
+	Echo@handle;
+	Echo@selector;
+	Echo@updaterDoc;		
 	(* Write concern *)
-	writeConcern = MongoWriteConcernCreate[
-		"WriteConcern" -> writeConcern, 
-		"Journal" -> journal, 
-		"Timeout" -> timeout
+	writeConcern = WriteConcernCreate[
+		Echo@OptionValue["WriteConcern"], 
+		"Journal" -> OptionValue["Journal"], 
+		"Timeout" -> OptionValue["Timeout"]
 	];
 	If[FailureQ@writeConcern, Return@writeConcern];
 
 	(* Create BSON query + update docs *)
-	queryBSON = BSONCreate@selector;
-	updaterDocBSON = BSONCreate@updaterDoc;
+	queryBSON = BSONCreate[selector];
+	updaterDocBSON = BSONCreate[updaterDoc];
 	(*If[FailureQ@query, Return@queryBSON];*)
 	If[FailureQ@updaterDocumentBSON, Return@updaterDocumentBSON];
+	Echo@queryBSON;
+	Echo@updaterDocBSON;
 
+	upsert = OptionValue["Upsert"];
+	multiDocumentUpdate = OptionValue["MultiDocumentUpdate"];
 
 	(* Execute *)
-	result = mongoCollectionUpdate[
-		ManagedLibraryExpressionID@collection,
-		ManagedLibraryExpressionID@queryBSON,
-		ManagedLibraryExpressionID@updaterDocBSON,
-		ManagedLibraryExpressionID@writeConcern,
-		Boole@upsert,
-		Boole@multiDocumentUpdate
+	result = safeLibraryInvoke[mongoCollectionUpdate,
+		ManagedLibraryExpressionID[handle],
+		ManagedLibraryExpressionID[First @ queryBSON],
+		ManagedLibraryExpressionID[First @ updaterDocBSON],
+		ManagedLibraryExpressionID[writeConcern],
+		Boole[upsert],
+		Boole[multiDocumentUpdate]
 	];
 	
-	(* Check for errors *)
-	If[LibraryFunctionFailureQ@result, 
-		MongoFailureMessage[MongoCollectionUpdate]; 
-		Return@$Failed
-	];
 	result
-]
-	
+]	
 (*----------------------------------------------------------------------------*)
 
 PackageExport["CollectionRemove"]

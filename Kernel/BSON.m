@@ -192,7 +192,7 @@ MongoOID /: Normal[x_MongoOID] :=  <|
 |>;
 
 DefineCustomBoxes[MongoOID, 
-	e:MongoOID[id_] :> Block[{},
+	e:MongoOID[id_String] :> Block[{},
 	BoxForm`ArrangeSummaryBox[
 		MongoOID, e, None, 
 		{
