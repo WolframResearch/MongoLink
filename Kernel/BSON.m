@@ -215,10 +215,10 @@ AppendTo[$EncodingRules,
 ];
 
 AppendTo[$DecodingRules,
-	<|Rule["$ref", dataset_], Rule["$id", id_]|> :> MongoReference[dataset, id]
+	<|Rule["$ref", dataset_], Rule["$id", id_]|> :> MongoDBReference[dataset, id]
 ];
 
-MongoReference /: Normal[x_MongoReference] :=  <|
+MongoDBReference /: Normal[x_MongoDBReference] :=  <|
 	"$ref" -> First[x],
 	"$id" -> Last[x]
 |>;
