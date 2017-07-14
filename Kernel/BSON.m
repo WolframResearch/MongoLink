@@ -230,7 +230,7 @@ DefineCustomBoxes[MongoDBReference,
 		MongoDBReference, e, None, 
 		{
 			BoxForm`SummaryItem[{"ID: ", id}],
-			BoxForm`SummaryItem[{"Database: ", dataset}]
+			BoxForm`SummaryItem[{"Collection: ", dataset}]
 		},
 		{},
 		StandardForm

@@ -425,11 +425,11 @@ referenced by MongoReference[$$].
 "
 ]
 
-MongoReferenceGet[database_MongoDatabase, mong_MongoDBReference] := Catch @ Module[
+MongoReferenceGet[database_MongoDatabaseObject, mong_MongoDBReference] := Catch @ Module[
 	{coll, docIter},
 	coll = MongoGetCollection[database, First@mong];
-	docIter = CollectionFind[coll, <|"_id" -> Last@mong|>];
-	If[FailureQ@doc, Return@$Failed];
+	docIter = MongoCollectionFind[coll, <|"_id" -> Last@mong|>];
+	If[FailureQ@docIter, Return@$Failed];
 	Read@docIter;
 ]
 
