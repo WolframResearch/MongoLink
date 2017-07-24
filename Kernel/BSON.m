@@ -181,7 +181,11 @@ Shell: ObjectId( "<id>" )
 PackageExport["MongoOID"] 
 
 AppendTo[$EncodingRules,
-	MongoObjectID[x_] -> <|Rule["$oid", x]|>
+	MongoOID[x_] -> <|Rule["$oid", x]|>
+];
+
+AppendTo[$DecodingRules,
+	<|Rule["$oid", x_]|> :> MongoOID[x]
 ];
 
 MongoOID /: Normal[x_MongoOID] :=  <|

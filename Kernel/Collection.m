@@ -428,8 +428,8 @@ referenced by MongoReference[$$].
 MongoReferenceGet[database_MongoDatabaseObject, mong_MongoDBReference] := Catch @ Module[
 	{coll, docIter},
 	coll = MongoGetCollection[database, First@mong];
-	docIter = MongoCollectionFind[coll, <|"_id" -> Last@mong|>];
+	docIter = MongoCollectionFind[coll, <|"_id" -> <|"$oid" -> Last@mong|>|>];
 	If[FailureQ@docIter, Return@$Failed];
-	Read@docIter;
+	Read@docIter
 ]
 
