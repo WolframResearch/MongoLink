@@ -50,6 +50,16 @@ bsonAsRawArray = LibraryFunctionLoad[$MongoLinkLib, "WL_bson_to_rawarray",
 	"RawArray"
 ]
 
+
+parseBSON = LibraryFunctionLoad[$MongoLinkLib, "WL_ParseBSON",
+	Automatic, 
+	LinkObject
+]
+
+
+(*----------------------------------------------------------------------------*)
+PackageExport["BSONObject"]
+
 (*----------------------------------------------------------------------------*)
 PackageExport["BSONObject"]
 
@@ -84,23 +94,7 @@ PackageExport["BSONToJSON"]
 BSONToJSON[BSONObject[id_]] := Catch @ safeLibraryInvoke[bsonAsJSON, ManagedLibraryExpressionID[id]]
 
 PackageExport["BSONToAssociation"]
-BSONToAssociation[bson_BSONObject] := Module[
-	{json},
-	json = BSONToJSON[bson];
-	If[FailureQ[json],
-		Return[json],
-		Return @ BSONToAssociation[json]
-	]
-]
-
-BSONToAssociation[json_String] := Module[
-	{assoc},
-	assoc = Developer`ReadRawJSONString[json];
-	If[FailureQ[assoc], Return[assoc]];
-
-	(* Now interpret the various MongoDB types, like $symbol or $date, as WL types *)
-	ReplaceAll[assoc, $DecodingRules]
-]
+BSONToAssociation[BSONObject[id_]] := Catch @ safeLibraryInvoke[parseBSON, ManagedLibraryExpressionID[id]]
 
 (*----------------------------------------------------------------------------*)
 PackageExport["BSONCreate"]
@@ -178,25 +172,29 @@ Shell: 	/<jRegex>/<jOptions>
 Strict: { "$oid": "<id>" }
 Shell: ObjectId( "<id>" )
 *)
-PackageExport["MongoOID"] 
+
+oidByteToHexString[x_ByteArray] := StringJoin[IntegerString[#, 16] & /@ Normal[x]]
+
+PackageExport["BSONObjectID"] 
 
 AppendTo[$EncodingRules,
-	MongoObjectID[x_] -> <|Rule["$oid", x]|>
+	BSONObjectID[x_] -> <|Rule["$oid", x]|>
 ];
 
-MongoOID /: Normal[x_MongoOID] :=  <|
-	"GenerationTime" -> FromUnixTime @ Interpreter["HexInteger"][StringTake[First[x], {1, 8}]],
-	"MachineID" -> Interpreter["HexInteger"][StringTake[First[x], {9, 14}]],
-	"ProcessID" -> Interpreter["HexInteger"][StringTake[First[x], {15, 18}]],
-	"Counter" -> Interpreter["HexInteger"][StringTake[First[x], {19, -1}]]
+BSONObjectID /: Normal[BSONObjectID[byte_ByteArray]] :=  <|
+	"GenerationTime" -> 
+		FromUnixTime @ Interpreter["HexInteger"][StringTake[oidByteToHexString[byte], {1, 8}]],
+	"MachineID" -> Interpreter["HexInteger"][StringTake[oidByteToHexString[byte], {9, 14}]],
+	"ProcessID" -> Interpreter["HexInteger"][StringTake[oidByteToHexString[byte], {15, 18}]],
+	"Counter" -> Interpreter["HexInteger"][StringTake[oidByteToHexString[byte], {19, -1}]]
 |>;
 
-DefineCustomBoxes[MongoOID, 
-	e:MongoOID[id_] :> Block[{},
+DefineCustomBoxes[BSONObjectID, 
+	e:BSONObjectID[id_] :> Block[{},
 	BoxForm`ArrangeSummaryBox[
-		MongoOID, e, None, 
+		BSONObjectID, e, None, 
 		{
-			BoxForm`SummaryItem[{"OID: ", id}]
+			BoxForm`SummaryItem[{"OID: ", StringJoin[IntegerString[#, 16] & /@ Normal[id]]}]
 		},
 		{},
 		StandardForm
@@ -208,10 +206,10 @@ DefineCustomBoxes[MongoOID,
 Strict: { "$oid": "<id>" }
 Shell: ObjectId( "<id>" )
 *)
-PackageExport["MongoDBReference"]
+PackageExport["BSONDBReference"]
 
 AppendTo[$EncodingRules,
-	MongoDBReference[dataset_, id_] -> <|Rule["$ref", dataset], Rule["$id", id]|>
+	BSONDBReference[dataset_, id_] -> <|Rule["$ref", dataset], Rule["$id", id]|>
 ];
 
 AppendTo[$DecodingRules,
@@ -224,10 +222,10 @@ MongoReference /: Normal[x_MongoReference] :=  <|
 |>;
 
 (* display form *)
-DefineCustomBoxes[MongoDBReference, 
-	e:MongoDBReference[dataset_, id_] :> Block[{},
+DefineCustomBoxes[BSONDBReference, 
+	e:BSONDBReference[dataset_, id_] :> Block[{},
 	BoxForm`ArrangeSummaryBox[
-		MongoDBReference, e, None, 
+		BSONDBReference, e, None, 
 		{
 			BoxForm`SummaryItem[{"ID: ", id}],
 			BoxForm`SummaryItem[{"Database: ", dataset}]
