@@ -56,10 +56,6 @@ parseBSON = LibraryFunctionLoad[$MongoLinkLib, "WL_ParseBSON",
 	LinkObject
 ]
 
-
-(*----------------------------------------------------------------------------*)
-PackageExport["BSONObject"]
-
 (*----------------------------------------------------------------------------*)
 PackageExport["BSONObject"]
 
