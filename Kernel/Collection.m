@@ -288,18 +288,7 @@ MongoCollectionInsert[coll_MongoCollectionObject, docs_Dataset, opts:OptionsPatt
 CollectionInsert::unknownType = "Unknown type for document.";
 
 (*----------------------------------------------------------------------------*)
-(*mongoCollectionUpdate = LibraryFunctionLoad[$MongoLinkLib, 
-	"WL_MongoCollectionUpdate", 
-	{
-		Integer,		(* collection handle *)
-		Integer,		(* selector bson handle *)
-		Integer,		(* update bson handle *)
-		Integer,		(* write concern handle *)
-		Integer,		(* upsert *)
-		Integer			(* Multi *)
-	}, 
-	"Void"				
-]	*)
+
 PackageExport["MongoCollectionUpdate"]
 
 SetUsage[MongoCollectionUpdate, "
@@ -353,48 +342,49 @@ MongoCollectionUpdate[MongoCollectionObject[handle_, ___], selector_, updaterDoc
 ]	
 (*----------------------------------------------------------------------------*)
 
-PackageExport["CollectionRemove"]
+PackageExport["MongoCollectionRemove"]
 
-SetUsage[CollectionRemove, "
-CollectionRemove[MongoCollection[$$], query$] removes a single document from MongoCollection[$$] \
+SetUsage[MongoCollectionRemove, "
+MongoCollectionRemove[MongoCollection[$$], query$] removes a single document from MongoCollection[$$] \
 that satisfies the query $query. To remove all documents, set the Option \"MultiDocumentUpdate\" to \ 
 True."
 ]
 
-
-Options[CollectionRemove] =
+Options[MongoCollectionRemove] =
 {
-	"WriteConcern" -> Automatic,
-	"Journal" -> Automatic,
-	"Timeout" -> Automatic,
+	"WriteConcern" -> 1,
+	"Journal" -> True,
+	"Timeout" -> None,
 	"MultiDocumentUpdate" -> False
 };
 
-CollectionRemove[collection_MongoCollection, selector_, OptionsPattern[]] := Scope[
-	UnpackOptions[writeConcern, journal, timeout, multiDocumentUpdate];
-		
+MongoCollectionRemove[MongoCollectionObject[handle_, ___], selector_, OptionsPattern[]] := Catch @ Module[
+		{queryBSON},
 	(* Write concern *)
-	writeConcern = MongoWriteConcernCreate[
-		"WriteConcern" -> writeConcern, 
-		"Journal" -> journal, 
-		"Timeout" -> timeout
+	writeConcern = WriteConcernCreate[
+		OptionValue["WriteConcern"], 
+		"Journal" -> OptionValue["Journal"], 
+		"Timeout" -> OptionValue["Timeout"]
 	];
 	If[FailureQ@writeConcern, Return@writeConcern];
 
 	(* Create BSON query *)
-	queryBSON = BSONCreate@selector;
-	If[FailureQ@query, Return@queryBSON];
+	queryBSON = BSONCreate[selector];
+	If[FailureQ@query, Return[queryBSON];
+	];
 	
+	multiDocumentUpdate = OptionValue["MultiDocumentUpdate"];
+		
 	(* Execute *)
-	result = mongoCollectionRemove[
-		ManagedLibraryExpressionID@collection,
-		Boole@multiDocumentUpdate,
-		ManagedLibraryExpressionID@queryBSON,
-		ManagedLibraryExpressionID@writeConcern
+	result = safeLibraryInvoke[mongoCollectionRemove,
+		ManagedLibraryExpressionID[handle],
+		Boole[multiDocumentUpdate],
+		ManagedLibraryExpressionID[First @ queryBSON],
+		ManagedLibraryExpressionID[writeConcern]
 	];
 	(* Check for errors *)
 	If[LibraryFunctionFailureQ@result, 
-		MongoFailureMessage[CollectionRemove]; 
+		MongoFailureMessage[MongoCollectionRemove]; 
 		Return@$Failed
 	];
 	result
@@ -435,10 +425,11 @@ referenced by MongoReference[$$].
 "
 ]
 
-MongoReferenceGet[database_MongoDatabase, mong_MongoReference] := Scope[
+MongoReferenceGet[database_MongoDatabaseObject, mong_MongoDBReference] := Catch @ Module[
+	{coll, docIter},
 	coll = MongoGetCollection[database, First@mong];
-	docIter = CollectionFind[coll, <|"_id" -> Last@mong|>];
-	If[FailureQ@doc, Return@$Failed];
+	docIter = MongoCollectionFind[coll, <|"_id" -> <|"$oid" -> Last@mong|>|>];
+	If[FailureQ@docIter, Return@$Failed];
 	Read@docIter
 ]
 

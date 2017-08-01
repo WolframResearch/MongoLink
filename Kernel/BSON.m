@@ -181,7 +181,11 @@ Shell: ObjectId( "<id>" )
 PackageExport["MongoOID"] 
 
 AppendTo[$EncodingRules,
-	MongoObjectID[x_] -> <|Rule["$oid", x]|>
+	MongoOID[x_] -> <|Rule["$oid", x]|>
+];
+
+AppendTo[$DecodingRules,
+	<|Rule["$oid", x_]|> :> MongoOID[x]
 ];
 
 MongoOID /: Normal[x_MongoOID] :=  <|
@@ -215,10 +219,10 @@ AppendTo[$EncodingRules,
 ];
 
 AppendTo[$DecodingRules,
-	<|Rule["$ref", dataset_], Rule["$id", id_]|> :> MongoReference[dataset, id]
+	<|Rule["$ref", dataset_], Rule["$id", id_]|> :> MongoDBReference[dataset, id]
 ];
 
-MongoReference /: Normal[x_MongoReference] :=  <|
+MongoDBReference /: Normal[x_MongoDBReference] :=  <|
 	"$ref" -> First[x],
 	"$id" -> Last[x]
 |>;
@@ -230,7 +234,7 @@ DefineCustomBoxes[MongoDBReference,
 		MongoDBReference, e, None, 
 		{
 			BoxForm`SummaryItem[{"ID: ", id}],
-			BoxForm`SummaryItem[{"Database: ", dataset}]
+			BoxForm`SummaryItem[{"Collection: ", dataset}]
 		},
 		{},
 		StandardForm
