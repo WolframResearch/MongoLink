@@ -43,16 +43,6 @@ MongoGetLastError = LibraryFunctionLoad[$MongoLinkLib, "WL_MongoGetLastError",
 	]	
 
 (*----------------------------------------------------------------------------*)
-
-PackageScope["MongoEnableLogging"]
-
-MongoEnableLogging = LibraryFunctionLoad[$MongoLinkLib, "WL_EnableLogging", 
-	{
-	}, 
-	"Void"						
-	]
-
-(*----------------------------------------------------------------------------*)
 PackageScope["LibraryFunctionFailureQ"]
 
 LibraryFunctionFailureQ[call_] :=
