@@ -73,9 +73,7 @@ DefineCustomBoxes[BSONObject,
 	]
 ]];
 
-
 BSONObject /: ByteArray[bson_BSONObject] := BSONToByteArray[bson]
-
 	
 (*----------------------------------------------------------------------------*)
 (* conversion funcs *)
@@ -106,7 +104,7 @@ iBSONCreate[doc_ /; (ListQ[doc] || AssociationQ[doc])] := Module[
 	json = Developer`WriteRawJSONString[doc,
 	 	"Compact" -> True,
 	 	"ConversionRules" -> $EncodingRules
-	 ];
+	];
 	If[FailureQ[json],
 	 	Message[iBSONCreate::invjson];
 	 	Throw[$Failed]
@@ -143,10 +141,10 @@ BSONCreate[doc_] := Catch @ iBSONCreate[doc];
 (* Note: json converter already handles True, False, Null *)
 
 $EncodingRules = {
-	Infinity -> <|"$maxKey" -> 1|>,
-	Minus[Infinity] -> <|"$minKey" -> 1|>,
+	Infinity :> <|"$maxKey" -> 1|>,
+	Minus[Infinity] :> <|"$minKey" -> 1|>,
 	x_DateObject :> <|"$date", Round @ ToMillisecondUnixTime[x]|>,
-	BSONObjectID[x_] -> <|"$oid" -> x|>,
+	BSONObjectID[x_] :> <|"$oid" -> x|>,
 	BSONDBReference[coll_, id_] :> <|"$ref" -> coll, "$id" -> First[id]|>
 };
 
