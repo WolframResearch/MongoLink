@@ -76,8 +76,10 @@ DefineCustomBoxes[BSONObject,
 		StandardForm
 	]
 ]];
- 
+
+
 BSONObject /: ByteArray[bson_BSONObject] := BSONToByteArray[bson]
+
 	
 (*----------------------------------------------------------------------------*)
 (* conversion funcs *)
@@ -103,14 +105,10 @@ BSONCreate[doc_ /; (AssociationQ[doc] || StringQ[doc])] := Catch @ Module[
 	{bsonHandle, result, json, doc2},
 	bsonHandle = CreateManagedLibraryExpression["MongoBSON", MongoBSON];
 	result = If[AssociationQ[doc],
-			(* Deal with associations first: can assume it contains any wolfram symbols *)
-			(* First, convert special expr like DateObject to MongoDB equivalents *)
-			doc2 = ReplaceAll[doc, $EncodingRules];
-			(* Now convert to JSON. Note that we convert all other expressions to strings *)
-			json = Developer`WriteRawJSONString[doc2,
-		 		"Compact" -> True,
-		 		"ConversionFunction" -> ToString
-		 	];
+		json = Developer`WriteRawJSONString[doc2,
+		 	"Compact" -> True,
+		 	"ConversionRules" -> $EncodingRules
+		 ];
 		 If[FailureQ[json], Return[json]];
 		 safeLibraryInvoke[createBSONfromJSON, ManagedLibraryExpressionID[bsonHandle], json]
 		 ,
@@ -133,60 +131,25 @@ BSONCreate[doc_ByteArray] := BSONCreate[RawArray["UnsignedInteger8", Normal[doc]
 (* see https://docs.mongodb.com/manual/reference/mongodb-extended-json/ *)
 (* Many of these types are not supported yet. *)
 
-$EncodingRules = {};
-$DecodingRules = {};
+(* Note: json converter already handles True, False, Null *)
 
-(*----- Binary -------
-Strict: { "$binary": "<bindata>", "$type": "<t>" }
-Shell: BinData ( <t>, <bindata> )
-*)
+$EncodingRules = {
+	Infinity -> <|"$maxKey" -> 1|>,
+	Minus[Infinity] -> <|"$minKey" -> 1|>,
+	x_DateObject :> <|"$date", Round @ ToMillisecondUnixTime[x]|>,
+	BSONObjectID[x_] -> <|"$oid" -> x|>,
+	BSONDBReference[coll_, id_] :> <|"$ref" -> coll, "$id" -> First[id]|>
+};
 
+(*----- ObjectID -------*)
+PackageExport["BSONObjectID"]
 
-(*----- Date -------
-Strict: { "$date": "<date>" }
-Shell: new Date ( <date> ) 
-*)
-
-AppendTo[$EncodingRules,
-	x_DateObject :> <|Rule["$date", ToMillisecondUnixTime[x]]|>
-
-];
-
-AppendTo[$DecodingRules,
-	<|Rule["$date", x_]|> :> FromMillisecondUnixTime[x]
-];
-
-(*----- Timestamp -------
-Strict: { "$timestamp": { "t": <t>, "i": <i> } }
-Shell: Timestamp( <t>, <i> )
-*)
-
-
-(*----- Regular Expression -------
-Strict: { "$regex": "<sRegex>", "$options": "<sOptions>" }
-Shell: 	/<jRegex>/<jOptions>
-*)
-
-
-(*----- OID -------
-Strict: { "$oid": "<id>" }
-Shell: ObjectId( "<id>" )
-*)
-
-oidByteToHexString[x_ByteArray] := StringJoin[IntegerString[#, 16] & /@ Normal[x]]
-
-PackageExport["BSONObjectID"] 
-
-AppendTo[$EncodingRules,
-	BSONObjectID[x_] -> <|Rule["$oid", x]|>
-];
-
-BSONObjectID /: Normal[BSONObjectID[byte_ByteArray]] :=  <|
+BSONObjectID /: Normal[BSONObjectID[hex_String]] :=  <|
 	"GenerationTime" -> 
-		FromUnixTime @ Interpreter["HexInteger"][StringTake[oidByteToHexString[byte], {1, 8}]],
-	"MachineID" -> Interpreter["HexInteger"][StringTake[oidByteToHexString[byte], {9, 14}]],
-	"ProcessID" -> Interpreter["HexInteger"][StringTake[oidByteToHexString[byte], {15, 18}]],
-	"Counter" -> Interpreter["HexInteger"][StringTake[oidByteToHexString[byte], {19, -1}]]
+		FromUnixTime @ Interpreter["HexInteger"][StringTake[hex, {1, 8}]],
+	"MachineID" -> Interpreter["HexInteger"][StringTake[hex, {9, 14}]],
+	"ProcessID" -> Interpreter["HexInteger"][StringTake[hex, {15, 18}]],
+	"Counter" -> Interpreter["HexInteger"][StringTake[hex, {19, -1}]]
 |>;
 
 DefineCustomBoxes[BSONObjectID, 
@@ -194,7 +157,7 @@ DefineCustomBoxes[BSONObjectID,
 	BoxForm`ArrangeSummaryBox[
 		BSONObjectID, e, None, 
 		{
-			BoxForm`SummaryItem[{"OID: ", StringJoin[IntegerString[#, 16] & /@ Normal[id]]}]
+			BoxForm`SummaryItem[{"OID: ", id}]
 		},
 		{},
 		StandardForm
@@ -208,49 +171,22 @@ Shell: ObjectId( "<id>" )
 *)
 PackageExport["BSONDBReference"]
 
-AppendTo[$EncodingRules,
-	BSONDBReference[dataset_, id_] -> <|Rule["$ref", dataset], Rule["$id", id]|>
-];
-
-AppendTo[$DecodingRules,
-	<|Rule["$ref", dataset_], Rule["$id", id_]|> :> MongoReference[dataset, id]
-];
-
-MongoReference /: Normal[x_MongoReference] :=  <|
-	"$ref" -> First[x],
-	"$id" -> Last[x]
+BSONDBReference /: Normal[BSONDBReference[coll_, oid_]] :=  <|
+	"Collection" -> coll,
+	"ObjectID" -> oid
 |>;
 
 (* display form *)
 DefineCustomBoxes[BSONDBReference, 
-	e:BSONDBReference[dataset_, id_] :> Block[{},
+	e:BSONDBReference[coll_, id_] :> Block[{},
 	BoxForm`ArrangeSummaryBox[
 		BSONDBReference, e, None, 
 		{
-			BoxForm`SummaryItem[{"ID: ", id}],
-			BoxForm`SummaryItem[{"Database: ", dataset}]
+			BoxForm`SummaryItem[{"OID: ", id}],
+			BoxForm`SummaryItem[{"Collection: ", coll}]
 		},
 		{},
 		StandardForm
 	]
 ]];
 
-(*----- Undefined Type -------
-Strict: { "$undefined": true }
-Shell: 	undefined
-*)
-
-(*----- MinKey -------
-Strict: { "$minKey": 1 }
-Shell: 	MinKey
-*)
-
-(*----- MaxKey -------
-Strict: { "$maxKey": 1 }
-Shell: 	MaxKey
-*)
-
-(*----- NumberLong -------
-Strict: { "$numberLong": "<number>" }
-Shell: NumberLong( "<number>" )
-*)
