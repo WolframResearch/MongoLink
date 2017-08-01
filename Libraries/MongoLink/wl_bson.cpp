@@ -17,6 +17,7 @@ EXTERN_C DLLEXPORT int WL_CreateBSONfromJSON(WolframLibraryData libData,
   auto b = bson_new_from_json((const uint8_t *)json, -1, &error);
   if (!b) {
     errorString = error.message;
+    libData->UTF8String_disown(json);
     return LIBRARY_FUNCTION_ERROR;
   }
   bsonHandleMap[bson_handle_key] = b;
@@ -46,7 +47,6 @@ EXTERN_C DLLEXPORT int WL_raw_array_to_bson(WolframLibraryData libData,
   int bson_handle_key = MArgument_getInteger(Args[0]);
   MRawArray data_tensor = MArgument_getMRawArray(Args[1]);
 
-  // Copy Data. Note: need to use MXNDArraySyncCopyToCPU as data can be on GPU
   size_t size = libData->rawarrayLibraryFunctions->MRawArray_getFlattenedLength(
       data_tensor);
   auto data = reinterpret_cast<uint8_t *>(
@@ -73,11 +73,12 @@ EXTERN_C DLLEXPORT int WL_bson_to_rawarray(WolframLibraryData libData,
   libData->rawarrayLibraryFunctions->MRawArray_new(MRawArray_Type_Ubit8, 1,
                                                    dims, &output_raw);
 
-  auto data_raw =
-      reinterpret_cast<uint8_t*>(libData->rawarrayLibraryFunctions->MRawArray_getData(output_raw));
+  auto data_raw = reinterpret_cast<uint8_t *>(
+      libData->rawarrayLibraryFunctions->MRawArray_getData(output_raw));
   std::copy(data, data + bson->len, data_raw);
 
   // Return RawArray
   MArgument_setMRawArray(Res, output_raw);
   return LIBRARY_NO_ERROR;
 }
+

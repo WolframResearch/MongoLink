@@ -19,16 +19,6 @@
 
 ////////////////////////////////////////////////////////////////////////////////
 
-void WLPrint(const char *fmstr, ...);
-void EnableLogging(WolframLibraryData libData);
-
-#define z1 std::cout << 1 << std::endl;
-#define z2 std::cout << 2 << std::endl;
-#define z3 std::cout << 3 << std::endl;
-#define z4 std::cout << 4 << std::endl;
-#define z5 std::cout << 5 << std::endl;
-#define z6 std::cout << 6 << std::endl;
-
 extern std::map<mint, mongoc_uri_t *> uriHandleMap;
 extern std::map<mint, mongoc_client_t *> clientHandleMap;
 extern std::map<mint, mongoc_database_t *> databaseHandleMap;
@@ -98,11 +88,6 @@ extern std::string errorString;
     return LIBRARY_FUNCTION_ERROR;                                             \
   }                                                                            \
   var = bsonHandleMap[MArgument_getInteger(Args[key])];
-
-////////////////////////////////////////////////////////////////////////////////
-
-EXTERN_C DLLEXPORT int WL_EnableLogging(WolframLibraryData libData, mint Argc,
-                                        MArgument *Args, MArgument Res);
 
 ////////////////////////////////////////////////////////////////////////////////
 

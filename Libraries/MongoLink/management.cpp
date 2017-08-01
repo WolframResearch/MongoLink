@@ -135,7 +135,6 @@ EXTERN_C DLLEXPORT int WL_MongoGetLastError(WolframLibraryData libData,
                                             mint Argc, MArgument *Args,
                                             MArgument Res) {
   MArgument_setUTF8String(Res, const_cast<char *>(errorString.c_str()));
-  WLPrint("%d: %d", 5, 6);
   return LIBRARY_NO_ERROR;
 }
 

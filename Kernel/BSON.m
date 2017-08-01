@@ -50,6 +50,12 @@ bsonAsRawArray = LibraryFunctionLoad[$MongoLinkLib, "WL_bson_to_rawarray",
 	"RawArray"
 ]
 
+
+parseBSON = LibraryFunctionLoad[$MongoLinkLib, "WL_ParseBSON",
+	Automatic, 
+	LinkObject
+]
+
 (*----------------------------------------------------------------------------*)
 PackageExport["BSONObject"]
 
@@ -66,8 +72,10 @@ DefineCustomBoxes[BSONObject,
 		StandardForm
 	]
 ]];
- 
+
+
 BSONObject /: ByteArray[bson_BSONObject] := BSONToByteArray[bson]
+
 	
 (*----------------------------------------------------------------------------*)
 (* conversion funcs *)
@@ -84,23 +92,7 @@ PackageExport["BSONToJSON"]
 BSONToJSON[BSONObject[id_]] := Catch @ safeLibraryInvoke[bsonAsJSON, ManagedLibraryExpressionID[id]]
 
 PackageExport["BSONToAssociation"]
-BSONToAssociation[bson_BSONObject] := Module[
-	{json},
-	json = BSONToJSON[bson];
-	If[FailureQ[json],
-		Return[json],
-		Return @ BSONToAssociation[json]
-	]
-]
-
-BSONToAssociation[json_String] := Module[
-	{assoc},
-	assoc = Developer`ReadRawJSONString[json];
-	If[FailureQ[assoc], Return[assoc]];
-
-	(* Now interpret the various MongoDB types, like $symbol or $date, as WL types *)
-	ReplaceAll[assoc, $DecodingRules]
-]
+BSONToAssociation[BSONObject[id_]] := Catch @ safeLibraryInvoke[parseBSON, ManagedLibraryExpressionID[id]]
 
 (*----------------------------------------------------------------------------*)
 PackageExport["BSONCreate"]
@@ -109,14 +101,10 @@ BSONCreate[doc_ /; (AssociationQ[doc] || StringQ[doc])] := Catch @ Module[
 	{bsonHandle, result, json, doc2},
 	bsonHandle = CreateManagedLibraryExpression["MongoBSON", MongoBSON];
 	result = If[AssociationQ[doc],
-			(* Deal with associations first: can assume it contains any wolfram symbols *)
-			(* First, convert special expr like DateObject to MongoDB equivalents *)
-			doc2 = ReplaceAll[doc, $EncodingRules];
-			(* Now convert to JSON. Note that we convert all other expressions to strings *)
-			json = Developer`WriteRawJSONString[doc2,
-		 		"Compact" -> True,
-		 		"ConversionFunction" -> ToString
-		 	];
+		json = Developer`WriteRawJSONString[doc2,
+		 	"Compact" -> True,
+		 	"ConversionRules" -> $EncodingRules
+		 ];
 		 If[FailureQ[json], Return[json]];
 		 safeLibraryInvoke[createBSONfromJSON, ManagedLibraryExpressionID[bsonHandle], json]
 		 ,
@@ -139,66 +127,31 @@ BSONCreate[doc_ByteArray] := BSONCreate[RawArray["UnsignedInteger8", Normal[doc]
 (* see https://docs.mongodb.com/manual/reference/mongodb-extended-json/ *)
 (* Many of these types are not supported yet. *)
 
-$EncodingRules = {};
-$DecodingRules = {};
+(* Note: json converter already handles True, False, Null *)
 
-(*----- Binary -------
-Strict: { "$binary": "<bindata>", "$type": "<t>" }
-Shell: BinData ( <t>, <bindata> )
-*)
+$EncodingRules = {
+	Infinity -> <|"$maxKey" -> 1|>,
+	Minus[Infinity] -> <|"$minKey" -> 1|>,
+	x_DateObject :> <|"$date", Round @ ToMillisecondUnixTime[x]|>,
+	BSONObjectID[x_] -> <|"$oid" -> x|>,
+	BSONDBReference[coll_, id_] :> <|"$ref" -> coll, "$id" -> First[id]|>
+};
 
+(*----- ObjectID -------*)
+PackageExport["BSONObjectID"]
 
-(*----- Date -------
-Strict: { "$date": "<date>" }
-Shell: new Date ( <date> ) 
-*)
-
-AppendTo[$EncodingRules,
-	x_DateObject :> <|Rule["$date", ToMillisecondUnixTime[x]]|>
-
-];
-
-AppendTo[$DecodingRules,
-	<|Rule["$date", x_]|> :> FromMillisecondUnixTime[x]
-];
-
-(*----- Timestamp -------
-Strict: { "$timestamp": { "t": <t>, "i": <i> } }
-Shell: Timestamp( <t>, <i> )
-*)
-
-
-(*----- Regular Expression -------
-Strict: { "$regex": "<sRegex>", "$options": "<sOptions>" }
-Shell: 	/<jRegex>/<jOptions>
-*)
-
-
-(*----- OID -------
-Strict: { "$oid": "<id>" }
-Shell: ObjectId( "<id>" )
-*)
-PackageExport["MongoOID"] 
-
-AppendTo[$EncodingRules,
-	MongoOID[x_] -> <|Rule["$oid", x]|>
-];
-
-AppendTo[$DecodingRules,
-	<|Rule["$oid", x_]|> :> MongoOID[x]
-];
-
-MongoOID /: Normal[x_MongoOID] :=  <|
-	"GenerationTime" -> FromUnixTime @ Interpreter["HexInteger"][StringTake[First[x], {1, 8}]],
-	"MachineID" -> Interpreter["HexInteger"][StringTake[First[x], {9, 14}]],
-	"ProcessID" -> Interpreter["HexInteger"][StringTake[First[x], {15, 18}]],
-	"Counter" -> Interpreter["HexInteger"][StringTake[First[x], {19, -1}]]
+BSONObjectID /: Normal[BSONObjectID[hex_String]] :=  <|
+	"GenerationTime" -> 
+		FromUnixTime @ Interpreter["HexInteger"][StringTake[hex, {1, 8}]],
+	"MachineID" -> Interpreter["HexInteger"][StringTake[hex, {9, 14}]],
+	"ProcessID" -> Interpreter["HexInteger"][StringTake[hex, {15, 18}]],
+	"Counter" -> Interpreter["HexInteger"][StringTake[hex, {19, -1}]]
 |>;
 
-DefineCustomBoxes[MongoOID, 
-	e:MongoOID[id_String] :> Block[{},
+DefineCustomBoxes[BSONObjectID, 
+	e:BSONObjectID[id_] :> Block[{},
 	BoxForm`ArrangeSummaryBox[
-		MongoOID, e, None, 
+		BSONObjectID, e, None, 
 		{
 			BoxForm`SummaryItem[{"OID: ", id}]
 		},
@@ -212,51 +165,24 @@ DefineCustomBoxes[MongoOID,
 Strict: { "$oid": "<id>" }
 Shell: ObjectId( "<id>" )
 *)
-PackageExport["MongoDBReference"]
+PackageExport["BSONDBReference"]
 
-AppendTo[$EncodingRules,
-	MongoDBReference[dataset_, id_] -> <|Rule["$ref", dataset], Rule["$id", id]|>
-];
-
-AppendTo[$DecodingRules,
-	<|Rule["$ref", dataset_], Rule["$id", id_]|> :> MongoDBReference[dataset, id]
-];
-
-MongoDBReference /: Normal[x_MongoDBReference] :=  <|
-	"$ref" -> First[x],
-	"$id" -> Last[x]
+BSONDBReference /: Normal[BSONDBReference[coll_, oid_]] :=  <|
+	"Collection" -> coll,
+	"ObjectID" -> oid
 |>;
 
 (* display form *)
-DefineCustomBoxes[MongoDBReference, 
-	e:MongoDBReference[dataset_, id_] :> Block[{},
+DefineCustomBoxes[BSONDBReference, 
+	e:BSONDBReference[coll_, id_] :> Block[{},
 	BoxForm`ArrangeSummaryBox[
-		MongoDBReference, e, None, 
+		BSONDBReference, e, None, 
 		{
-			BoxForm`SummaryItem[{"ID: ", id}],
-			BoxForm`SummaryItem[{"Collection: ", dataset}]
+			BoxForm`SummaryItem[{"OID: ", id}],
+			BoxForm`SummaryItem[{"Collection: ", coll}]
 		},
 		{},
 		StandardForm
 	]
 ]];
 
-(*----- Undefined Type -------
-Strict: { "$undefined": true }
-Shell: 	undefined
-*)
-
-(*----- MinKey -------
-Strict: { "$minKey": 1 }
-Shell: 	MinKey
-*)
-
-(*----- MaxKey -------
-Strict: { "$maxKey": 1 }
-Shell: 	MaxKey
-*)
-
-(*----- NumberLong -------
-Strict: { "$numberLong": "<number>" }
-Shell: NumberLong( "<number>" )
-*)
