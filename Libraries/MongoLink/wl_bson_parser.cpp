@@ -330,6 +330,7 @@ EXTERN_C DLLEXPORT int WL_ParseBSON(WolframLibraryData libData, MLINK mlp) {
     MLPutFunction(mlp, "Association", num_initial_keys);
     state.keys = true;
   } else {
+    // assume this is an array
     MLPutFunction(mlp, "List", num_initial_keys);
     state.keys = false;
   }
