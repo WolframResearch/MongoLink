@@ -96,31 +96,44 @@ BSONToAssociation[BSONObject[id_]] := Catch @ safeLibraryInvoke[parseBSON, Manag
 
 (*----------------------------------------------------------------------------*)
 PackageExport["BSONCreate"]
+PackageScope["iBSONCreate"]
 
-BSONCreate[doc_ /; (AssociationQ[doc] || StringQ[doc])] := Catch @ Module[
-	{bsonHandle, result, json, doc2},
+iBSONCreate::invjson = "Cannot parse the input into json.";
+iBSONCreate::invtype = "Argument must be string, Association or list.";
+
+iBSONCreate[doc_ /; (ListQ[doc] || AssociationQ[doc])] := Module[
+	{json},
+	json = Developer`WriteRawJSONString[doc,
+	 	"Compact" -> True,
+	 	"ConversionRules" -> $EncodingRules
+	 ];
+	If[FailureQ[json],
+	 	Message[iBSONCreate::invjson];
+	 	Throw[$Failed]
+	 ];
+	 iBSONCreate[json]
+]
+
+(* assumes doc is json *)
+iBSONCreate[doc_String] := Module[
+	{bsonHandle},
 	bsonHandle = CreateManagedLibraryExpression["MongoBSON", MongoBSON];
-	result = If[AssociationQ[doc],
-		json = Developer`WriteRawJSONString[doc2,
-		 	"Compact" -> True,
-		 	"ConversionRules" -> $EncodingRules
-		 ];
-		 If[FailureQ[json], Return[json]];
-		 safeLibraryInvoke[createBSONfromJSON, ManagedLibraryExpressionID[bsonHandle], json]
-		 ,
-		 safeLibraryInvoke[createBSONfromJSON, ManagedLibraryExpressionID[bsonHandle], doc]
-	];
+	safeLibraryInvoke[createBSONfromJSON, ManagedLibraryExpressionID[bsonHandle], doc];
 	BSONObject[bsonHandle]
 ]
 
-BSONCreate[doc_RawArray /; (Developer`RawArrayType[doc] === "UnsignedInteger8")] := Catch @ Module[
+iBSONCreate[doc_RawArray /; (Developer`RawArrayType[doc] === "UnsignedInteger8")] := Module[
 	{bsonHandle}, 
 	bsonHandle = CreateManagedLibraryExpression["MongoBSON", MongoBSON];
 	safeLibraryInvoke[rawarrayToBSON, ManagedLibraryExpressionID[bsonHandle], doc];
 	BSONObject[bsonHandle]
 ]
 
-BSONCreate[doc_ByteArray] := BSONCreate[RawArray["UnsignedInteger8", Normal[doc]]]
+iBSONCreate[doc_ByteArray] := iBSONCreate[RawArray["UnsignedInteger8", Normal[doc]]]
+
+iBSONCreate[doc_] := (Message[iBSONCreate::invtype]; Throw[$Failed]);
+
+BSONCreate[doc_] := Catch @ iBSONCreate[doc];
 
 (*----------------------------------------------------------------------------*)
 (*********** BSON Types *************)

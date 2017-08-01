@@ -30,15 +30,9 @@ bulkOperationExecute = LibraryFunctionLoad[$MongoLinkLib, "WL_mongoc_bulk_operat
 (*----------------------------------------------------------------------------*)
 PackageScope["BulkOperationInsert"]
 
-BulkOperationInsert::fail = "Failed to evaluate BulkOperationInsert."
-
-BulkOperationInsert[bulkop_MongoBulkOperation, doc_ /; (AssociationQ@doc || StringQ@doc)] := Module[
+BulkOperationInsert[bulkop_MongoBulkOperation, doc_ /; (AssociationQ@doc || StringQ@doc)] := Catch @ Module[
 	{bson},
-	bson = BSONCreate[doc];
-	If[FailureQ[bson], 
-		Message[BulkOperationInsert::fail];
-		Throw[$Failed]
-	];
+	bson = iBSONCreate[doc];
 	safeLibraryInvoke[bulkOperationInsert,
 		ManagedLibraryExpressionID[bulkop], 
 		ManagedLibraryExpressionID[First @ bson]

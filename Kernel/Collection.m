@@ -7,7 +7,7 @@ Package["MongoLink`"]
 
 PackageImport["GeneralUtilities`"]
 
-(******************************************************************************)
+(*----------------------------------------------------------------------------*)
 (****** Load Library Functions ******)
 
 clientGetCollection = LibraryFunctionLoad[$MongoLinkLib, 
@@ -176,8 +176,7 @@ PackageExport["MongoCollectionCount"]
 
 MongoCollectionCount[MongoCollectionObject[handle_, ___], query_Association] := Catch @ Module[
 	{bsonQuery},
-	bsonQuery = BSONCreate[query];
-	If[FailureQ[bsonQuery], Return[$Failed]];
+	bsonQuery = iBSONCreate[query];
 	safeLibraryInvoke[mongoCollectionCount,
 		ManagedLibraryExpressionID[handle], 
 		ManagedLibraryExpressionID[First @ bsonQuery]
@@ -193,19 +192,14 @@ PackageExport["MongoCollectionFind"]
 Options[MongoCollectionFind] = {
 };
 
-MongoCollectionFind[collection_MongoCollectionObject, query_, opts:OptionsPattern[]] := Catch @ Module[
+MongoCollectionFind[collection_MongoCollectionObject, 
+	query_, opts:OptionsPattern[]] := Catch @ Module[
 	{queryBSON, optsBSON, iteratorHandle, optsAssoc},
-	
 	iteratorHandle = CreateManagedLibraryExpression["MongoIterator", MongoIterator];
-	(* Get default settings. Note Mongo uses 0 as defaults for BatchSize, skip + limit. We'll use their 
-		defaults *)
-		
 	(* Create BSON query + field docs *)
-	queryBSON = BSONCreate[query];
+	queryBSON = iBSONCreate[query];
 	optsAssoc = <||>; (* add this in future! *)
-	optsBSON = BSONCreate[optsAssoc];
-	If[FailureQ[query], Return[query]];
-	If[FailureQ[optsBSON], Return[optsBSON]];
+	optsBSON = iBSONCreate[optsAssoc];
 
 	safeLibraryInvoke[mongoCollectionFind,
 		ManagedLibraryExpressionID[First @ collection], 
@@ -308,7 +302,8 @@ Options[MongoCollectionUpdate] = {
 	"MultiDocumentUpdate" -> False
 };
 
-MongoCollectionUpdate[MongoCollectionObject[handle_, ___], selector_, updaterDoc_, OptionsPattern[]] := Catch @ Module[
+MongoCollectionUpdate[MongoCollectionObject[handle_, ___], 
+	selector_, updaterDoc_, OptionsPattern[]] := Catch @ Module[
 	{queryBSON, updaterDocBSON},
 		
 	(* Write concern *)
@@ -317,13 +312,11 @@ MongoCollectionUpdate[MongoCollectionObject[handle_, ___], selector_, updaterDoc
 		"Journal" -> OptionValue["Journal"], 
 		"Timeout" -> OptionValue["Timeout"]
 	];
-	If[FailureQ@writeConcern, Return@writeConcern];
+	If[FailureQ[writeConcern], Return[writeConcern]];
 
 	(* Create BSON query + update docs *)
-	queryBSON = BSONCreate[selector];
-	updaterDocBSON = BSONCreate[updaterDoc];
-	(*If[FailureQ@query, Return@queryBSON];*)
-	If[FailureQ@updaterDocumentBSON, Return@updaterDocumentBSON];
+	queryBSON = iBSONCreate[selector];
+	updaterDocBSON = iBSONCreate[updaterDoc];
 
 	upsert = OptionValue["Upsert"];
 	multiDocumentUpdate = OptionValue["MultiDocumentUpdate"];
@@ -337,7 +330,6 @@ MongoCollectionUpdate[MongoCollectionObject[handle_, ___], selector_, updaterDoc
 		Boole[upsert],
 		Boole[multiDocumentUpdate]
 	];
-	
 	result
 ]	
 (*----------------------------------------------------------------------------*)
@@ -358,34 +350,26 @@ Options[MongoCollectionRemove] =
 	"MultiDocumentUpdate" -> False
 };
 
-MongoCollectionRemove[MongoCollectionObject[handle_, ___], selector_, OptionsPattern[]] := Catch @ Module[
-		{queryBSON},
+MongoCollectionRemove[MongoCollectionObject[handle_, ___], 
+	selector_, OptionsPattern[]] := Catch @ Module[
+	{queryBSON, multiDocumentUpdate, writeConcern},
 	(* Write concern *)
 	writeConcern = WriteConcernCreate[
 		OptionValue["WriteConcern"], 
 		"Journal" -> OptionValue["Journal"], 
 		"Timeout" -> OptionValue["Timeout"]
 	];
-	If[FailureQ@writeConcern, Return@writeConcern];
+	If[FailureQ[writeConcern], Return[writeConcern]];
 
 	(* Create BSON query *)
-	queryBSON = BSONCreate[selector];
-	If[FailureQ@query, Return[queryBSON];
-	];
-	
+	queryBSON = iBSONCreate[selector];
 	multiDocumentUpdate = OptionValue["MultiDocumentUpdate"];
-		
 	(* Execute *)
 	result = safeLibraryInvoke[mongoCollectionRemove,
 		ManagedLibraryExpressionID[handle],
 		Boole[multiDocumentUpdate],
 		ManagedLibraryExpressionID[First @ queryBSON],
 		ManagedLibraryExpressionID[writeConcern]
-	];
-	(* Check for errors *)
-	If[LibraryFunctionFailureQ@result, 
-		MongoFailureMessage[MongoCollectionRemove]; 
-		Return@$Failed
 	];
 	result
 ]
@@ -396,8 +380,7 @@ PackageExport["MongoCollectionAggregate"]
 MongoCollectionAggregate[collection_MongoCollectionObject, pipeline_] := Module[
 	{iteratorHandle, pipelineBSON},
 	iteratorHandle = CreateManagedLibraryExpression["MongoIterator", MongoIterator];
-	pipelineBSON = BSONCreate[<|"pipeline" -> pipeline|>];
-	If[FailureQ[pipelineBSON], Return[pipelineBSON]];
+	pipelineBSON = iBSONCreate[<|"pipeline" -> pipeline|>];
 
 	safeLibraryInvoke[mongoCollectionAggregate,
 		ManagedLibraryExpressionID[First @ collection], 
@@ -428,8 +411,8 @@ referenced by MongoReference[$$].
 MongoReferenceGet[database_MongoDatabaseObject, mong_MongoDBReference] := Catch @ Module[
 	{coll, docIter},
 	coll = MongoGetCollection[database, First@mong];
-	docIter = MongoCollectionFind[coll, <|"_id" -> <|"$oid" -> Last@mong|>|>];
-	If[FailureQ@docIter, Return@$Failed];
-	Read@docIter
+	docIter = MongoCollectionFind[coll, <|"_id" -> <|"$oid" -> Last[mong]|>|>];
+	If[FailureQ[docIter], Return[$Failed]];
+	Read[docIter]
 ]
 
