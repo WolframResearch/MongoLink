@@ -37,9 +37,6 @@ EXTERN_C DLLEXPORT int WL_DatabaseHandleCreate(WolframLibraryData libData,
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// Database handle creation
-
-////////////////////////////////////////////////////////////////////////////////
 EXTERN_C DLLEXPORT int WL_GetCollectionNames(WolframLibraryData libData,
                                              MLINK mlp) {
   // Load database handle
