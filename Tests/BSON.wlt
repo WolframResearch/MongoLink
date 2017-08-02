@@ -13,28 +13,28 @@ bson1 = BSONCreate[<|"hello" -> {1, 2.5, 3.}|>];
 VerificationTest[
 	BSONToJSON @ BSONCreate[BSONToRawArray[bson1]],
 	BSONToJSON @ bson1,
-	TestID -> 1
+	TestID -> "BSON to RawArray to JSON"
 ]
 
 (* byte array conversion 1 *)
 VerificationTest[
 	BSONToJSON @ BSONCreate[BSONToByteArray[bson1]],
 	BSONToJSON @ bson1,
-	TestID -> 2
+	TestID -> "BSON to ByteArray to JSON v1"
 ]
 
 (* byte array conversion 2 *)
 VerificationTest[
 	BSONToJSON @ BSONCreate[ByteArray[bson1]],
 	BSONToJSON @ bson1,
-	TestID -> 3
+	TestID -> "BSON to ByteArray to JSON v2"
 ]
 
 (* byte array association *)
 VerificationTest[
-	BSONToJSON @ BSONCreate[BSONToAssociation[bson1]],
+	BSONToJSON @ BSONCreate[BSONToExpression[bson1]],
 	BSONToJSON @ bson1,
-	TestID -> 4
+	TestID -> "BSON to expression to JSON"
 ]
 
 (*JSON*)
@@ -63,15 +63,6 @@ VerificationTest[
  	TestID -> "JSON to BSON", 
  	SameTest -> MatchQ
  ]
-
-(*BSONCreate for list*)
-
-VerificationTest[
-	BSONCreate[list], 
-	_BSONObject, 
- 	TestID -> "list to BSON", 
- 	SameTest -> MatchQ
- ]
  
 (*----------------------------------------------------------------------------*)
 (* BSONObjectID *)
@@ -91,6 +82,15 @@ VerificationTest[
   "Counter" -> 7697784|>, 
   TestID -> "BSONObjectID returns same"
  ] 
+ 
+(*----------------------------------------------------------------------------*)
+(* BSONObject *)
+
+ VerificationTest[
+ 	Normal@BSONCreate[assoc], 
+ 	BSONToExpression[BSONCreate[assoc]], 
+ 	TestID -> "BSONObject//Normal returns same as BSONtoExpression"
+ ]
  
 (*----------------------------------------------------------------------------*)
 (* BSON Extended Types:
