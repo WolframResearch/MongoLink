@@ -30,6 +30,7 @@ typedef struct {
  */
 static bool _bson_as_wl_visit_array(const bson_iter_t *iter, const char *key,
                                     const bson_t *v_array, void *data);
+
 static bool _bson_as_wl_visit_document(const bson_iter_t *iter, const char *key,
                                        const bson_t *v_document, void *data);
 
@@ -265,7 +266,6 @@ static bool _bson_as_wl_visit_document(const bson_iter_t *iter, const char *key,
 
   if (bson_iter_init(&child, v_document)) {
     int num_initial_keys = static_cast<int>(bson_count_keys(v_document));
-    std::cout << "num keys: " << num_initial_keys << std::endl;
     MATH_CHECK(MLPutFunction(*mlp, "Association", num_initial_keys));
     child_state.wstp_state = mlp;
     child_state.depth = state->depth + 1;
@@ -308,13 +308,6 @@ EXTERN_C DLLEXPORT int WL_ParseBSON(WolframLibraryData libData, MLINK mlp) {
   if (!MLNewPacket(mlp))
     return LIBRARY_FUNCTION_ERROR;
 
-  // check for empty bson, return empty assoc
-  if (!bson || bson_empty(bson)) {
-    if (!MLPutFunction(mlp, "Association", 0))
-      return LIBRARY_FUNCTION_ERROR;
-    return LIBRARY_NO_ERROR;
-  }
-
   bson_iter_t iter;
   if (!bson_iter_init(&iter, bson)) {
     return LIBRARY_FUNCTION_ERROR;
@@ -324,16 +317,16 @@ EXTERN_C DLLEXPORT int WL_ParseBSON(WolframLibraryData libData, MLINK mlp) {
   state.count = 0;
   state.wstp_state = &mlp;
   state.depth = 0;
+  state.keys = true;
+
+  if (!bson || bson_empty(bson)) {
+    if (!MLPutFunction(mlp, "Association", 0))
+      return LIBRARY_FUNCTION_ERROR;
+    return LIBRARY_NO_ERROR;
+  }
 
   int num_initial_keys = static_cast<int>(bson_count_keys(bson));
-  if (BSON_TYPE_DOCUMENT == bson_iter_type(&iter)) {
-    MLPutFunction(mlp, "Association", num_initial_keys);
-    state.keys = true;
-  } else {
-    // assume this is an array
-    MLPutFunction(mlp, "List", num_initial_keys);
-    state.keys = false;
-  }
+  MLPutFunction(mlp, "Association", num_initial_keys);
 
   if (bson_iter_visit_all(&iter, &bson_as_wl_visitors, &state) ||
       iter.err_off) {
