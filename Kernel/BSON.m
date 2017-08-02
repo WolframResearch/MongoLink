@@ -144,7 +144,7 @@ BSONCreate[doc_] := Catch @ iBSONCreate[doc];
 $EncodingRules = {
 	Infinity :> <|"$maxKey" -> 1|>,
 	Minus[Infinity] :> <|"$minKey" -> 1|>,
-	x_DateObject :> <|"$date", Round @ ToMillisecondUnixTime[x]|>,
+	x_DateObject :> <|"$date" -> Round @ ToMillisecondUnixTime[x]|>,
 	BSONObjectID[x_] :> <|"$oid" -> x|>,
 	BSONDBReference[coll_, id_] :> <|"$ref" -> coll, "$id" -> First[id]|>
 };
