@@ -10,6 +10,14 @@ bson1 = BSONCreate[<|"hello" -> {1, 2.5, 3.}|>];
 (* Conversion Functions *)
 
 (* raw array conversion *)
+
+VerificationTest[
+	BSONToRawArray[bson1], 
+	_RawArray, 
+ 	TestID -> "BSON to raw array", 
+ 	SameTest -> MatchQ
+ ]
+ 
 VerificationTest[
 	BSONToJSON @ BSONCreate[BSONToRawArray[bson1]],
 	BSONToJSON @ bson1,
@@ -17,6 +25,14 @@ VerificationTest[
 ]
 
 (* byte array conversion 1 *)
+
+VerificationTest[
+	BSONToByteArray[bson1], 
+	_ByteArray, 
+ 	TestID -> "BSON to byte array",
+ 	SameTest -> MatchQ
+ ]
+ 
 VerificationTest[
 	BSONToJSON @ BSONCreate[BSONToByteArray[bson1]],
 	BSONToJSON @ bson1,
@@ -24,6 +40,13 @@ VerificationTest[
 ]
 
 (* byte array conversion 2 *)
+
+VerificationTest[
+	ByteArray[bson1], 
+	BSONToByteArray[bson1], 
+ 	TestID -> "ByteArray same as BSONToByteArray"
+ ]
+ 
 VerificationTest[
 	BSONToJSON @ BSONCreate[ByteArray[bson1]],
 	BSONToJSON @ bson1,
@@ -31,6 +54,14 @@ VerificationTest[
 ]
 
 (* byte array association *)
+
+VerificationTest[
+	BSONToExpression[bson1], 
+	_Association, 
+ 	TestID -> "BSON to assoc", 
+ 	SameTest -> MatchQ
+ ] 
+ 
 VerificationTest[
 	BSONToJSON @ BSONCreate[BSONToExpression[bson1]],
 	BSONToJSON @ bson1,
@@ -92,6 +123,15 @@ VerificationTest[
  	TestID -> "BSONObject//Normal returns same as BSONtoExpression"
  ]
  
+(*----------------------------------------------------------------------------*)
+(* Round Trip *)
+
+VerificationTest[
+	assoc,
+	BSONToExpression@BSONCreate@BSONToJSON@BSONCreate@BSONToByteArray@BSONCreate@BSONToRawArray@BSONCreate@assoc,
+	TestID -> "Association round trip"
+ ]
+
 (*----------------------------------------------------------------------------*)
 (* BSON Extended Types:
   https://docs.mongodb.com/manual/reference/mongodb-extended-json/
