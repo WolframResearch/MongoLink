@@ -74,7 +74,9 @@ DefineCustomBoxes[BSONObject,
 ]];
 
 BSONObject /: ByteArray[bson_BSONObject] := BSONToByteArray[bson]
-	
+
+BSONObject /: Normal[bson_BSONObject] := BSONToExpression[bson]
+
 (*----------------------------------------------------------------------------*)
 (* conversion funcs *)
 
@@ -89,8 +91,13 @@ BSONToByteArray[bson_BSONObject] :=
 PackageExport["BSONToJSON"]
 BSONToJSON[BSONObject[id_]] := Catch @ safeLibraryInvoke[bsonAsJSON, ManagedLibraryExpressionID[id]]
 
-PackageExport["BSONToAssociation"]
-BSONToAssociation[BSONObject[id_]] := Catch @ safeLibraryInvoke[parseBSON, ManagedLibraryExpressionID[id]]
+PackageExport["BSONToExpression"]
+
+BSONToExpression[x_BSONObject] := Catch @ iBSONToExpression[x]
+
+iBSONToExpression[BSONObject[id_]] := safeLibraryInvoke[parseBSON, ManagedLibraryExpressionID[id]]
+iBSONToExpression[x:{__BSONObject}] := iBSONToExpression /@ x
+iBSONToExpression[___] := Throw[$Failed]
 
 (*----------------------------------------------------------------------------*)
 PackageExport["BSONCreate"]

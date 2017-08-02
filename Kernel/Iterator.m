@@ -31,5 +31,5 @@ MongoIteratorRead[MongoIterator[handleKey_]] := Module[
 	If[LibraryFunctionFailureQ[result], 
 		Return[$Failed]
 	];
-	BSONToAssociation[result]
+	BSONToExpression[result]
 ]
