@@ -24,27 +24,17 @@ EXTERN_C DLLEXPORT int WL_IteratorHasNext(WolframLibraryData libData, mint Argc,
 
 EXTERN_C DLLEXPORT int WL_IteratorNext(WolframLibraryData libData, mint Argc,
                                        MArgument *Args, MArgument Res) {
-  int iterator_handle_key = MArgument_getInteger(Args[0]);
+  ITERATOR_GET(cursor, 0)
   int bson_handle_key = MArgument_getInteger(Args[1]);
-  // Check that iterator exists
-  if (iteratorHandleMap.count(iterator_handle_key) == 0) {
-    errorString = "Iterator does not exist.";
-    return LIBRARY_FUNCTION_ERROR;
-  }
-  auto cursor = iteratorHandleMap[iterator_handle_key];
   const bson_t *doc;
+  // http://mongoc.org/libmongoc/current/mongoc_cursor_next.html
   if (!mongoc_cursor_next(cursor, &doc)) {
     errorString =
         "Error reading next element of iterator. Has it been exhausted?";
     return LIBRARY_FUNCTION_ERROR;
   }
-  // Free global variable if necessary
-  if (returnBSONJSON) {
-    bson_free(returnBSONJSON);
-  }
-  // Convert BSON to json
-  returnBSONJSON = bson_as_json(doc, NULL);
-  // Return
-  MArgument_setUTF8String(Res, returnBSONJSON);
+  // not efficient: fix this later!
+  bsonHandleMap[bson_handle_key] = bson_copy(doc);
+
   return LIBRARY_NO_ERROR;
 }
