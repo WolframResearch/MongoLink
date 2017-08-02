@@ -14,22 +14,19 @@ PackageExport["MongoIterator"]
 
 iteratorNext = LibraryFunctionLoad[$MongoLinkLib, "WL_IteratorNext", 
 	{
-		Integer					(* bson handle *)
+		Integer,					(* cursor handle *)
+		Integer						(* bson handle *)
 
 	}, 
-	"UTF8String"				(* json *)	
+	"Void"
 ]	
 
 (*----------------------------------------------------------------------------*)
 PackageScope["MongoIteratorRead"]
 
-(* note: this function returns an error when no next element. Don't throw message,
- so don't use safeLibraryLoad *)
-MongoIteratorRead[MongoIterator[handleKey_]] := Module[
-	{result},
-	result = iteratorNext[handleKey];
-	If[LibraryFunctionFailureQ[result], 
-		Return[$Failed]
-	];
-	BSONToExpression[result]
+MongoIteratorRead[MongoIterator[handleKey_]] := Catch @ Module[
+	{bsonHandle},
+	bsonHandle = CreateManagedLibraryExpression["MongoBSON", MongoBSON];
+	safeLibraryInvoke[iteratorNext, handleKey, ManagedLibraryExpressionID[bsonHandle]];
+	BSONToExpression[BSONObject[bsonHandle]]
 ]
