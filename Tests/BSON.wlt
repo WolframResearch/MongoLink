@@ -72,6 +72,26 @@ VerificationTest[
  	TestID -> "list to BSON", 
  	SameTest -> MatchQ
  ]
+ 
+(*----------------------------------------------------------------------------*)
+(* BSONObjectID *)
+
+VerificationTest[
+ 	Normal@BSONObjectID["666f6f2d6261722d71757578"], 
+ 	_Association, 
+ 	TestID -> "BSONObjectID returns association", 
+ 	SameTest -> MatchQ
+ ]
+ 
+VerificationTest[
+ 	Normal@BSONObjectID["666f6f2d6261722d71757578"], 
+ 	<|"GenerationTime" -> 
+   DateObject[{2024, 6, 16, 19, 3, 9.`}, "Instant", 
+    "Gregorian", -4.`], "MachineID" -> 6447474, "ProcessID" -> 11633, 
+  "Counter" -> 7697784|>, 
+  TestID -> "BSONObjectID returns same"
+ ] 
+ 
 (*----------------------------------------------------------------------------*)
 (* BSON Extended Types:
   https://docs.mongodb.com/manual/reference/mongodb-extended-json/
