@@ -6,7 +6,8 @@
 
 #include "wl_common.h"
 
-////////////////////////////////////////////////////////////////////////////////
+/*----------------------------------------------------------------------------*/
+
 EXTERN_C DLLEXPORT int WL_DatabaseGetName(WolframLibraryData libData, mint Argc,
                                           MArgument *Args, MArgument Res) {
   auto database = databaseHandleMap[MArgument_getInteger(Args[0])];
@@ -16,8 +17,6 @@ EXTERN_C DLLEXPORT int WL_DatabaseGetName(WolframLibraryData libData, mint Argc,
   return LIBRARY_NO_ERROR;
 }
 
-////////////////////////////////////////////////////////////////////////////////
-// Database handle creation
 EXTERN_C DLLEXPORT int WL_DatabaseHandleCreate(WolframLibraryData libData,
                                                mint Argc, MArgument *Args,
                                                MArgument Res) {
@@ -36,7 +35,6 @@ EXTERN_C DLLEXPORT int WL_DatabaseHandleCreate(WolframLibraryData libData,
   return LIBRARY_NO_ERROR;
 }
 
-////////////////////////////////////////////////////////////////////////////////
 EXTERN_C DLLEXPORT int WL_GetCollectionNames(WolframLibraryData libData,
                                              MLINK mlp) {
   // Load database handle
@@ -74,7 +72,6 @@ EXTERN_C DLLEXPORT int WL_GetCollectionNames(WolframLibraryData libData,
   return LIBRARY_NO_ERROR;
 }
 
-////////////////////////////////////////////////////////////////////////////////
 EXTERN_C DLLEXPORT int WL_DatabaseCreateCollection(WolframLibraryData libData,
                                                    mint Argc, MArgument *Args,
                                                    MArgument Res) {
@@ -97,7 +94,6 @@ EXTERN_C DLLEXPORT int WL_DatabaseCreateCollection(WolframLibraryData libData,
   return LIBRARY_NO_ERROR;
 }
 
-////////////////////////////////////////////////////////////////////////////
 EXTERN_C DLLEXPORT int WL_DatabaseGetCollection(WolframLibraryData libData,
                                                 mint Argc, MArgument *Args,
                                                 MArgument Res) {

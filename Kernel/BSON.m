@@ -4,17 +4,11 @@ BSON: create BSON objects from either JSON or associations
 
 *******************************************************************************)
 
-(* NOTE: this implementation is NOT efficient. An efficient parser and writer 
- is a future project. It should send an association to C via MathLink, and then
- use bson_write_t http://mongoc.org/libbson/current/bson_writer_t.html.
- Same for reading: http://mongoc.org/libbson/current/bson_reader_t.html
-*)
-
 Package["MongoLink`"]
 
 PackageImport["GeneralUtilities`"]
 
-(******************************************************************************)
+(*----------------------------------------------------------------------------*)
 (****** Load Library Functions ******)
 
 createBSONfromJSON = LibraryFunctionLoad[$MongoLinkLib, "WL_CreateBSONfromJSON",
@@ -50,7 +44,6 @@ bsonAsRawArray = LibraryFunctionLoad[$MongoLinkLib, "WL_bson_to_rawarray",
 	"RawArray"
 ]
 
-
 parseBSON = LibraryFunctionLoad[$MongoLinkLib, "WL_ParseBSON",
 	Automatic, 
 	LinkObject
@@ -74,7 +67,6 @@ DefineCustomBoxes[BSONObject,
 ]];
 
 BSONObject /: ByteArray[bson_BSONObject] := BSONToByteArray[bson]
-
 BSONObject /: Normal[bson_BSONObject] := BSONToExpression[bson]
 
 (*----------------------------------------------------------------------------*)
@@ -137,6 +129,8 @@ iBSONCreate[doc_RawArray /; (Developer`RawArrayType[doc] === "UnsignedInteger8")
 iBSONCreate[doc_ByteArray] := iBSONCreate[RawArray["UnsignedInteger8", Normal[doc]]]
 
 iBSONCreate[doc_] := (Message[iBSONCreate::invtype]; Throw[$Failed]);
+
+iBSONCreate[doc_BSONObject] := doc (* idempotency *)
 
 BSONCreate[doc_] := Catch @ iBSONCreate[doc];
 

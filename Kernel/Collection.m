@@ -226,27 +226,39 @@ MongoCollectionFind[collection_MongoCollectionObject, opts:OptionsPattern[]] :=
 PackageExport["MongoCollectionInsert"]
 
 Options[MongoCollectionInsert] = {
-	"WriteConcern" -> 1,
-	"Journal" -> True,
-	"Timeout" -> None,
+	"WriteConcern" -> Automatic,
 	"Ordered" -> True
 };
 
-MongoCollectionInsert[
-	collection_MongoCollectionObject, docs_List, opts:OptionsPattern[]] := Catch @ Module[
-	{
-		wc, journal, timeout, ordered, 
-		writeConcern, bulkHandle
-	}
-	,
-	{wc, journal, timeout, ordered} = 
-		OptionValue[{"WriteConcern", "Journal", "Timeout", "Ordered"}];
-	(* Write concern *)
-	writeConcern = WriteConcernCreate[wc,
-		"Journal" -> journal, 
-		"Timeout" -> timeout
+MongoCollectionInsert::ordered = 
+	"The option \"Ordered\" was ``, but must be either True or False.";
+MongoCollectionInsert::writeconcern = 
+	"The option \"WriteConcern\" was ``, but must be a MongoWriteConcernObject or Automatic.";
+
+MongoCollectionInsert[coll_MongoCollectionObject, doc_, opts:OptionsPattern[]] := Catch @ Module[
+	{wc, ordered},
+	(** parse options **)
+	{wc, ordered} = OptionValue[{"WriteConcern", "Ordered"}];
+	If[!BooleanQ[ordered],
+		Message[MongoCollectionInsert::ordered, ordered];
+		Throw[$Failed]
 	];
-	
+	If[(wc =!= Automatic) && (Head[wc] =!= MongoWriteConcernObject),
+		Message[MongoCollectionInsert::writeconcern, writeconcern];
+		Throw[$Failed]
+	];
+	iMongoCollectionInsert[coll, doc, wc, ordered]
+]
+
+iMongoCollectionInsert[
+	collection_MongoCollectionObject, docs:{__BSONObject}, wc_, ordered_] := Module[
+	{writeConcern, bulkHandle}
+	,
+	(* Write concern: if Automatic, create Null ManagedLibraryExpression *)
+	writeConcern = If[wc === Automatic, 
+		CreateManagedLibraryExpression["MongoWriteConcern", MongoWriteConcern],
+		First[writeConcern]
+	];
 	(* Create bulk op *)
 	bulkHandle = CreateManagedLibraryExpression["MongoBulkOperation", MongoBulkOperation];
 	safeLibraryInvoke[mongoCollectionCreateBulkOp,
@@ -255,34 +267,29 @@ MongoCollectionInsert[
 		ManagedLibraryExpressionID[writeConcern],
 		ManagedLibraryExpressionID[bulkHandle]
 	];
-	(* Handle different types *)
-	Which[
-		(* Single document case *)
-		AssociationQ[docs] || StringQ[docs],
-			BulkOperationInsert[bulkHandle, docs]
-		,
-		ListQ[docs] || (Head[docs] === Dataset),
-			Scan[
-				BulkOperationInsert[bulkHandle, #]&,
-				docs
-			];
-		,
-		True,
-			Message[CollectionInsert::unknownType];
-			Return[$Failed]
+	Scan[
+		bulkOperationInsert[bulkHandle, #]&,
+		docs
 	];
-
 	(* Execute *)
-	BulkOperationExecute[bulkHandle]
+	bulkOperationExecute[bulkHandle]
 ]
 
-MongoCollectionInsert[coll_MongoCollectionObject, docs_Dataset, opts:OptionsPattern[]] := 
-	MongoCollectionInsert[coll, Normal[docs], opts]
+iMongoCollectionInsert[coll_MongoCollectionObject, doc_BSONObject, wc_, ordered_] := 
+	iMongoCollectionInsert[coll, {doc}, wc, ordered]
 
-CollectionInsert::unknownType = "Unknown type for document.";
+iMongoCollectionInsert[coll_MongoCollectionObject, doc_Association|doc_String, wc_, ordered_] := 
+	iMongoCollectionInsert[coll, {iBSONCreate[doc]}, wc, ordered]
+
+iMongoCollectionInsert[coll_MongoCollectionObject, doc_List, wc_, ordered_] := 
+	iMongoCollectionInsert[coll, iBSONCreate /@ doc, wc, ordered]
+
+iMongoCollectionInsert::invtype =
+	"Document to be inserted must be an Association, String or BSONObject, or a list of these.";
+iMongoCollectionInsert[coll_MongoCollectionObject, doc_, wc_, ordered_] := 
+	(Message[iMongoCollectionInsert::invtype];Throw[$Failed])
 
 (*----------------------------------------------------------------------------*)
-
 PackageExport["MongoCollectionUpdate"]
 
 SetUsage[MongoCollectionUpdate, "
