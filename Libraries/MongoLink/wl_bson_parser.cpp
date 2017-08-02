@@ -4,7 +4,7 @@
 
 #include "wl_common.h"
 
-////////////////
+/*----------------------------------------------------------------------------*/
 
 #define MATH_CHECK(func)                                                       \
   {                                                                            \
@@ -322,12 +322,19 @@ EXTERN_C DLLEXPORT int WL_ParseBSON(WolframLibraryData libData, MLINK mlp) {
 
   bson_wl_state_t state;
   state.count = 0;
-  state.keys = true;
   state.wstp_state = &mlp;
   state.depth = 0;
 
   int num_initial_keys = static_cast<int>(bson_count_keys(bson));
-  MLPutFunction(mlp, "Association", num_initial_keys);
+  if (BSON_TYPE_DOCUMENT == bson_iter_type(&iter)) {
+    MLPutFunction(mlp, "Association", num_initial_keys);
+    state.keys = true;
+  } else {
+    // assume this is an array
+    MLPutFunction(mlp, "List", num_initial_keys);
+    state.keys = false;
+  }
+
   if (bson_iter_visit_all(&iter, &bson_as_wl_visitors, &state) ||
       iter.err_off) {
     // We were prematurely exited due to corruption or failed visitor.

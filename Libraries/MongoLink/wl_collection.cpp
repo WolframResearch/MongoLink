@@ -6,7 +6,7 @@
 
 #include "wl_common.h"
 
-////////////////////////////////////////////////////////////////////////////////
+/*----------------------------------------------------------------------------*/
 // Collection handle creation
 EXTERN_C DLLEXPORT int WL_CollectionGetName(WolframLibraryData libData,
                                             mint Argc, MArgument *Args,
@@ -19,8 +19,6 @@ EXTERN_C DLLEXPORT int WL_CollectionGetName(WolframLibraryData libData,
   MArgument_setUTF8String(Res, const_cast<char *>(returnString.c_str()));
   return LIBRARY_NO_ERROR;
 }
-
-////////////////////////////////////////////////////////////////////////////////
 
 EXTERN_C DLLEXPORT int WL_MongoCollectionCount(WolframLibraryData libData,
                                                mint Argc, MArgument *Args,
@@ -40,8 +38,6 @@ EXTERN_C DLLEXPORT int WL_MongoCollectionCount(WolframLibraryData libData,
   return LIBRARY_NO_ERROR;
 }
 
-////////////////////////////////////////////////////////////////////////////////
-// Produces iterator object
 EXTERN_C DLLEXPORT int WL_MongoCollectionFind(WolframLibraryData libData,
                                               mint Argc, MArgument *Args,
                                               MArgument Res) {
@@ -62,21 +58,23 @@ EXTERN_C DLLEXPORT int WL_MongoCollectionFind(WolframLibraryData libData,
   return LIBRARY_NO_ERROR;
 }
 
-////////////////////////////////////////////////////////////////////////////////
 EXTERN_C DLLEXPORT int
 WL_MongoCollectionCreateBulkOp(WolframLibraryData libData, mint Argc,
                                MArgument *Args, MArgument Res) {
   // Inputs
   COLLECTION_GET(collection, 0)
   bool ordered = MArgument_getInteger(Args[1]);
-  WRITE_CONCERN_GET(writeconcern, 2)
+  mint wc_key = MArgument_getInteger(Args[2]);
+  mongoc_write_concern_t *wc = (writeConcernHandleMap.count(wc_key) > 0)
+                                   ? writeConcernHandleMap[wc_key]
+                                   : NULL;
   mint output_bulk_key = MArgument_getInteger(Args[3]);
+  // http://mongoc.org/libmongoc/current/mongoc_collection_create_bulk_operation.html
   bulkOperationHandleMap[output_bulk_key] =
-      mongoc_collection_create_bulk_operation(collection, ordered, NULL);
+      mongoc_collection_create_bulk_operation(collection, ordered, wc);
   return LIBRARY_NO_ERROR;
 }
 
-////////////////////////////////////////////////////////////////////////////////
 // NOTE: we only support a single update flag. Will change in future.
 EXTERN_C DLLEXPORT int WL_MongoCollectionUpdate(WolframLibraryData libData,
                                                 mint Argc, MArgument *Args,
@@ -109,8 +107,6 @@ EXTERN_C DLLEXPORT int WL_MongoCollectionUpdate(WolframLibraryData libData,
   return LIBRARY_NO_ERROR;
 }
 
-//////////////////////////////////////////////////////////////////////////////
-
 EXTERN_C DLLEXPORT int WL_MongoCollectionRemove(WolframLibraryData libData,
                                                 mint Argc, MArgument *Args,
                                                 MArgument Res) {
@@ -134,8 +130,6 @@ EXTERN_C DLLEXPORT int WL_MongoCollectionRemove(WolframLibraryData libData,
   }
   return LIBRARY_NO_ERROR;
 }
-
-////////////////////////////////////////////////////////////////////////////////
 
 EXTERN_C DLLEXPORT int WL_MongoCollectionAggregation(WolframLibraryData libData,
                                                      mint Argc, MArgument *Args,

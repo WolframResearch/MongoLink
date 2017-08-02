@@ -8,11 +8,10 @@ Package["MongoLink`"]
 
 PackageScope["MongoBulkOperation"]
 
-(******************************************************************************)
-
+(*----------------------------------------------------------------------------*)
 (****** Load Library Functions ******)
 
-bulkOperationInsert = LibraryFunctionLoad[$MongoLinkLib, "WL_bulk_operation_insert", 
+bulkOperationInsertLib = LibraryFunctionLoad[$MongoLinkLib, "WL_bulk_operation_insert", 
 	{
 		Integer,					(* bulk op handle *)
 		Integer						(* connection info *)
@@ -20,7 +19,7 @@ bulkOperationInsert = LibraryFunctionLoad[$MongoLinkLib, "WL_bulk_operation_inse
 	"Void"						
 ]	
 
-bulkOperationExecute = LibraryFunctionLoad[$MongoLinkLib, "WL_mongoc_bulk_operation_execute", 
+bulkOperationExecuteLib = LibraryFunctionLoad[$MongoLinkLib, "WL_mongoc_bulk_operation_execute", 
 	{
 		Integer					(* bulk op handle *)
 	}, 
@@ -28,29 +27,23 @@ bulkOperationExecute = LibraryFunctionLoad[$MongoLinkLib, "WL_mongoc_bulk_operat
 ]
 
 (*----------------------------------------------------------------------------*)
-PackageScope["BulkOperationInsert"]
+PackageScope["bulkOperationInsert"]
 
-BulkOperationInsert::fail = "Failed to evaluate BulkOperationInsert."
+bulkOperationInsert[bulkop_MongoBulkOperation, doc_BSONObject] := safeLibraryInvoke[
+	bulkOperationInsertLib,
+	ManagedLibraryExpressionID[bulkop], 
+	ManagedLibraryExpressionID[First @ doc]
+];
 
-BulkOperationInsert[bulkop_MongoBulkOperation, doc_ /; (AssociationQ@doc || StringQ@doc)] := Module[
-	{bson},
-	bson = BSONCreate[doc];
-	If[FailureQ[bson], 
-		Message[BulkOperationInsert::fail];
-		Throw[$Failed]
-	];
-	safeLibraryInvoke[bulkOperationInsert,
-		ManagedLibraryExpressionID[bulkop], 
-		ManagedLibraryExpressionID[First @ bson]
-	];
-	bulkop
-]
+bulkOperationInsert::invtype = "Expected second arg to be BSONObject, but got ``.";
+bulkOperationInsert[bulkop_MongoBulkOperation, _] := 
+	(Message[bulkOperationInsert::invtype]; Throw[$Failed])
 
 (*----------------------------------------------------------------------------*)
-PackageScope["BulkOperationExecute"]
+PackageScope["bulkOperationExecute"]
 
-BulkOperationExecute[bulkop_MongoBulkOperation] := Module[
+bulkOperationExecute[bulkop_MongoBulkOperation] := Module[
 	{result},
-	result = safeLibraryInvoke[bulkOperationExecute, ManagedLibraryExpressionID[bulkop]];
+	result = safeLibraryInvoke[bulkOperationExecuteLib, ManagedLibraryExpressionID[bulkop]];
 	Developer`ReadRawJSONString[result]
 ]

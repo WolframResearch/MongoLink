@@ -4,7 +4,8 @@
 
 #include "wl_common.h"
 
-////////////////////////////////////////////////////////////////////////////////
+/*----------------------------------------------------------------------------*/
+
 EXTERN_C DLLEXPORT int WL_ClientHandleCreate(WolframLibraryData libData,
                                              mint Argc, MArgument *Args,
                                              MArgument Res) {
@@ -21,7 +22,6 @@ EXTERN_C DLLEXPORT int WL_ClientHandleCreate(WolframLibraryData libData,
   return LIBRARY_NO_ERROR;
 }
 
-////////////////////////////////////////////////////////////////////////////////
 EXTERN_C DLLEXPORT int WL_ClientSetSSL(WolframLibraryData libData, mint Argc,
                                        MArgument *Args, MArgument Res) {
   CLIENT_GET(client, 0)
@@ -71,7 +71,6 @@ EXTERN_C DLLEXPORT int WL_ClientSetSSL(WolframLibraryData libData, mint Argc,
   return LIBRARY_NO_ERROR;
 }
 
-////////////////////////////////////////////////////////////////////////////
 EXTERN_C DLLEXPORT int WL_GetDatabaseNames(WolframLibraryData libData,
                                            MLINK mlp) {
   // Load database handle
@@ -114,7 +113,6 @@ EXTERN_C DLLEXPORT int WL_GetDatabaseNames(WolframLibraryData libData,
   return LIBRARY_NO_ERROR;
 }
 
-////////////////////////////////////////////////////////////////////////////
 EXTERN_C DLLEXPORT int WL_ClientGetCollection(WolframLibraryData libData,
                                               mint Argc, MArgument *Args,
                                               MArgument Res) {

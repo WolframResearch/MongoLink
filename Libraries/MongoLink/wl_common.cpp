@@ -4,6 +4,7 @@
 
 #include "wl_common.h"
 
+/*----------------------------------------------------------------------------*/
 // Global handle Map Variables
 std::map<mint, mongoc_uri_t *> uriHandleMap;
 std::map<mint, mongoc_client_t *> clientHandleMap;

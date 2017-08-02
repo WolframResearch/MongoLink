@@ -4,17 +4,11 @@ BSON: create BSON objects from either JSON or associations
 
 *******************************************************************************)
 
-(* NOTE: this implementation is NOT efficient. An efficient parser and writer 
- is a future project. It should send an association to C via MathLink, and then
- use bson_write_t http://mongoc.org/libbson/current/bson_writer_t.html.
- Same for reading: http://mongoc.org/libbson/current/bson_reader_t.html
-*)
-
 Package["MongoLink`"]
 
 PackageImport["GeneralUtilities`"]
 
-(******************************************************************************)
+(*----------------------------------------------------------------------------*)
 (****** Load Library Functions ******)
 
 createBSONfromJSON = LibraryFunctionLoad[$MongoLinkLib, "WL_CreateBSONfromJSON",
@@ -50,7 +44,6 @@ bsonAsRawArray = LibraryFunctionLoad[$MongoLinkLib, "WL_bson_to_rawarray",
 	"RawArray"
 ]
 
-
 parseBSON = LibraryFunctionLoad[$MongoLinkLib, "WL_ParseBSON",
 	Automatic, 
 	LinkObject
@@ -73,10 +66,9 @@ DefineCustomBoxes[BSONObject,
 	]
 ]];
 
-
 BSONObject /: ByteArray[bson_BSONObject] := BSONToByteArray[bson]
+BSONObject /: Normal[bson_BSONObject] := BSONToExpression[bson]
 
-	
 (*----------------------------------------------------------------------------*)
 (* conversion funcs *)
 
@@ -91,36 +83,56 @@ BSONToByteArray[bson_BSONObject] :=
 PackageExport["BSONToJSON"]
 BSONToJSON[BSONObject[id_]] := Catch @ safeLibraryInvoke[bsonAsJSON, ManagedLibraryExpressionID[id]]
 
-PackageExport["BSONToAssociation"]
-BSONToAssociation[BSONObject[id_]] := Catch @ safeLibraryInvoke[parseBSON, ManagedLibraryExpressionID[id]]
+PackageExport["BSONToExpression"]
+
+BSONToExpression[x_BSONObject] := Catch @ iBSONToExpression[x]
+
+iBSONToExpression[BSONObject[id_]] := safeLibraryInvoke[parseBSON, ManagedLibraryExpressionID[id]]
+iBSONToExpression[x:{__BSONObject}] := iBSONToExpression /@ x
+iBSONToExpression[___] := Throw[$Failed]
 
 (*----------------------------------------------------------------------------*)
 PackageExport["BSONCreate"]
+PackageScope["iBSONCreate"]
 
-BSONCreate[doc_ /; (AssociationQ[doc] || StringQ[doc])] := Catch @ Module[
-	{bsonHandle, result, json, doc2},
-	bsonHandle = CreateManagedLibraryExpression["MongoBSON", MongoBSON];
-	result = If[AssociationQ[doc],
-		json = Developer`WriteRawJSONString[doc2,
-		 	"Compact" -> True,
-		 	"ConversionRules" -> $EncodingRules
-		 ];
-		 If[FailureQ[json], Return[json]];
-		 safeLibraryInvoke[createBSONfromJSON, ManagedLibraryExpressionID[bsonHandle], json]
-		 ,
-		 safeLibraryInvoke[createBSONfromJSON, ManagedLibraryExpressionID[bsonHandle], doc]
+iBSONCreate::invjson = "Cannot parse the input into json.";
+iBSONCreate::invtype = "Argument must be string, Association or list.";
+
+iBSONCreate[doc_ /; (ListQ[doc] || AssociationQ[doc])] := Module[
+	{json},
+	json = Developer`WriteRawJSONString[doc,
+	 	"Compact" -> True,
+	 	"ConversionRules" -> $EncodingRules
 	];
+	If[FailureQ[json],
+	 	Message[iBSONCreate::invjson];
+	 	Throw[$Failed]
+	 ];
+	 iBSONCreate[json]
+]
+
+(* assumes doc is json *)
+iBSONCreate[doc_String] := Module[
+	{bsonHandle},
+	bsonHandle = CreateManagedLibraryExpression["MongoBSON", MongoBSON];
+	safeLibraryInvoke[createBSONfromJSON, ManagedLibraryExpressionID[bsonHandle], doc];
 	BSONObject[bsonHandle]
 ]
 
-BSONCreate[doc_RawArray /; (Developer`RawArrayType[doc] === "UnsignedInteger8")] := Catch @ Module[
+iBSONCreate[doc_RawArray /; (Developer`RawArrayType[doc] === "UnsignedInteger8")] := Module[
 	{bsonHandle}, 
 	bsonHandle = CreateManagedLibraryExpression["MongoBSON", MongoBSON];
 	safeLibraryInvoke[rawarrayToBSON, ManagedLibraryExpressionID[bsonHandle], doc];
 	BSONObject[bsonHandle]
 ]
 
-BSONCreate[doc_ByteArray] := BSONCreate[RawArray["UnsignedInteger8", Normal[doc]]]
+iBSONCreate[doc_ByteArray] := iBSONCreate[RawArray["UnsignedInteger8", Normal[doc]]]
+
+iBSONCreate[doc_] := (Message[iBSONCreate::invtype]; Throw[$Failed]);
+
+iBSONCreate[doc_BSONObject] := doc (* idempotency *)
+
+BSONCreate[doc_] := Catch @ iBSONCreate[doc];
 
 (*----------------------------------------------------------------------------*)
 (*********** BSON Types *************)
@@ -130,10 +142,10 @@ BSONCreate[doc_ByteArray] := BSONCreate[RawArray["UnsignedInteger8", Normal[doc]
 (* Note: json converter already handles True, False, Null *)
 
 $EncodingRules = {
-	Infinity -> <|"$maxKey" -> 1|>,
-	Minus[Infinity] -> <|"$minKey" -> 1|>,
+	Infinity :> <|"$maxKey" -> 1|>,
+	Minus[Infinity] :> <|"$minKey" -> 1|>,
 	x_DateObject :> <|"$date", Round @ ToMillisecondUnixTime[x]|>,
-	BSONObjectID[x_] -> <|"$oid" -> x|>,
+	BSONObjectID[x_] :> <|"$oid" -> x|>,
 	BSONDBReference[coll_, id_] :> <|"$ref" -> coll, "$id" -> First[id]|>
 };
 

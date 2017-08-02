@@ -61,7 +61,6 @@ PackageExport["MongoClientConnect"]
 MongoClientConnect::winpem = "Support for encrypted PEM files requiring \
 a PemFilePassword is not available on Windows."
 
-
 Options[MongoClientConnect] = {
 	"Username" -> None,
 	"Password" -> None,

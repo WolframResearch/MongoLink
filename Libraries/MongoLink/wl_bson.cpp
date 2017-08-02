@@ -5,7 +5,7 @@
 
 #include "wl_common.h"
 
-////////////////////////////////////////////////////////////////////////////////
+/*----------------------------------------------------------------------------*/
 
 EXTERN_C DLLEXPORT int WL_CreateBSONfromJSON(WolframLibraryData libData,
                                              mint Argc, MArgument *Args,
@@ -26,8 +26,6 @@ EXTERN_C DLLEXPORT int WL_CreateBSONfromJSON(WolframLibraryData libData,
   return LIBRARY_NO_ERROR;
 }
 
-////////////////////////////////////////////////////////////////////////////////
-
 EXTERN_C DLLEXPORT int WL_bsonAsJSON(WolframLibraryData libData, mint Argc,
                                      MArgument *Args, MArgument Res) {
   BSON_GET(bson, 0)
@@ -38,8 +36,6 @@ EXTERN_C DLLEXPORT int WL_bsonAsJSON(WolframLibraryData libData, mint Argc,
   MArgument_setUTF8String(Res, returnBSONJSON);
   return LIBRARY_NO_ERROR;
 }
-
-////////////////////////////////////////////////////////////////////////////////
 
 EXTERN_C DLLEXPORT int WL_raw_array_to_bson(WolframLibraryData libData,
                                             mint Argc, MArgument *Args,
@@ -60,8 +56,6 @@ EXTERN_C DLLEXPORT int WL_raw_array_to_bson(WolframLibraryData libData,
   return LIBRARY_NO_ERROR;
 }
 
-////////////////////////////////////////////////////////////////////////////////
-
 EXTERN_C DLLEXPORT int WL_bson_to_rawarray(WolframLibraryData libData,
                                            mint Argc, MArgument *Args,
                                            MArgument Res) {
@@ -81,4 +75,3 @@ EXTERN_C DLLEXPORT int WL_bson_to_rawarray(WolframLibraryData libData,
   MArgument_setMRawArray(Res, output_raw);
   return LIBRARY_NO_ERROR;
 }
-

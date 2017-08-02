@@ -6,7 +6,7 @@
 
 #include "wl_common.h"
 
-////////////////////////////////////////////////////////////////////////////////
+/*----------------------------------------------------------------------------*/
 
 EXTERN_C DLLEXPORT int WL_IteratorHasNext(WolframLibraryData libData, mint Argc,
                                           MArgument *Args, MArgument Res) {
@@ -21,8 +21,6 @@ EXTERN_C DLLEXPORT int WL_IteratorHasNext(WolframLibraryData libData, mint Argc,
   MArgument_setInteger(Res, hasNext);
   return LIBRARY_NO_ERROR;
 }
-
-////////////////////////////////////////////////////////////////////////////////
 
 EXTERN_C DLLEXPORT int WL_IteratorNext(WolframLibraryData libData, mint Argc,
                                        MArgument *Args, MArgument Res) {

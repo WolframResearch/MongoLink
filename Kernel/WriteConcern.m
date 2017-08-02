@@ -1,7 +1,6 @@
 (*******************************************************************************
 
 Write Concern object.
-Note: we guarantee that we will always use MongoDB's defaults for this
 
 *******************************************************************************)
 
@@ -9,8 +8,17 @@ Package["MongoLink`"]
 
 PackageImport["GeneralUtilities`"]
 
+PackageScope["MongoWriteConcern"]
+
 (*----------------------------------------------------------------------------*)
 (****** Load Library Functions ******)
+
+writeConcernNew = LibraryFunctionLoad[$MongoLinkLib, "WL_WriteConcernNew", 
+	{
+		Integer		(* write concern handle key *)
+	},
+	"Void"
+]	
 
 WriteConcernSet = LibraryFunctionLoad[$MongoLinkLib, "WL_WriteConcernSet", 
 	{
@@ -36,17 +44,29 @@ WriteConcernSetJournal = LibraryFunctionLoad[$MongoLinkLib, "WL_WriteConcernSetJ
 	"Void"						
 ]	
 
-WriteConcernGetInfo = LibraryFunctionLoad[$MongoLinkLib, "WL_WriteConcernGetInfo", 
-	Automatic, 
-	LinkObject					
-]
+(*----------------------------------------------------------------------------*)
+PackageExport["MongoWriteConcernObject"]
+
+(* This is a utility function defined in GeneralUtilities, which makes a nicely
+formatted display box *)
+DefineCustomBoxes[MongoWriteConcernObject, 
+	e:MongoWriteConcernObject[id_] :> Block[{},
+	BoxForm`ArrangeSummaryBox[
+		MongoWriteConcernObject, e, None, 
+		{
+			BoxForm`SummaryItem[{"ID: ", ManagedLibraryExpressionID[id]}]
+		},
+		{},
+		StandardForm
+	]
+]];
 
 (*----------------------------------------------------------------------------*)
-PackageScope["WriteConcernCreate"]
+PackageExport["MongoWriteConcernCreate"]
 
-SetUsage[WriteConcernCreate,
-"WriteConcernCreate[] creates an immutable WriteConcernObject[$$] with the default settings.
-WriteConcernCreate[w$] where w$ is an integer >= 0. Used with replication, write \
+SetUsage[MongoWriteConcernCreate,
+"MongoWriteConcernCreate[] creates an immutable WriteConcernObject[$$] with the default settings.
+MongoWriteConcernCreate[w$] where w$ is an integer >= 0. Used with replication, write \
 operations will block until they have been replicated to the specified number or \
 tagged set of servers. w$ always includes the replica set primary (e.g. \
 w$ = 3 means write to the primary and wait until replicated to two secondaries). \
@@ -65,18 +85,39 @@ does not complete in the given timeframe, a timeout exception is raised.|
 "
 ]
 
-Options[WriteConcernCreate] =
+MongoWriteConcernCreate::journal = 
+	"The Option \"Journal\" must have value True or False, but value `` was given.";
+MongoWriteConcernCreate::timeout = 
+	"The Option \"Timeout\" must have value None or a non-negative integer, but value `` was given.";
+MongoWriteConcernCreate::concern = 
+	"The first argument must be a positive integer or 0, but `` was given.";
+
+Options[MongoWriteConcernCreate] =
 {
 	"Journal" -> True,
 	"Timeout" -> None
 };
 
-WriteConcernCreate[concern_Integer:1, opts:OptionsPattern[]] := Module[
+MongoWriteConcernCreate[concern_Integer:1, opts:OptionsPattern[]] := Catch @ Module[
 	{handle, journal, timeout}
 	,
-	handle = CreateManagedLibraryExpression["MongoWriteConcern", MongoWriteConcern];
+	(** Options Parsing **)
 	{journal, timeout} = OptionValue[{"Journal", "Timeout"}];
-	
+	If[!BooleanQ[journal],
+		Message[MongoWriteConcernCreate::journal, journal];
+		Throw[$Failed]
+	];
+	If[Not @ ((timeout === None) || (IntegerQ[timeout] && Positive[timeout])),
+		Message[MongoWriteConcernCreate::timeout, timeout];
+		Throw[$Failed]
+	];
+	If[!IntegerQ[concern] || (concern < 0),
+		Message[MongoWriteConcernCreate::concern, concern];
+		Throw[$Failed]
+	];
+
+	handle = CreateManagedLibraryExpression["MongoWriteConcern", MongoWriteConcern];
+	safeLibraryInvoke[writeConcernNew, ManagedLibraryExpressionID[handle]];
 	safeLibraryInvoke[WriteConcernSet, ManagedLibraryExpressionID[handle], concern];
 	safeLibraryInvoke[WriteConcernSetJournal, ManagedLibraryExpressionID[handle], Boole[journal]];
 
@@ -84,31 +125,5 @@ WriteConcernCreate[concern_Integer:1, opts:OptionsPattern[]] := Module[
 		safeLibraryInvoke[WriteConcernSetWtimeout, ManagedLibraryExpressionID[handle], timeout]
 	];
 	(* Return handle to write concern *)
-	handle
-]
-
-(*----------------------------------------------------------------------------*)
-PackageScope["WriteConcernGetInfo"]
-
-WriteConcernInfo[MongoWriteConcernObject[writeConcernObject_]] := Module[
-	{handle, al, journal, timeout}
-	,
-	handle = CreateManagedLibraryExpression["MongoWriteConcern", MongoWriteConcern];
-	{al, journal, timeout} = OptionValue[{"AcknowledgementLevel", "Journal", "Timeout"}];
-(*	If[!MatchQ[opts, {_Integer, _String, _...}],*)
-	
-	(* Check if we need to change the mongoDB defaults *)
-	If[al =!= Automatic ,
-		safeLibraryInvoke[WriteConcernSet, ManagedLibraryExpressionID[handle], al]
-	];
-	
-	If[journal =!= Automatic,
-		safeLibraryInvoke[WriteConcernSetJournal, ManagedLibraryExpressionID[handle], Boole[journal]]
-	];
-	
-	If[timeout =!= Automatic,
-		safeLibraryInvoke[WriteConcernSetWtimeout, ManagedLibraryExpressionID[handle], timeout]
-	];
-	(* Return handle to write concern *)
-	handle
+	MongoWriteConcernObject[handle]
 ]

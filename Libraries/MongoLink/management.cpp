@@ -78,9 +78,6 @@ DLLEXPORT void manage_instance_mongowriteconcern(WolframLibraryData libData,
     mongoc_write_concern_destroy(writeConcernHandleMap[id]);
     writeConcernHandleMap.erase(id);
   }
-  // Creation
-  else
-    writeConcernHandleMap[id] = mongoc_write_concern_new();
 }
 
 /*----------------------------------------------------------------------------*/

@@ -16,8 +16,7 @@
 #include "WolframLibrary.h"
 #include "WolframRawArrayLibrary.h"
 
-
-////////////////////////////////////////////////////////////////////////////////
+/*----------------------------------------------------------------------------*/
 
 extern std::map<mint, mongoc_uri_t *> uriHandleMap;
 extern std::map<mint, mongoc_client_t *> clientHandleMap;
@@ -89,6 +88,6 @@ extern std::string errorString;
   }                                                                            \
   var = bsonHandleMap[MArgument_getInteger(Args[key])];
 
-////////////////////////////////////////////////////////////////////////////////
+/*----------------------------------------------------------------------------*/
 
 #endif
