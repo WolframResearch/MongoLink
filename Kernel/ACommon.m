@@ -82,7 +82,7 @@ MongoPanic[] := Module[
 
 PackageScope["FromMillisecondUnixTime"]
 
-FromMillisecondUnixTime[time_Real] := Module[
+FromMillisecondUnixTime[time_] := Module[
 	{dateList}
 	,
 	dateList = DateList @ FromUnixTime[time / 1000.];
