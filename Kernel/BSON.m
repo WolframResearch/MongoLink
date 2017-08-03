@@ -98,7 +98,7 @@ PackageScope["iBSONCreate"]
 iBSONCreate::invjson = "Cannot parse the input into json.";
 iBSONCreate::invtype = "Argument must be string, Association or list.";
 
-iBSONCreate[doc_ /; (ListQ[doc] || AssociationQ[doc])] := Module[
+iBSONCreate[doc_Association] := Module[
 	{json},
 	json = Developer`WriteRawJSONString[doc,
 	 	"Compact" -> True,
