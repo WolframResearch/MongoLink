@@ -28,13 +28,13 @@ EXTERN_C DLLEXPORT int WL_IteratorNext(WolframLibraryData libData, mint Argc,
   int bson_handle_key = MArgument_getInteger(Args[1]);
   const bson_t *doc;
   // http://mongoc.org/libmongoc/current/mongoc_cursor_next.html
-  if (!mongoc_cursor_next(cursor, &doc)) {
-    errorString =
-        "Error reading next element of iterator. Has it been exhausted?";
-    return LIBRARY_FUNCTION_ERROR;
+  bool has_next = mongoc_cursor_next(cursor, &doc);
+  if(!has_next){
+    MArgument_setInteger(Res, 0);
+    return LIBRARY_NO_ERROR;
   }
   // not efficient: fix this later!
   bsonHandleMap[bson_handle_key] = bson_copy(doc);
-
+    MArgument_setInteger(Res, 1);
   return LIBRARY_NO_ERROR;
 }

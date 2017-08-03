@@ -6,6 +6,8 @@ Mongo Document Iterator Interface
 
 Package["MongoLink`"]
 
+PackageImport["GeneralUtilities`"]
+
 (*** Package Exports ***)
 PackageExport["MongoIterator"]
 
@@ -18,15 +20,17 @@ iteratorNext = LibraryFunctionLoad[$MongoLinkLib, "WL_IteratorNext",
 		Integer						(* bson handle *)
 
 	}, 
-	"Void"
+	Integer
 ]	
 
 (*----------------------------------------------------------------------------*)
 PackageScope["MongoIteratorRead"]
 
 MongoIteratorRead[MongoIterator[handleKey_]] := Catch @ Module[
-	{bsonHandle},
+	{bsonHandle, hasNext},
 	bsonHandle = CreateManagedLibraryExpression["MongoBSON", MongoBSON];
-	safeLibraryInvoke[iteratorNext, handleKey, ManagedLibraryExpressionID[bsonHandle]];
+	hasNext = 
+		safeLibraryInvoke[iteratorNext, handleKey, ManagedLibraryExpressionID[bsonHandle]];
+	If[hasNext === 0, Return[$Failed]];
 	BSONToExpression[BSONObject[bsonHandle]]
 ]
