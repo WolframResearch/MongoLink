@@ -64,10 +64,10 @@ WL_MongoCollectionCreateBulkOp(WolframLibraryData libData, mint Argc,
   // Inputs
   COLLECTION_GET(collection, 0)
   bool ordered = MArgument_getInteger(Args[1]);
+  // use wc_key = 0 to encode NULL
   mint wc_key = MArgument_getInteger(Args[2]);
-  mongoc_write_concern_t *wc = (writeConcernHandleMap.count(wc_key) > 0)
-                                   ? writeConcernHandleMap[wc_key]
-                                   : NULL;
+  mongoc_write_concern_t *wc =
+      (wc_key == 0) ? writeConcernHandleMap[wc_key] : NULL;
   mint output_bulk_key = MArgument_getInteger(Args[3]);
   // http://mongoc.org/libmongoc/current/mongoc_collection_create_bulk_operation.html
   bulkOperationHandleMap[output_bulk_key] =
@@ -111,10 +111,10 @@ EXTERN_C DLLEXPORT int WL_MongoCollectionRemove(WolframLibraryData libData,
                                                 mint Argc, MArgument *Args,
                                                 MArgument Res) {
   // Inputs
-  auto collection = collectionHandleMap[MArgument_getInteger(Args[0])];
+  COLLECTION_GET(collection, 0)
   bool multiUpdate = MArgument_getInteger(Args[1]);
-  auto selector = bsonHandleMap[MArgument_getInteger(Args[2])];
-  auto write_concern = writeConcernHandleMap[MArgument_getInteger(Args[3])];
+  BSON_GET(selector, 2)
+  WRITE_CONCERN_GET(write_concern, 3)
   // Deal with remove flags
   mongoc_remove_flags_t removeFlags = MONGOC_REMOVE_NONE;
   if (!multiUpdate)
@@ -134,11 +134,12 @@ EXTERN_C DLLEXPORT int WL_MongoCollectionRemove(WolframLibraryData libData,
 EXTERN_C DLLEXPORT int WL_MongoCollectionAggregation(WolframLibraryData libData,
                                                      mint Argc, MArgument *Args,
                                                      MArgument Res) {
-  auto collection = collectionHandleMap[MArgument_getInteger(Args[0])];
-  auto pipeline = bsonHandleMap[MArgument_getInteger(Args[1])];
+  COLLECTION_GET(collection, 0)
+  BSON_GET(pipeline, 1)
   mint outputIteratorHandleKey = MArgument_getInteger(Args[2]);
-  auto cursor = mongoc_collection_aggregate(collection, MONGOC_QUERY_NONE,
-                                            pipeline, NULL, NULL);
+  // http://mongoc.org/libmongoc/current/mongoc_collection_aggregate.html
+  mongoc_cursor_t *cursor = mongoc_collection_aggregate(
+      collection, MONGOC_QUERY_NONE, pipeline, NULL, NULL);
   // Cursor can return Null if invalid parameters. Check
   if (!cursor) {
     errorString = "Unable to do perform query.";

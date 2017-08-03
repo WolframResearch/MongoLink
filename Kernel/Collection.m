@@ -153,7 +153,8 @@ MongoGetCollection[database_MongoDatabaseObject, collectionName_String] := Catch
 	MongoCollectionObject[collectionHandle, MongoDatabaseName[database], collectionName, database]
 ]
 
-MongoGetCollection[client_MongoClientObject, databaseName_String, collectionName_String] := Catch @ Module[
+MongoGetCollection[client_MongoClientObject, 
+	databaseName_String, collectionName_String] := Catch @ Module[
 	{collectionHandle, result},
 	collectionHandle = CreateManagedLibraryExpression["MongoCollection", MongoCollection];
 	result = safeLibraryInvoke[clientGetCollection,
@@ -189,18 +190,37 @@ MongoCollectionCount[collection_MongoCollectionObject] :=
 (*----------------------------------------------------------------------------*)
 PackageExport["MongoCollectionFind"]
 
+(* don't support all opts yet. See 
+	http://mongoc.org/libmongoc/current/mongoc_collection_find_with_opts.html
+	for full opts list
+*)
+
 Options[MongoCollectionFind] = {
+	"Limit" -> None
 };
+
+MongoCollectionFind::invLimit = 
+	"The Option \"Limit\" must have value None or a positive integer, but `` was given.";
 
 MongoCollectionFind[collection_MongoCollectionObject, 
 	query_, opts:OptionsPattern[]] := Catch @ Module[
-	{queryBSON, optsBSON, iteratorHandle, optsAssoc},
-	iteratorHandle = CreateManagedLibraryExpression["MongoIterator", MongoIterator];
+	{
+		queryBSON, optsBSON, iteratorHandle, optsAssoc
+	},
+	(** parse opts **)
+	optsAssoc = <|
+		"limit" -> Replace[OptionValue["Limit"], None -> 0]
+	|>; 
+	If[!IntegerQ[optsAssoc["limit"]] || Negative[optsAssoc["limit"]],
+		Message[MongoCollectionFind::invLimit, optsAssoc["limit"]];
+		Return[$Failed]
+	];
+	
 	(* Create BSON query + field docs *)
 	queryBSON = iBSONCreate[query];
-	optsAssoc = <||>; (* add this in future! *)
 	optsBSON = iBSONCreate[optsAssoc];
 
+	iteratorHandle = CreateManagedLibraryExpression["MongoIterator", MongoIterator];
 	safeLibraryInvoke[mongoCollectionFind,
 		ManagedLibraryExpressionID[First @ collection], 
 		ManagedLibraryExpressionID[First @ queryBSON],
@@ -243,28 +263,25 @@ MongoCollectionInsert[coll_MongoCollectionObject, doc_, opts:OptionsPattern[]] :
 		Message[MongoCollectionInsert::ordered, ordered];
 		Throw[$Failed]
 	];
-	If[(wc =!= Automatic) && (Head[wc] =!= MongoWriteConcernObject),
-		Message[MongoCollectionInsert::writeconcern, writeconcern];
+	If[Not[(Head[wc] === MongoWriteConcernObject) || (wc === Automatic)],
+		Message[MongoCollectionInsert::invwriteconcern, wc];
 		Throw[$Failed]
 	];
+	(* use 0 to encode NULL on C side, which uses defaults *)
+	wc = If[wc === Automatic, 0, ManagedLibraryExpressionID[First @ wc]];
 	iMongoCollectionInsert[coll, doc, wc, ordered]
 ]
 
 iMongoCollectionInsert[
-	collection_MongoCollectionObject, docs:{__BSONObject}, wc_, ordered_] := Module[
-	{writeConcern, bulkHandle}
+	collection_MongoCollectionObject, docs:{__BSONObject}, wc_Integer, ordered_] := Module[
+	{bulkHandle}
 	,
-	(* Write concern: if Automatic, create Null ManagedLibraryExpression *)
-	writeConcern = If[wc === Automatic, 
-		CreateManagedLibraryExpression["MongoWriteConcern", MongoWriteConcern],
-		First[writeConcern]
-	];
 	(* Create bulk op *)
 	bulkHandle = CreateManagedLibraryExpression["MongoBulkOperation", MongoBulkOperation];
 	safeLibraryInvoke[mongoCollectionCreateBulkOp,
 		ManagedLibraryExpressionID[First @ collection],
 		Boole[ordered],
-		ManagedLibraryExpressionID[writeConcern],
+		wc,
 		ManagedLibraryExpressionID[bulkHandle]
 	];
 	Scan[
@@ -292,93 +309,97 @@ iMongoCollectionInsert[coll_MongoCollectionObject, doc_, wc_, ordered_] :=
 (*----------------------------------------------------------------------------*)
 PackageExport["MongoCollectionUpdate"]
 
-SetUsage[MongoCollectionUpdate, "
-MongoCollectionUpdate[MongoCollection[$$], query$, update$] update a single document in the \
-collection MongoCollection[$$] which satisfies the query$ association. The update$ document \
-will replace the contents of the matched document (exept for _id field). To update only \
-individual fields, use the $set operator. If no document satisfies query$, nothing is done, unless \
-the Option \"Upsert\" is set to True. To update all documents satisfying the query$, set the option \
-\"MultiDocumentUpdate\" to True."
-]
-
 Options[MongoCollectionUpdate] = {
-	"WriteConcern" -> 1,
-	"Journal" -> True,
-	"Timeout" -> None,
+	"WriteConcern" -> Automatic,
 	"Upsert" -> False,
 	"MultiDocumentUpdate" -> False
 };
 
+MongoCollectionUpdate::invwriteconcern = 
+	"The Option \"WriteConcern\" must be a MongoWriteConcernObject or Automatic, but `` was given.";
+MongoCollectionUpdate::invupsert = 
+	"The Option \"Upsert\" must be either True or False, but `` was given."
+MongoCollectionUpdate::invmulti = 
+	"The Option \"MultiDocumentUpdate\" must be either True or False, but `` was given."
+
 MongoCollectionUpdate[MongoCollectionObject[handle_, ___], 
 	selector_, updaterDoc_, OptionsPattern[]] := Catch @ Module[
-	{queryBSON, updaterDocBSON},
-		
-	(* Write concern *)
-	writeConcern = WriteConcernCreate[
-		OptionValue["WriteConcern"], 
-		"Journal" -> OptionValue["Journal"], 
-		"Timeout" -> OptionValue["Timeout"]
-	];
-	If[FailureQ[writeConcern], Return[writeConcern]];
+	{queryBSON, updaterDocBSON, wc, upsert, multiDocumentUpdate},
+	(** parse options **)
+	{wc, upsert, multiDocumentUpdate}  = 
+		OptionValue[{"WriteConcern", "Upsert", "MultiDocumentUpdate"}];	
 
+	If[Not[(Head[wc] === MongoWriteConcernObject) || (wc === Automatic)],
+		Message[MongoCollectionUpdate::invwriteconcern, wc];
+		Throw[$Failed]
+	];
+	(* use 0 to encode NULL on C side, which uses defaults *)
+	wc = If[wc === Automatic, 0, ManagedLibraryExpressionID[First @ wc]];
+	
+	If[!BooleanQ[upsert],
+		Message[MongoCollectionUpdate::invupsert, upsert];
+		Throw[$Failed]
+	];
+	If[!BooleanQ[multiDocumentUpdate],
+		Message[MongoCollectionUpdate::invmulti, multiDocumentUpdate];
+		Throw[$Failed]
+	];
 	(* Create BSON query + update docs *)
 	queryBSON = iBSONCreate[selector];
 	updaterDocBSON = iBSONCreate[updaterDoc];
-
-	upsert = OptionValue["Upsert"];
-	multiDocumentUpdate = OptionValue["MultiDocumentUpdate"];
-
 	(* Execute *)
-	result = safeLibraryInvoke[mongoCollectionUpdate,
+	safeLibraryInvoke[mongoCollectionUpdate,
 		ManagedLibraryExpressionID[handle],
 		ManagedLibraryExpressionID[First @ queryBSON],
 		ManagedLibraryExpressionID[First @ updaterDocBSON],
-		ManagedLibraryExpressionID[writeConcern],
+		wc,
 		Boole[upsert],
 		Boole[multiDocumentUpdate]
-	];
-	result
+	]
 ]	
+
 (*----------------------------------------------------------------------------*)
-
 PackageExport["MongoCollectionRemove"]
-
-SetUsage[MongoCollectionRemove, "
-MongoCollectionRemove[MongoCollection[$$], query$] removes a single document from MongoCollection[$$] \
-that satisfies the query $query. To remove all documents, set the Option \"MultiDocumentUpdate\" to \ 
-True."
-]
 
 Options[MongoCollectionRemove] =
 {
-	"WriteConcern" -> 1,
-	"Journal" -> True,
-	"Timeout" -> None,
+	"WriteConcern" -> Automatic,
 	"MultiDocumentUpdate" -> False
 };
 
+MongoCollectionRemove::invwriteconcern = 
+	"The Option \"WriteConcern\" must be a MongoWriteConcernObject or Automatic, but `` was given.";
+MongoCollectionRemove::invmulti = 
+	"The Option \"MultiDocumentUpdate\" must be either True or False, but `` was given."
+
 MongoCollectionRemove[MongoCollectionObject[handle_, ___], 
 	selector_, OptionsPattern[]] := Catch @ Module[
-	{queryBSON, multiDocumentUpdate, writeConcern},
-	(* Write concern *)
-	writeConcern = WriteConcernCreate[
-		OptionValue["WriteConcern"], 
-		"Journal" -> OptionValue["Journal"], 
-		"Timeout" -> OptionValue["Timeout"]
+	{queryBSON, multiDocumentUpdate, wc},
+	(** parse options **)
+	{wc, multiDocumentUpdate}  = 
+		OptionValue[{"WriteConcern", "MultiDocumentUpdate"}];	
+		
+	If[Not[(Head[wc] === MongoWriteConcernObject) || (wc === Automatic)],
+		Message[MongoCollectionRemove::invwriteconcern, wc];
+		Throw[$Failed]
 	];
-	If[FailureQ[writeConcern], Return[writeConcern]];
-
+	(* use 0 to encode NULL on C side, which uses defaults *)
+	wc = If[wc === Automatic, 0, ManagedLibraryExpressionID[First @ wc]];
+	If[!BooleanQ[multiDocumentUpdate],
+		Message[MongoCollectionRemove::invmulti, multiDocumentUpdate];
+		Throw[$Failed]
+	];
+	
 	(* Create BSON query *)
 	queryBSON = iBSONCreate[selector];
 	multiDocumentUpdate = OptionValue["MultiDocumentUpdate"];
 	(* Execute *)
-	result = safeLibraryInvoke[mongoCollectionRemove,
+	safeLibraryInvoke[mongoCollectionRemove,
 		ManagedLibraryExpressionID[handle],
 		Boole[multiDocumentUpdate],
 		ManagedLibraryExpressionID[First @ queryBSON],
-		ManagedLibraryExpressionID[writeConcern]
-	];
-	result
+		wc
+	]
 ]
 
 (*----------------------------------------------------------------------------*)
