@@ -97,14 +97,14 @@ ToMillisecondUnixTime[date_DateObject] := 1000 * (UnixTime[date] + FractionalPar
 PackageScope["fileConform"]
 
 (* this takes a file *)
-fileConform[file_String] := Module[
-	{parentSymbol::invfile = "The file `` doesn't exist."},
+fileConform[parentSymbol_, file_String] := (
+	parentSymbol::invfile = "The file `` doesn't exist.";
 	If[!FileExistsQ[file],
 		Message[parentSymbol::invfile, file];
 		Throw[$Failed]
 	];
 	file
-]
+)
 
 fileConform[parentSymbol_, File[file_]] := fileConform[parentSymbol, file]
 fileConform[_, None] := "";

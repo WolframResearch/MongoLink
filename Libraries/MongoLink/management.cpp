@@ -74,7 +74,7 @@ DLLEXPORT void manage_instance_mongouri(WolframLibraryData libData, mbool mode,
 DLLEXPORT void manage_instance_mongowriteconcern(WolframLibraryData libData,
                                                  mbool mode, mint id) {
   // Destruction
-  if (mode != 0) {
+  if (mode != 0 && (writeConcernHandleMap.count(id) > 0)) {
     mongoc_write_concern_destroy(writeConcernHandleMap[id]);
     writeConcernHandleMap.erase(id);
   }
