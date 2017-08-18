@@ -1,28 +1,11 @@
-(* Content-type: application/vnd.wolfram.mathematica *)
-
-(*** Wolfram Notebook File ***)
-(* http://www.wolfram.com/nb *)
-
-(* CreatedBy='Mathematica 11.1' *)
-
-(*CacheID: 234*)
-(* Internal cache information:
-NotebookFileLineBreakTest
-NotebookFileLineBreakTest
-NotebookDataPosition[       158,          7]
-NotebookDataLength[      3576,        111]
-NotebookOptionsPosition[      2771,         83]
-NotebookOutlinePosition[      3159,        100]
-CellTagsIndexPosition[      3116,         97]
-WindowFrame->Normal*)
-
-(* Beginning of Notebook Content *)
 Notebook[{
-Cell[BoxData[" "], "Input",ExpressionUUID->"c05194cd-3b69-47ec-8374-1fc16048b6e9"],
+Cell[BoxData[" "], \
+"Input",ExpressionUUID->"c05194cd-3b69-47ec-8374-1fc16048b6e9"],
 
 Cell[CellGroupData[{
 
-Cell["MongoLink Local Build", "Title",ExpressionUUID->"d2dc8c5f-0a1b-434f-85cf-bfdce52a8646"],
+Cell["MongoLink Local Build", \
+"Title",ExpressionUUID->"d2dc8c5f-0a1b-434f-85cf-bfdce52a8646"],
 
 Cell["This is a build script for MongoLink.", "Text",
  CellChangeTimes->{{3.659860197165052*^9, 3.6598602101290007`*^9}, 
@@ -33,87 +16,35 @@ Cell["This is a build script for MongoLink.", "Text",
 Cell[CellGroupData[{
 
 Cell[BoxData[{
- RowBox[{
-  RowBox[{"$MongoLib", " ", "=", " ", 
-   RowBox[{
-   "{", "\"\</Users/sebastianb/Documents/workspace/MongoC/1.6.3/MacOSX-x86-64/\
-libcxx-min10.9/lib/\>\"", "}"}]}], ";"}], "\[IndentingNewLine]", 
- RowBox[{
-  RowBox[{
-  "$MongoIncBase", " ", "=", " ", 
-   "\"\</Users/sebastianb/Documents/workspace/MongoC/1.6.3/MacOSX-x86-64/\
-libcxx-min10.9/include/\>\""}], ";"}], "\n", 
- RowBox[{
-  RowBox[{"$MongoInc", " ", "=", " ", 
+ RowBox[{"Get", "@", 
+  RowBox[{"FileNameJoin", "[", 
    RowBox[{"{", 
     RowBox[{
-     RowBox[{"FileNameJoin", "[", 
-      RowBox[{"{", 
-       RowBox[{"$MongoIncBase", ",", " ", "\"\<libbson-1.0\>\""}], "}"}], 
-      "]"}], ",", " ", 
-     RowBox[{"FileNameJoin", "[", 
-      RowBox[{"{", 
-       RowBox[{"$MongoIncBase", ",", " ", "\"\<libmongoc-1.0\>\""}], "}"}], 
-      "]"}]}], "}"}]}], ";"}], "\n", 
- RowBox[{
-  RowBox[{"Get", "@", 
-   RowBox[{"FileNameJoin", "[", 
-    RowBox[{"{", 
-     RowBox[{
-      RowBox[{"ParentDirectory", " ", "@", " ", 
-       RowBox[{"NotebookDirectory", "[", "]"}]}], ",", " ", 
-      "\"\<Libraries\>\"", ",", " ", "\"\<Build.wl\>\""}], "}"}], "]"}]}], 
-  "\n"}], "\n", 
+     RowBox[{"ParentDirectory", " ", "@", " ", 
+      RowBox[{"NotebookDirectory", "[", "]"}]}], ",", " ", 
+     "\"\<Libraries\>\"", ",", " ", "\"\<Build.wl\>\""}], "}"}], 
+   "]"}]}], "\n", 
  RowBox[{"BuildMongoLink", "[", 
-  RowBox[{"$MongoInc", ",", " ", "$MongoLib", ",", " ", 
-   RowBox[{"\"\<Debug\>\"", "\[Rule]", "True"}], ",", " ", 
-   RowBox[{"\"\<StaticLibrary\>\"", " ", "\[Rule]", " ", "True"}]}], 
-  "]"}]}], "Code",
- CellChangeTimes->{{3.708794000331334*^9, 3.708794006856455*^9}, {
-  3.70895316963476*^9, 
-  3.708953175679844*^9}},ExpressionUUID->"23c9956c-17f5-43be-8bdf-\
-a2bbd57e3966"],
+  RowBox[{"\"\<Debug\>\"", " ", "\[Rule]", " ", "True"}], 
+  "]"}]}], "Code",ExpressionUUID->"23c9956c-17f5-43be-8bdf-a2bbd57e3966"],
 
-Cell[BoxData["\<\"\"\>"], "Print",
- CellChangeTimes->{{3.70879399524687*^9, 
-  3.708794016648293*^9}},ExpressionUUID->"27816a53-54a2-4733-9fa1-\
-e438a3341ee5"]
+Cell[BoxData["\<\"\"\>"], \
+"Print",ExpressionUUID->"8102ca10-aa1d-4c52-b773-9f1b50839273"],
+
+Cell[BoxData[
+ RowBox[{"{", 
+  RowBox[{"\<\"/Users/sebastianb/Library/Mathematica/SystemFiles/\
+LibraryResources/MacOSX-x86-64/MongoLink.dylib\"\>", ",", "None"}], 
+  "}"}]], "Output",ExpressionUUID->"d6c84a39-df32-4636-be0f-316a960aed0a"]
 }, Open  ]]
 }, Open  ]]
 },
-WindowSize->{1234, 788},
-WindowMargins->{{23, Automatic}, {-126, Automatic}},
+InitializationCellEvaluation->False,
+WindowSize->{1440, 795},
+WindowMargins->{{75, Automatic}, {Automatic, 0}},
 Magnification:>1.5 Inherited,
-FrontEndVersion->"11.1 for Mac OS X x86 (32-bit, 64-bit Kernel) (March 16, \
+FrontEndVersion->"11.2 for Mac OS X x86 (32-bit, 64-bit Kernel) (August 14, \
 2017)",
 StyleDefinitions->"Default.nb"
 ]
-(* End of Notebook Content *)
-
-(* Internal cache information *)
-(*CellTagsOutline
-CellTagsIndex->{}
-*)
-(*CellTagsIndex
-CellTagsIndex->{}
-*)
-(*NotebookFileOutline
-Notebook[{
-Cell[558, 20, 82, 0, 49, "Input", "ExpressionUUID" -> \
-"c05194cd-3b69-47ec-8374-1fc16048b6e9"],
-Cell[CellGroupData[{
-Cell[665, 24, 93, 0, 137, "Title", "ExpressionUUID" -> \
-"d2dc8c5f-0a1b-434f-85cf-bfdce52a8646"],
-Cell[761, 26, 280, 4, 47, "Text", "ExpressionUUID" -> \
-"3b6c8047-89c7-496c-8c6f-5bd5b618214f"],
-Cell[CellGroupData[{
-Cell[1066, 34, 1515, 40, 224, "Code", "ExpressionUUID" -> \
-"23c9956c-17f5-43be-8bdf-a2bbd57e3966"],
-Cell[2584, 76, 159, 3, 36, "Print", "ExpressionUUID" -> \
-"27816a53-54a2-4733-9fa1-e438a3341ee5"]
-}, Open  ]]
-}, Open  ]]
-}
-]
-*)
 
