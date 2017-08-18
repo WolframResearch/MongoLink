@@ -74,13 +74,14 @@ Options[MongoClientConnect] = {
 };
 
 (* URI Client connect *)
-MongoClientConnect[MongoURIObject[uri_, _], opts:OptionsPattern[]] := Catch @ Module[
+MongoClientConnect[MongoURIObject[uri_, _], opts:OptionsPattern[]] := 
+	CatchFailureAsMessage @ Module[
 	{
 		ssl = OptionValue["SSL"],
-		pemFile = fileConform[MongoURIObject, OptionValue["PEMFile"]],
+		pemFile = fileConform @ OptionValue["PEMFile"],
 		pemFilePassword = OptionValue["PEMFilePassword"],
-		caFile = fileConform[MongoURIObject, OptionValue["CAFile"]],
-		crList = fileConform[MongoURIObject, OptionValue["CertificateRevocationList"]],
+		caFile = fileConform @ OptionValue["CAFile"],
+		crList = fileConform @ OptionValue["CertificateRevocationList"],
 		verifyCert = OptionValue[VerifySecurityCertificates],
 		invHost = OptionValue["AllowInvalidHostname"],
 		clientHandle = CreateManagedLibraryExpression["MongoClient", MongoClient],
@@ -88,7 +89,6 @@ MongoClientConnect[MongoURIObject[uri_, _], opts:OptionsPattern[]] := Catch @ Mo
 	},
 	clientID = ManagedLibraryExpressionID[clientHandle];
 	result = safeLibraryInvoke[clientHandleCreate, clientID, ManagedLibraryExpressionID[uri]];
-	
 	(***** SSL Opts ******)
 	(* See http://mongoc.org/libmongoc/current/mongoc_ssl_opt_t.html for 
 		this issue *)
@@ -146,4 +146,4 @@ connected server.
 ]
 
 MongoDatabaseNames[MongoClientObject[database_MongoClient]] := 
-	Catch @ safeLibraryInvoke[getDatabaseNames, ManagedLibraryExpressionID[database]]
+	CatchFailureAsMessage @ safeLibraryInvoke[getDatabaseNames, ManagedLibraryExpressionID[database]]

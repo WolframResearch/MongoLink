@@ -140,7 +140,8 @@ MongoCollectionObject /: RandomSample[coll_MongoCollectionObject, n_] := Module[
 (*----------------------------------------------------------------------------*)
 PackageExport["MongoGetCollection"]
 
-MongoGetCollection[database_MongoDatabaseObject, collectionName_String] := Catch @ Module[
+MongoGetCollection[database_MongoDatabaseObject, collectionName_String] := 
+CatchFailureAsMessage @ Module[
 	{collectionHandle, result},
 	(* Check that collectionName is in database *)
  
@@ -154,7 +155,7 @@ MongoGetCollection[database_MongoDatabaseObject, collectionName_String] := Catch
 ]
 
 MongoGetCollection[client_MongoClientObject, 
-	databaseName_String, collectionName_String] := Catch @ Module[
+	databaseName_String, collectionName_String] := CatchFailureAsMessage @ Module[
 	{collectionHandle, result},
 	collectionHandle = CreateManagedLibraryExpression["MongoCollection", MongoCollection];
 	result = safeLibraryInvoke[clientGetCollection,
@@ -169,13 +170,14 @@ MongoGetCollection[client_MongoClientObject,
 (*----------------------------------------------------------------------------*)
 PackageExport["MongoCollectionName"]
 
-MongoCollectionName[MongoCollectionObject[handle_, ___]] := Catch @ 
+MongoCollectionName[MongoCollectionObject[handle_, ___]] := CatchFailureAsMessage @ 
 	safeLibraryInvoke[mongoCollectionName, ManagedLibraryExpressionID[handle]];
 
 (*----------------------------------------------------------------------------*)
 PackageExport["MongoCollectionCount"]
 
-MongoCollectionCount[MongoCollectionObject[handle_, ___], query_Association] := Catch @ Module[
+MongoCollectionCount[MongoCollectionObject[handle_, ___], query_Association] := 
+CatchFailureAsMessage @ Module[
 	{bsonQuery},
 	bsonQuery = iBSONCreate[query];
 	safeLibraryInvoke[mongoCollectionCount,
@@ -203,7 +205,7 @@ MongoCollectionFind::invLimit =
 	"The Option \"Limit\" must have value None or a positive integer, but `` was given.";
 
 MongoCollectionFind[collection_MongoCollectionObject, 
-	query_, opts:OptionsPattern[]] := Catch @ Module[
+	query_, opts:OptionsPattern[]] := CatchFailureAsMessage @ Module[
 	{
 		queryBSON, optsBSON, iteratorHandle, optsAssoc
 	},
@@ -255,17 +257,16 @@ MongoCollectionInsert::ordered =
 MongoCollectionInsert::writeconcern = 
 	"The option \"WriteConcern\" was ``, but must be a MongoWriteConcernObject or Automatic.";
 
-MongoCollectionInsert[coll_MongoCollectionObject, doc_, opts:OptionsPattern[]] := Catch @ Module[
+MongoCollectionInsert[coll_MongoCollectionObject, doc_, opts:OptionsPattern[]] := 
+CatchFailureAsMessage @ Module[
 	{wc, ordered},
 	(** parse options **)
 	{wc, ordered} = OptionValue[{"WriteConcern", "Ordered"}];
 	If[!BooleanQ[ordered],
-		Message[MongoCollectionInsert::ordered, ordered];
-		Throw[$Failed]
+		ThrowFailure[MongoCollectionInsert::ordered]
 	];
 	If[Not[(Head[wc] === MongoWriteConcernObject) || (wc === Automatic)],
-		Message[MongoCollectionInsert::invwriteconcern, wc];
-		Throw[$Failed]
+		ThrowFailure[MongoCollectionInsert::invwriteconcern, wc];
 	];
 	(* use 0 to encode NULL on C side, which uses defaults *)
 	wc = If[wc === Automatic, 0, ManagedLibraryExpressionID[First @ wc]];
@@ -304,7 +305,7 @@ iMongoCollectionInsert[coll_MongoCollectionObject, doc_List, wc_, ordered_] :=
 iMongoCollectionInsert::invtype =
 	"Document to be inserted must be an Association, String or BSONObject, or a list of these.";
 iMongoCollectionInsert[coll_MongoCollectionObject, doc_, wc_, ordered_] := 
-	(Message[iMongoCollectionInsert::invtype];Throw[$Failed])
+	ThrowFailure[iMongoCollectionInsert::invtype];
 
 (*----------------------------------------------------------------------------*)
 PackageExport["MongoCollectionUpdate"]
@@ -323,26 +324,23 @@ MongoCollectionUpdate::invmulti =
 	"The Option \"MultiDocumentUpdate\" must be either True or False, but `` was given."
 
 MongoCollectionUpdate[MongoCollectionObject[handle_, ___], 
-	selector_, updaterDoc_, OptionsPattern[]] := Catch @ Module[
+	selector_, updaterDoc_, OptionsPattern[]] := CatchFailureAsMessage @ Module[
 	{queryBSON, updaterDocBSON, wc, upsert, multiDocumentUpdate},
 	(** parse options **)
 	{wc, upsert, multiDocumentUpdate}  = 
 		OptionValue[{"WriteConcern", "Upsert", "MultiDocumentUpdate"}];	
 
 	If[Not[(Head[wc] === MongoWriteConcernObject) || (wc === Automatic)],
-		Message[MongoCollectionUpdate::invwriteconcern, wc];
-		Throw[$Failed]
+		ThrowFailure[MongoCollectionUpdate::invwriteconcern, wc];
 	];
 	(* use 0 to encode NULL on C side, which uses defaults *)
 	wc = If[wc === Automatic, 0, ManagedLibraryExpressionID[First @ wc]];
 	
 	If[!BooleanQ[upsert],
-		Message[MongoCollectionUpdate::invupsert, upsert];
-		Throw[$Failed]
+		ThrowFailure[MongoCollectionUpdate::invupsert, upsert];
 	];
 	If[!BooleanQ[multiDocumentUpdate],
-		Message[MongoCollectionUpdate::invmulti, multiDocumentUpdate];
-		Throw[$Failed]
+		ThrowFailure[MongoCollectionUpdate::invmulti, multiDocumentUpdate];
 	];
 	(* Create BSON query + update docs *)
 	queryBSON = iBSONCreate[selector];
@@ -373,21 +371,19 @@ MongoCollectionRemove::invmulti =
 	"The Option \"MultiDocumentUpdate\" must be either True or False, but `` was given."
 
 MongoCollectionRemove[MongoCollectionObject[handle_, ___], 
-	selector_, OptionsPattern[]] := Catch @ Module[
+	selector_, OptionsPattern[]] := CatchFailureAsMessage @ Module[
 	{queryBSON, multiDocumentUpdate, wc},
 	(** parse options **)
 	{wc, multiDocumentUpdate}  = 
 		OptionValue[{"WriteConcern", "MultiDocumentUpdate"}];	
 		
 	If[Not[(Head[wc] === MongoWriteConcernObject) || (wc === Automatic)],
-		Message[MongoCollectionRemove::invwriteconcern, wc];
-		Throw[$Failed]
+		ThrowFailure[MongoCollectionRemove::invwriteconcern, wc];
 	];
 	(* use 0 to encode NULL on C side, which uses defaults *)
 	wc = If[wc === Automatic, 0, ManagedLibraryExpressionID[First @ wc]];
 	If[!BooleanQ[multiDocumentUpdate],
-		Message[MongoCollectionRemove::invmulti, multiDocumentUpdate];
-		Throw[$Failed]
+		ThrowFailure[MongoCollectionRemove::invmulti, multiDocumentUpdate];
 	];
 	
 	(* Create BSON query *)
@@ -436,7 +432,8 @@ referenced by MongoReference[$$].
 "
 ]
 
-MongoReferenceGet[database_MongoDatabaseObject, mong_MongoDBReference] := Catch @ Module[
+MongoReferenceGet[database_MongoDatabaseObject, mong_MongoDBReference] := 
+CatchFailureAsMessage @ Module[
 	{coll, docIter},
 	coll = MongoGetCollection[database, First@mong];
 	docIter = MongoCollectionFind[coll, <|"_id" -> <|"$oid" -> Last[mong]|>|>];

@@ -11,12 +11,28 @@ EXTERN_C DLLEXPORT int WL_ClientHandleCreate(WolframLibraryData libData,
                                              MArgument Res) {
   int client_handle_key = MArgument_getInteger(Args[0]);
   URI_GET(uri, 1)
-
   auto client = mongoc_client_new_from_uri(uri);
   if (!client) {
     errorString = "Invalid URI. Cannot connect to client.";
     return LIBRARY_FUNCTION_ERROR;
   }
+
+  mongoc_client_set_error_api(client, 2);
+
+  // bson_t *command = BCON_NEW("ping", BCON_INT32(1));
+  // bson_error_t error;
+  // bson_t reply;
+  // bool retval = mongoc_client_command_simple(client, "admin", command, NULL,
+  //                                            &reply, &error);
+
+  // if (!retval) {
+  //   std::cout << error.domain << std::endl;
+  //   errorString = error.message;
+  //   return LIBRARY_FUNCTION_ERROR;
+  // }
+
+  // std::cout << bson_as_json(&reply, NULL) << std::endl;
+
   // If connection was successful, add to clientHandleMap
   clientHandleMap[client_handle_key] = client;
   return LIBRARY_NO_ERROR;

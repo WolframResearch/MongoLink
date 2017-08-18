@@ -6,6 +6,8 @@ Bulk Operation level functions
 
 Package["MongoLink`"]
 
+PackageImport["GeneralUtilities`"]
+
 PackageScope["MongoBulkOperation"]
 
 (*----------------------------------------------------------------------------*)
@@ -36,8 +38,7 @@ bulkOperationInsert[bulkop_MongoBulkOperation, doc_BSONObject] := safeLibraryInv
 ];
 
 bulkOperationInsert::invtype = "Expected second arg to be BSONObject, but got ``.";
-bulkOperationInsert[bulkop_MongoBulkOperation, _] := 
-	(Message[bulkOperationInsert::invtype]; Throw[$Failed])
+bulkOperationInsert[bulkop_MongoBulkOperation, _] := ThrowFailure[bulkOperationInsert::invtype]
 
 (*----------------------------------------------------------------------------*)
 PackageScope["bulkOperationExecute"]

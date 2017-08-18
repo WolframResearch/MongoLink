@@ -10,9 +10,11 @@ EXTERN_C DLLEXPORT int WL_URICreate(WolframLibraryData libData, mint Argc,
                                     MArgument *Args, MArgument Res) {
   int uri_handle_key = MArgument_getInteger(Args[0]);
   char *uri_string = MArgument_getUTF8String(Args[1]);
-  
-  auto uri = mongoc_uri_new(uri_string);
+
+  bson_error_t error;
+  mongoc_uri_t * uri = mongoc_uri_new_with_error(uri_string, &error);
   if (!uri) {
+    errorString = error.message;
     libData->UTF8String_disown(uri_string);
     return LIBRARY_FUNCTION_ERROR;
   }

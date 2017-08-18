@@ -53,7 +53,7 @@ PackageExport["MongoURIFromString"]
 ]*)
 MongoURIFromString::inv = "Invalid URI."
 
-MongoURIFromString[uri_String] := Catch @ Module[
+MongoURIFromString[uri_String] := CatchFailureAsMessage @ Module[
 	{
 		handle = CreateManagedLibraryExpression["MongoURI", MongoURI],
 		res

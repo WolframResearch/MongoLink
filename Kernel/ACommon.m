@@ -6,6 +6,8 @@ Common: global variables plus common utility functions
 
 Package["MongoLink`"]
 
+PackageImport["GeneralUtilities`"]
+
 (****** Global Variables ******)
 $LibraryResources = FileNameJoin[{ParentDirectory[DirectoryName @ $InputFileName], "LibraryResources", $SystemID}];
 
@@ -22,32 +24,32 @@ $MongoLinkLib = Switch[$OperatingSystem,
 
 (***** Initialize Library *****)
 
+(* see http://mongoc.org/libmongoc/current/init-cleanup.html. We build with 
+ --disable-automatic-init-and-cleanup, as its deprecated, so we need to initialize
+ ourselves. *)
+ 
 MongoInitialize = LibraryFunctionLoad[$MongoLinkLib, "WL_MongoInitialize", 
-	{
-	}, 
+	{}, 
 	"Void"						
 	]	
-
+	
 (* this needs to be called precisely once in a session *)
 If[!ValueQ[$MongoInitialized], $MongoInitialized = False];
 If[!TrueQ[$MongoInitialized], MongoInitialize[]; $MongoInitialized = True];
 
 (*----------------------------------------------------------------------------*)
-
 PackageScope["MongoGetLastError"]
 
 MongoGetLastError = LibraryFunctionLoad[$MongoLinkLib, "WL_MongoGetLastError", 
-	{
-	},
+	{},
 	"UTF8String"				
-	]	
+	]
 
 (*----------------------------------------------------------------------------*)
 PackageScope["LibraryFunctionFailureQ"]
 
 LibraryFunctionFailureQ[call_] :=
 	If[Head[call] === LibraryFunctionError, True, False]
-
 
 (*----------------------------------------------------------------------------*)
 General::mongolibuneval = "Library function `` with args `` did not evaluate.";
@@ -58,23 +60,20 @@ safeLibraryInvoke[func_, args___] :=
     Replace[
         func[args], 
         {
-            _LibraryFunctionError :> MongoPanic[],
-            _LibraryFunction[___] :> 
-            	(Message[General::mongolibuneval, func[[2]], {args}];
-            	Throw[$Failed])	
+            _LibraryFunctionError :> MongoPanic[func],
+            _LibraryFunction[___] :> ThrowFailure["mongolibuneval", func[[2]], {args}]
         }
     ];
 
-MongoPanic[] := Module[
+General::mongoliberr = "C Function `` failed. Error from Mongo C Driver: \"``\"";
+
+MongoPanic[f_] := Module[
 	{lastError},
 	lastError = MongoGetLastError[];
-	lastError = If[TrueQ @ LibraryFunctionFailureQ[lastError], 
-		"Unknown Error", 
-		lastError
+	If[TrueQ @ LibraryFunctionFailureQ[lastError], 
+		lastError = "Unknown Error";
 	];
-	General::mongoError = lastError;
-	Message[General::mongoError];
-	Throw[$Failed]
+	ThrowFailure["mongoliberr", f[[2]], lastError];
 ]
 
 (*----------------------------------------------------------------------------*)
@@ -93,26 +92,19 @@ PackageScope["ToMillisecondUnixTime"]
 
 ToMillisecondUnixTime[date_DateObject] := 1000 * (UnixTime[date] + FractionalPart[date["Second"]])
 
-(******************************************************************************)
+(*----------------------------------------------------------------------------*)
 PackageScope["fileConform"]
 
-(* this takes a file *)
-fileConform[parentSymbol_, file_String] := (
-	parentSymbol::invfile = "The file `` doesn't exist.";
+General::mongonff = "The file `` doesn't exist.";
+fileConform[file_String] := (
 	If[!FileExistsQ[file],
-		Message[parentSymbol::invfile, file];
-		Throw[$Failed]
+		ThrowFailure["mongonff", file];
 	];
 	file
 )
 
-fileConform[parentSymbol_, File[file_]] := fileConform[parentSymbol, file]
-fileConform[_, None] := "";
+fileConform[File[file_]] := fileConform[parentSymbol, file]
+fileConform[None] := "";
 
-fileConform[parent_, obj_] := Module[
-	{
-		parent::invfile = "Object `` is not a String, File[...] or None."
-	},
-	Message[parent::invfile, obj];
-	Throw[$Failed]
-]
+General::mongoinvfile = "Object `` is not a String, File[...] or None."
+fileConform[file_] := ThrowFailure["mongonff", file];

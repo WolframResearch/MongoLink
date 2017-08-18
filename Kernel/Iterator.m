@@ -26,7 +26,7 @@ iteratorNext = LibraryFunctionLoad[$MongoLinkLib, "WL_IteratorNext",
 (*----------------------------------------------------------------------------*)
 PackageScope["MongoIteratorRead"]
 
-MongoIteratorRead[MongoIterator[handleKey_]] := Catch @ Module[
+MongoIteratorRead[MongoIterator[handleKey_]] := CatchFailureAsMessage @ Module[
 	{bsonHandle, hasNext},
 	bsonHandle = CreateManagedLibraryExpression["MongoBSON", MongoBSON];
 	hasNext = 

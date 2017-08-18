@@ -81,15 +81,19 @@ BSONToByteArray[bson_BSONObject] :=
 	ByteArray[Normal @ BSONToRawArray[bson]]
 
 PackageExport["BSONToJSON"]
-BSONToJSON[BSONObject[id_]] := Catch @ safeLibraryInvoke[bsonAsJSON, ManagedLibraryExpressionID[id]]
+BSONToJSON[BSONObject[id_]] := CatchFailureAsMessage[ 
+	safeLibraryInvoke[bsonAsJSON, ManagedLibraryExpressionID[id]]
+]
 
 PackageExport["BSONToExpression"]
 
-BSONToExpression[x_BSONObject] := Catch @ iBSONToExpression[x]
+BSONToExpression[x_BSONObject] := CatchFailureAsMessage @ iBSONToExpression[x]
 
 iBSONToExpression[BSONObject[id_]] := safeLibraryInvoke[parseBSON, ManagedLibraryExpressionID[id]]
 iBSONToExpression[x:{__BSONObject}] := iBSONToExpression /@ x
-iBSONToExpression[___] := Throw[$Failed]
+
+iBSONToExpression::invarg = "Invalid argument."
+iBSONToExpression[___] := ThrowFailure[iBSONToExpression::invarg]
 
 (*----------------------------------------------------------------------------*)
 PackageExport["BSONCreate"]
@@ -105,9 +109,8 @@ iBSONCreate[doc_Association] := Module[
 	 	"ConversionRules" -> $EncodingRules
 	];
 	If[FailureQ[json],
-	 	Message[iBSONCreate::invjson];
-	 	Throw[$Failed]
-	 ];
+	 	ThrowFailure[iBSONCreate::invjson]
+	];
 	 iBSONCreate[json]
 ]
 
@@ -128,11 +131,11 @@ iBSONCreate[doc_RawArray /; (Developer`RawArrayType[doc] === "UnsignedInteger8")
 
 iBSONCreate[doc_ByteArray] := iBSONCreate[RawArray["UnsignedInteger8", Normal[doc]]]
 
-iBSONCreate[doc_] := (Message[iBSONCreate::invtype]; Throw[$Failed]);
+iBSONCreate[doc_] := ThrowFailure[iBSONCreate::invtype]
 
 iBSONCreate[doc_BSONObject] := doc (* idempotency *)
 
-BSONCreate[doc_] := Catch @ iBSONCreate[doc];
+BSONCreate[doc_] := CatchFailureAsMessage @ iBSONCreate[doc];
 
 (*----------------------------------------------------------------------------*)
 (*********** BSON Types *************)

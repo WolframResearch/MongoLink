@@ -98,28 +98,30 @@ Options[MongoWriteConcernCreate] =
 	"Timeout" -> None
 };
 
-MongoWriteConcernCreate[concern_Integer:1, opts:OptionsPattern[]] := Catch @ Module[
+MongoWriteConcernCreate[concern_Integer:1, opts:OptionsPattern[]] := 
+CatchFailureAsMessage @ Module[
 	{handle, journal, timeout}
 	,
 	(** Options Parsing **)
 	{journal, timeout} = OptionValue[{"Journal", "Timeout"}];
 	If[!BooleanQ[journal],
-		Message[MongoWriteConcernCreate::journal, journal];
-		Throw[$Failed]
+		ThrowFailure[MongoWriteConcernCreate::journal, journal];
 	];
 	If[Not @ ((timeout === None) || (IntegerQ[timeout] && Positive[timeout])),
-		Message[MongoWriteConcernCreate::timeout, timeout];
-		Throw[$Failed]
+		ThrowFailure[MongoWriteConcernCreate::timeout, timeout];
 	];
 	If[!IntegerQ[concern] || (concern < 0),
-		Message[MongoWriteConcernCreate::concern, concern];
-		Throw[$Failed]
+		ThrowFailure[MongoWriteConcernCreate::concern, concern];
 	];
 
 	handle = CreateManagedLibraryExpression["MongoWriteConcern", MongoWriteConcern];
 	safeLibraryInvoke[writeConcernNew, ManagedLibraryExpressionID[handle]];
 	safeLibraryInvoke[WriteConcernSet, ManagedLibraryExpressionID[handle], concern];
-	safeLibraryInvoke[WriteConcernSetJournal, ManagedLibraryExpressionID[handle], Boole[journal]];
+	safeLibraryInvoke[
+		WriteConcernSetJournal, 
+		ManagedLibraryExpressionID[handle], 
+		Boole[journal]
+	];
 
 	If[timeout =!= None,
 		safeLibraryInvoke[WriteConcernSetWtimeout, ManagedLibraryExpressionID[handle], timeout]

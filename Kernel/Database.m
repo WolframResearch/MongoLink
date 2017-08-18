@@ -88,7 +88,8 @@ databaseName$ part of the client MongoClientObject[$$]. Equivalent to \
 MongoClientObject[$$][databaseName$]."
 ]
 
-MongoGetDatabase[MongoClientObject[client_], databaseName_String] := Catch @ Module[
+MongoGetDatabase[MongoClientObject[client_], databaseName_String] := 
+CatchFailureAsMessage @ Module[
 	{databaseHandle, result},
 	databaseHandle = CreateManagedLibraryExpression["MongoDatabase", MongoDatabase];
 	result = safeLibraryInvoke[databaseHandleCreate,
@@ -108,8 +109,8 @@ collection names in the database MongoDatabaseObject[$$].
 "
 ]
 
-MongoCollectionNames[MongoDatabaseObject[handle_, _, _]] := 
-	Catch @ safeLibraryInvoke[getCollectionNames, ManagedLibraryExpressionID[handle]];
+MongoCollectionNames[MongoDatabaseObject[handle_, _, _]] := CatchFailureAsMessage @
+	safeLibraryInvoke[getCollectionNames, ManagedLibraryExpressionID[handle]]
 
 (*----------------------------------------------------------------------------*)
 PackageExport[MongoCreateCollection]
@@ -126,7 +127,7 @@ Options[MongoCreateCollection] =
 };
 
 MongoCreateCollection[MongoDatabaseObject[handle_, dbname_, client_], 
-	collectionName_String, opts:OptionsPattern[]] := Catch @ Module[
+	collectionName_String, opts:OptionsPattern[]] := CatchFailureAsMessage @ Module[
 	{result, options, collection},
 	
 	options = iBSONCreate[OptionValue["Options"]];
@@ -143,5 +144,5 @@ MongoCreateCollection[MongoDatabaseObject[handle_, dbname_, client_],
 (*----------------------------------------------------------------------------*)
 PackageExport[MongoDatabaseDrop]
 
-MongoDatabaseDrop[MongoDatabaseObject[handle_, _, _]] := Catch @ 
+MongoDatabaseDrop[MongoDatabaseObject[handle_, _, _]] := CatchFailureAsMessage @ 
 	safeLibraryInvoke[mongoDatabaseDrop, ManagedLibraryExpressionID[handle]];
