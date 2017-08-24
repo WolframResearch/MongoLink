@@ -34,6 +34,18 @@
 
 	</target>
 
+	<target name='NativeLibrary.MongoLink.postbuild' extensionOf='NativeLibrary.postbuild'>
+
+		<copy todir='${files_directory}/${component}/LibraryResources/${system_id}'>
+			<fileset dir='${checkout_directory}/MongoC/lib'>
+				<include name='*.dll' />
+				<include name='*.dylib' />
+				<include name='*.so.0' />
+			</fileset>
+		</copy>
+
+	</target>
+
 	<target name='NativeLibrary.MongoLink.Windows.postbuild' extensionOf='NativeLibrary.postbuild' if='is.windows'>
 
 		<sign dir='${files_directory}'>
