@@ -9,7 +9,7 @@ Package["MongoLink`"]
 PackageImport["GeneralUtilities`"]
 
 (****** Global Variables ******)
-$LibraryResources = FileNameJoin[{ParentDirectory[DirectoryName @ $InputFileName], "LibraryResources", $SystemID}];
+$LibraryResources = FileNameJoin[{FileNameTake[$InputFileName, {1, -4}], "LibraryResources", $SystemID}];
 
 PackageScope["$MongoLinkLib"]
 
