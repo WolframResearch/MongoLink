@@ -6,17 +6,6 @@ $MathLink = FileNameJoin[{AntProperty["checkout_directory"], "MathLink", "Compil
 $MongoC = FileNameJoin[{AntProperty["checkout_directory"], "MongoC"}];
 $RuntimeLibrary = FileNameJoin[{AntProperty["checkout_directory"], "RuntimeLibrary", AntProperty["system_id"]}];
 
-$Libraries = Switch[$OperatingSystem,
-    "MacOSX",	{ "mongoc-1.0.0", "bson-1.0.0" },
-    "Unix",		{ "mongoc-1.0",   "bson-1.0"   },
-    "Windows",	{ "mongoc-1.0",   "bson-1.0" }
-    ];
-
-(* C++ 11 features will require stdc++_nonshared *)
-If[$OperatingSystem === "Unix" && $ProcessorType =!= "ARM",
- 	AppendTo[$Libraries, "stdc++_nonshared"]
- 	];
-
 $MongoLinkLib = CreateLibrary[
 
 	FileNames["*.cpp", {$MongoLink}],
@@ -45,7 +34,16 @@ $MongoLinkLib = CreateLibrary[
 
 	"Language" -> "C++",
 
-	"Libraries" -> $Libraries,
+	"Libraries" -> Switch[$OperatingSystem,
+		"MacOSX",
+			{"mongoc-1.0.0", "bson-1.0.0"},
+		"Unix" /; $ProcessorType == "ARM",
+			{"mongoc-1.0", "bson-1.0"},
+		"Unix",
+			{"mongoc-1.0", "bson-1.0", "stdc++_nonshared"},
+		"Windows",
+			{"mongoc-1.0", "bson-1.0"}
+	],
 
 	"LibraryDirectories" -> {
 		FileNameJoin[{$MongoC, "lib"}]
