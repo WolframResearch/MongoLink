@@ -15,7 +15,7 @@
 	<target name='Component.MongoLink.execute' extensionOf='Component.execute'>
 
 		<copy todir='${files_directory}/${component}'>
-			<fileset dir='${basedir}'>
+			<fileset dir='${basedir}/${component}'>
 				<include name='PacletInfo.m' />
 				<include name='Kernel/*.m' />
 			</fileset>
