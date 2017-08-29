@@ -199,9 +199,9 @@ Cell[TextData[{
   "b2ea555b-67c8-4f3c-a8f1-706532e3cd87"],
  " \[LineSeparator]Create a database object ",
  Cell[BoxData[
-  ButtonBox["MongoDatabaseObject",
+  ButtonBox["MongoDatabase",
    BaseStyle->"Link",
-   ButtonData->"paclet:MongoLink/ref/MongoDatabaseObject"]], "InlineFormula",
+   ButtonData->"paclet:MongoLink/ref/MongoDatabase"]], "InlineFormula",
   ExpressionUUID->"766ee2be-80f4-467e-904e-0bd393731b74"],
  "to connect to a named database through the client connection ",
  Cell[BoxData[
@@ -222,9 +222,9 @@ Cell[TextData[{
   "99938cba-1670-416f-ad9f-4ed44ef3e10d"],
  " will also create a ",
  Cell[BoxData[
-  ButtonBox["MongoDatabaseObject",
+  ButtonBox["MongoDatabase",
    BaseStyle->"Link",
-   ButtonData->"paclet:MongoLink/ref/MongoDatabaseObject"]], "InlineFormula",
+   ButtonData->"paclet:MongoLink/ref/MongoDatabase"]], "InlineFormula",
   ExpressionUUID->"7d9857eb-90f3-4bf5-9ab4-342d971cfb53"],
  "."
 }], "Notes",
@@ -346,7 +346,7 @@ Cell[BoxData[
 Cell[BoxData[
  InterpretationBox[
   RowBox[{
-   TagBox["MongoLink`MongoDatabaseObject",
+   TagBox["MongoLink`MongoDatabase",
     "SummaryHead"], "[", 
    DynamicModuleBox[{Typeset`open$$ = False}, 
     PanelBox[
@@ -415,9 +415,9 @@ Cell[BoxData[
       ImageSize->Automatic],
      BaselinePosition->Baseline],
     DynamicModuleValues:>{}], "]"}],
-  MongoLink`MongoDatabaseObject[
+  MongoLink`MongoDatabase[
    MongoLink`Database`PackagePrivate`MongoDatabase[1], "NewDB", 
-   MongoLink`MongoClientObject[
+   MongoLink`MongoClient[
     MongoLink`Client`PackagePrivate`MongoClient[1]]],
   Editable->False,
   SelectWithContents->True,
@@ -476,7 +476,7 @@ Cell[BoxData[{
 Cell[BoxData[
  InterpretationBox[
   RowBox[{
-   TagBox["MongoLink`MongoDatabaseObject",
+   TagBox["MongoLink`MongoDatabase",
     "SummaryHead"], "[", 
    DynamicModuleBox[{Typeset`open$$ = False}, 
     PanelBox[
@@ -545,9 +545,9 @@ Cell[BoxData[
       ImageSize->Automatic],
      BaselinePosition->Baseline],
     DynamicModuleValues:>{}], "]"}],
-  MongoLink`MongoDatabaseObject[
+  MongoLink`MongoDatabase[
    MongoLink`Database`PackagePrivate`MongoDatabase[2], "NewDB", 
-   MongoLink`MongoClientObject[
+   MongoLink`MongoClient[
     MongoLink`Client`PackagePrivate`MongoClient[2]]],
   Editable->False,
   SelectWithContents->True,

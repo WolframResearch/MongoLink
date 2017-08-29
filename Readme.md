@@ -1,9 +1,10 @@
 # MongoDB Link for the Wolfram Language
+
 MongoLink is a package for interacting with MongoDB inside the [Wolfram Language](https://www.wolfram.com/language/). It interfaces to the [MongoDB C driver.](https://docs.mongodb.org/ecosystem/drivers/c/) via LibraryLink.
 
-Not all functionality in MongoDB is exposed in MongoLink. If you want something that is missing, please request it in the Github Issues. Or better yet, make a PR!
+The design aims to follow the official Mongo API reference (https://docs.mongodb.com/manual/reference/), along with trying to use standard Wolfram Language conventions and options.
 
-Also note: the current design of MongoLink is not set in stone, and might be changed in the future.
+Not all functionality in MongoDB is exposed in MongoLink. If you want something that is missing, please request it in the Github Issues. Or better yet, make a PR!
 
 ### Installing the MongoLink release
 
@@ -27,6 +28,10 @@ To access the documentation, open the notebook interface help viewer, and search
 ### Where did this come from?
 
 MongoLink is a paclet started and maintained by Sebastian Bodenstein of Wolfram Research. It is used within Wolfram Research by the Machine Learning Group to manage large machine learning datasets.
+
+### Acknowledgements
+
+Much of the documentation was adapted and/or copied from the excellent [PyMongo](https://api.mongodb.com/python/current/) and [MongoDB C Driver](http://mongoc.org/libmongoc/current/index.html) documentation.
 
 ### More...
 

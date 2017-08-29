@@ -288,7 +288,7 @@ Cell[CellGroupData[{
 
 Cell[BoxData[
  RowBox[{"bson", "=", 
-  RowBox[{"MongoLink`BSONCreate", "[", 
+  RowBox[{"MongoLink`ToBSON", "[", 
    RowBox[{"<|", 
     RowBox[{"\"\<hello\>\"", "\[Rule]", 
      RowBox[{"{", 

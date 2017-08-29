@@ -2,7 +2,7 @@ BeginTestSection["BSON"]
 
 assoc = <|"hello" -> {1, 2.5, 3.}|>;
 json = "{ \"hello\" : [ 1, 2.5, 3.0 ] }";
-bson1 = BSONCreate[<|"hello" -> {1, 2.5, 3.}|>];
+bson1 = ToBSON[<|"hello" -> {1, 2.5, 3.}|>];
 
 (*----------------------------------------------------------------------------*)
 (* Conversion Functions *)
@@ -17,7 +17,7 @@ VerificationTest[
  ]
  
 VerificationTest[
-	BSONToJSON @ BSONCreate[BSONToRawArray[bson1]],
+	BSONToJSON @ ToBSON[BSONToRawArray[bson1]],
 	BSONToJSON @ bson1,
 	TestID -> "BSON to RawArray to JSON"
 ]
@@ -32,7 +32,7 @@ VerificationTest[
  ]
  
 VerificationTest[
-	BSONToJSON @ BSONCreate[BSONToByteArray[bson1]],
+	BSONToJSON @ ToBSON[BSONToByteArray[bson1]],
 	BSONToJSON @ bson1,
 	TestID -> "BSON to ByteArray to JSON v1"
 ]
@@ -46,7 +46,7 @@ VerificationTest[
  ]
  
 VerificationTest[
-	BSONToJSON @ BSONCreate[ByteArray[bson1]],
+	BSONToJSON @ ToBSON[ByteArray[bson1]],
 	BSONToJSON @ bson1,
 	TestID -> "BSON to ByteArray to JSON v2"
 ]
@@ -54,14 +54,14 @@ VerificationTest[
 (* byte array association *)
 
 VerificationTest[
-	BSONToExpression[bson1], 
+	BSONToAssociation[bson1], 
 	_Association, 
  	TestID -> "BSON to assoc", 
  	SameTest -> MatchQ
  ] 
  
 VerificationTest[
-	BSONToJSON @ BSONCreate[BSONToExpression[bson1]],
+	BSONToJSON @ ToBSON[BSONToAssociation[bson1]],
 	BSONToJSON @ bson1,
 	TestID -> "BSON to expression to JSON"
 ]
@@ -74,20 +74,20 @@ VerificationTest[
   	TestID -> "BSON to JSON"
 ]
 (*----------------------------------------------------------------------------*)
-(* BSONCreate *)
+(* ToBSON *)
 
-(*BSONCreate for associations*)
+(*ToBSON for associations*)
 VerificationTest[
-	BSONCreate[assoc], 
+	ToBSON[assoc], 
 	_BSONObject, 
  	TestID -> "Assocation to BSON", 
  	SameTest -> MatchQ
  ]
  
- (*BSONCreate for JSON*)
+ (*ToBSON for JSON*)
 
 VerificationTest[
-	BSONCreate[json], 
+	ToBSON[json], 
 	_BSONObject, 
  	TestID -> "JSON to BSON", 
  	SameTest -> MatchQ
@@ -116,8 +116,8 @@ VerificationTest[
 (* BSONObject *)
 
  VerificationTest[
- 	Normal@BSONCreate[assoc], 
- 	BSONToExpression[BSONCreate[assoc]], 
+ 	Normal@ToBSON[assoc], 
+ 	BSONToAssociation[ToBSON[assoc]], 
  	TestID -> "BSONObject//Normal returns same as BSONtoExpression"
  ]
  
@@ -126,7 +126,7 @@ VerificationTest[
 
 VerificationTest[
 	assoc,
-	BSONToExpression@BSONCreate@BSONToJSON@BSONCreate@BSONToByteArray@BSONCreate@BSONToRawArray@BSONCreate@assoc,
+	BSONToAssociation@ToBSON@BSONToJSON@ToBSON@BSONToByteArray@ToBSON@BSONToRawArray@ToBSON@assoc,
 	TestID -> "Association round trip"
  ]
 

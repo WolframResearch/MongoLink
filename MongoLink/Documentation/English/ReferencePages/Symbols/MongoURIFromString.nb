@@ -197,9 +197,9 @@ Cell[TextData[{
  " \[LineSeparator]",
  Cell[BoxData[
   RowBox[{"Create", " ", "a", " ", "URI", " ", "object", " ", 
-   ButtonBox["MongoURIObject",
+   ButtonBox["MongoURI",
     BaseStyle->"Link",
-    ButtonData->"paclet:MongoLink/ref/MongoURIObject"], "using", " ", "a", 
+    ButtonData->"paclet:MongoLink/ref/MongoURI"], "using", " ", "a", 
    " ", "string", "  "}]],
   CellChangeTimes->{
    3.708708019355571*^9, {3.708708324379857*^9, 3.708708344018951*^9}, {
@@ -321,9 +321,9 @@ Cell[BoxData[
 Cell[TextData[{
  "Create a ",
  Cell[BoxData[
-  ButtonBox["MongoURIObject",
+  ButtonBox["MongoURI",
    BaseStyle->"Link",
-   ButtonData->"paclet:MongoLink/ref/MongoURIObject"]], "InlineFormula",
+   ButtonData->"paclet:MongoLink/ref/MongoURI"]], "InlineFormula",
   ExpressionUUID->"b7a72042-b20c-46e9-a010-b2e0c2fcd7a7"],
  " that can be used to connect to a Mongo database:"
 }], "ExampleText",
@@ -346,7 +346,7 @@ Cell[BoxData[
 Cell[BoxData[
  InterpretationBox[
   RowBox[{
-   TagBox["MongoLink`MongoURIObject",
+   TagBox["MongoLink`MongoURI",
     "SummaryHead"], "[", 
    DynamicModuleBox[{Typeset`open$$ = False}, 
     PanelBox[
@@ -404,7 +404,7 @@ Cell[BoxData[
       ImageSize->Automatic],
      BaselinePosition->Baseline],
     DynamicModuleValues:>{}], "]"}],
-  MongoLink`MongoURIObject[
+  MongoLink`MongoURI[
    MongoLink`URI`PackagePrivate`MongoURI[1], "mongodb://localhost"],
   Editable->False,
   SelectWithContents->True,
@@ -482,7 +482,7 @@ Cell[BoxData[
 Cell[BoxData[
  InterpretationBox[
   RowBox[{
-   TagBox["MongoLink`MongoURIObject",
+   TagBox["MongoLink`MongoURI",
     "SummaryHead"], "[", 
    DynamicModuleBox[{Typeset`open$$ = False}, 
     PanelBox[
@@ -540,7 +540,7 @@ Cell[BoxData[
       ImageSize->Automatic],
      BaselinePosition->Baseline],
     DynamicModuleValues:>{}], "]"}],
-  MongoLink`MongoURIObject[
+  MongoLink`MongoURI[
    MongoLink`URI`PackagePrivate`MongoURI[2], 
    "mongodb://user:abc123@localhost:27017/Test/?ssl=true"],
   Editable->False,
@@ -657,7 +657,7 @@ URI (@,:,/,?,=,etc.), ",
  Cell[BoxData[
   ButtonBox["MongoURIFromString",
    BaseStyle->"Link",
-   ButtonData->"paclet:MongoLink/ref/MongoURIObject"]], "InlineFormula",
+   ButtonData->"paclet:MongoLink/ref/MongoURI"]], "InlineFormula",
   ExpressionUUID->"fd595b32-d4b1-4929-b26a-1f9428e10d9a"],
  " will create an invalid URI:"
 }], "ExampleText",
@@ -698,7 +698,7 @@ executing ",
  Cell[BoxData[
   ButtonBox["MongoURIFromString",
    BaseStyle->"Link",
-   ButtonData->"paclet:MongoLink/ref/MongoURIObject"]], "InlineFormula",
+   ButtonData->"paclet:MongoLink/ref/MongoURI"]], "InlineFormula",
   ExpressionUUID->"cd79eb9c-cc55-4916-96e5-5d84b2b830d8"],
  ":"
 }], "ExampleText",
@@ -756,7 +756,7 @@ Cell[BoxData[
 Cell[BoxData[
  InterpretationBox[
   RowBox[{
-   TagBox["MongoLink`MongoURIObject",
+   TagBox["MongoLink`MongoURI",
     "SummaryHead"], "[", 
    DynamicModuleBox[{Typeset`open$$ = False}, 
     PanelBox[
@@ -814,7 +814,7 @@ Cell[BoxData[
       ImageSize->Automatic],
      BaselinePosition->Baseline],
     DynamicModuleValues:>{}], "]"}],
-  MongoLink`MongoURIObject[
+  MongoLink`MongoURI[
    MongoLink`URI`PackagePrivate`MongoURI[4], 
    "mongodb://user%40name:pass%2Fword@localhost:27017/data%3Abase"],
   Editable->False,
@@ -859,7 +859,7 @@ Cell[BoxData[
 Cell[BoxData[
  InterpretationBox[
   RowBox[{
-   TagBox["MongoLink`MongoURIObject",
+   TagBox["MongoLink`MongoURI",
     "SummaryHead"], "[", 
    DynamicModuleBox[{Typeset`open$$ = False}, 
     PanelBox[
@@ -917,7 +917,7 @@ Cell[BoxData[
       ImageSize->Automatic],
      BaselinePosition->Baseline],
     DynamicModuleValues:>{}], "]"}],
-  MongoLink`MongoURIObject[
+  MongoLink`MongoURI[
    MongoLink`URI`PackagePrivate`MongoURI[5], 
    "mongodb://user%40name:pass%2Fword@localhost:27017/data%3Abase"],
   Editable->False,

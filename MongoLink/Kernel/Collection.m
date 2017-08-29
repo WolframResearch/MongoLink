@@ -7,6 +7,8 @@ Package["MongoLink`"]
 
 PackageImport["GeneralUtilities`"]
 
+PackageScope["collectionMLE"] (* collection ManagedLibraryExpression *)
+
 (*----------------------------------------------------------------------------*)
 (****** Load Library Functions ******)
 
@@ -48,7 +50,7 @@ mongoCollectionFind = LibraryFunctionLoad[$MongoLinkLib,
 		Integer,		(* connection handle *)
 		Integer,		(* query *)
 		Integer,		(* opts *)		
-		Integer			(* output iterator handle *)
+		Integer			(* output cursor handle *)
 	}, 
 	"Void"				
 ]
@@ -99,25 +101,36 @@ mongoCollectionRemove = LibraryFunctionLoad[$MongoLinkLib,
 mongoCollectionAggregate = LibraryFunctionLoad[$MongoLinkLib, 
 	"WL_MongoCollectionAggregation", 
 	{
-		Integer,		(* connection handle *)
+		Integer,		(* collection handle *)
 		Integer,		(* pipeline bson *)
-		Integer			(* iterator *)
+		Integer			(* cursor *)
+	
+	}, 
+	"Void"				
+]
+
+mongoCollectionStats = LibraryFunctionLoad[$MongoLinkLib, 
+	"WL_MongoCollectionStats", 
+	{
+		Integer,		(* collection handle *)
+		Integer,		(* opts bson *)
+		Integer			(* reply bson *)
 	
 	}, 
 	"Void"				
 ]
 
 (*----------------------------------------------------------------------------*)
-PackageExport["MongoCollectionObject"]
+PackageExport["MongoCollection"]
 
 (* This is a utility function defined in GeneralUtilities, which makes a nicely
 formatted display box *)
-DefineCustomBoxes[MongoCollectionObject, 
-	e:MongoCollectionObject[handle_, dbasename_, collname_, base_] :> Block[{},
+DefineCustomBoxes[MongoCollection, 
+	e:MongoCollection[collMLE_, dbasename_, collname_, client_] :> Block[{},
 	BoxForm`ArrangeSummaryBox[
-		MongoCollectionObject, e, None, 
+		MongoCollection, e, None,
 		{
-			BoxForm`SummaryItem[{"ID: ", ManagedLibraryExpressionID[handle]}],
+			BoxForm`SummaryItem[{"ID: ", getMLEID[collMLE]}],
 			BoxForm`SummaryItem[{"Name: ", collname}],
 			BoxForm`SummaryItem[{"Database: ", dbasename}]
 		},
@@ -126,11 +139,14 @@ DefineCustomBoxes[MongoCollectionObject,
 	]
 ]];
 
-PackageExport["MongoCollectionName"]
-MongoCollectionName[MongoCollectionObject[__, collname_, _]] := collname;
-MongoCollectionName[___] := $Failed
+(* internal MongoCollection object accessors  *)
+getClient[MongoCollection[__, client_]] := client
+getMLE[MongoCollection[collMLE_, __]] := collMLE;
 
-MongoCollectionObject /: RandomSample[coll_MongoCollectionObject, n_] := Module[
+getMLEID[MongoCollection[collMLE_, __]] := ManagedLibraryExpressionID[collMLE];
+
+(* Overload RandomSample for collections *)
+MongoCollection /: RandomSample[coll_MongoCollection, n_] := Module[
 	{pipeline}
 	,
 	pipeline = {<|"$sample" -> <|"size" -> n|>|>};
@@ -138,56 +154,71 @@ MongoCollectionObject /: RandomSample[coll_MongoCollectionObject, n_] := Module[
 ]
 
 (*----------------------------------------------------------------------------*)
+PackageExport["MongoCollectionName"]
+
+MongoCollectionName[MongoCollection[__, collname_, _]] := collname;
+MongoCollectionName[___] := $Failed
+
+(*----------------------------------------------------------------------------*)
 PackageExport["MongoGetCollection"]
 
-MongoGetCollection[database_MongoDatabaseObject, collectionName_String] := 
+MongoGetCollection[db_MongoDatabase, collectionName_String] := 
 CatchFailureAsMessage @ Module[
-	{collectionHandle, result},
+	{collHandle, result},
 	(* Check that collectionName is in database *)
- 
-	collectionHandle = CreateManagedLibraryExpression["MongoCollection", MongoCollection];
+	collHandle = CreateManagedLibraryExpression["Collection", collectionMLE];
 	result = safeLibraryInvoke[databaseGetCollection,
-		ManagedLibraryExpressionID @ MongoDatabaseHandle[database], 
-		ManagedLibraryExpressionID[collectionHandle],
+		getMLEID[db], 
+		getMLEID[collHandle],
 		collectionName
 	];
-	MongoCollectionObject[collectionHandle, MongoDatabaseName[database], collectionName, database]
+	System`Private`SetNoEntry @ MongoCollection[
+		collHandle, 
+		MongoDatabaseName[db], 
+		collectionName, 
+		getClient[db]
+	]
 ]
 
-MongoGetCollection[client_MongoClientObject, 
+MongoGetCollection[client_MongoClient, 
 	databaseName_String, collectionName_String] := CatchFailureAsMessage @ Module[
-	{collectionHandle, result},
-	collectionHandle = CreateManagedLibraryExpression["MongoCollection", MongoCollection];
+	{collHandle, result},
+	collHandle = CreateManagedLibraryExpression["Collection", collectionMLE];
 	result = safeLibraryInvoke[clientGetCollection,
-		ManagedLibraryExpressionID[client], 
-		ManagedLibraryExpressionID[collectionHandle],
+		getMLEID[client], 
+		getMLEID[collHandle],
 		databaseName, 
 		collectionName
 	];
-	MongoCollectionObject[collectionHandle, databaseName, collectionName, client]
+	System`Private`SetNoEntry @ MongoCollection[
+		collHandle, 
+		databaseName, 
+		collectionName, 
+		client
+	]
 ]
 
 (*----------------------------------------------------------------------------*)
 PackageExport["MongoCollectionName"]
 
-MongoCollectionName[MongoCollectionObject[handle_, ___]] := CatchFailureAsMessage @ 
-	safeLibraryInvoke[mongoCollectionName, ManagedLibraryExpressionID[handle]];
+MongoCollectionName[coll_MongoCollection] := CatchFailureAsMessage @ 
+	safeLibraryInvoke[mongoCollectionName, getMLEID[coll]];
 
 (*----------------------------------------------------------------------------*)
 PackageExport["MongoCollectionCount"]
 
-MongoCollectionCount[MongoCollectionObject[handle_, ___], query_Association] := 
+MongoCollectionCount[coll_MongoCollection, query_Association] := 
 CatchFailureAsMessage @ Module[
 	{bsonQuery},
-	bsonQuery = iBSONCreate[query];
+	bsonQuery = iToBSON[query];
 	safeLibraryInvoke[mongoCollectionCount,
-		ManagedLibraryExpressionID[handle], 
-		ManagedLibraryExpressionID[First @ bsonQuery]
+		getMLEID[coll], 
+		getMLEID[bsonQuery]
 	]
 ]
 
-MongoCollectionCount[collection_MongoCollectionObject] := 
-	MongoCollectionCount[collection, <||>]
+MongoCollectionCount[coll_MongoCollection] := 
+	MongoCollectionCount[coll, <||>]
 
 (*----------------------------------------------------------------------------*)
 PackageExport["MongoCollectionFind"]
@@ -198,54 +229,56 @@ PackageExport["MongoCollectionFind"]
 *)
 
 Options[MongoCollectionFind] = {
-	"Limit" -> None
+	"Limit" -> None,
+	BatchSize -> Automatic
 };
 
 MongoCollectionFind::invLimit = 
-	"The Option \"Limit\" must have value None or a positive integer, but `` was given.";
+	"The Option \"Limit\" must have value None or a non-negative integer, but `` was given.";
+MongoCollectionFind::invBatchSize = 
+	"The Option BatchSize must have value Automatic or a non-negative integer, but `` was given.";
 
-MongoCollectionFind[collection_MongoCollectionObject, 
+MongoCollectionFind[coll_MongoCollection, 
 	query_, opts:OptionsPattern[]] := CatchFailureAsMessage @ Module[
 	{
-		queryBSON, optsBSON, iteratorHandle, optsAssoc
+		queryBSON, optsBSON, cursorHandle, optsAssoc,
+		batchSize = OptionValue[BatchSize]
 	},
 	(** parse opts **)
 	optsAssoc = <|
 		"limit" -> Replace[OptionValue["Limit"], None -> 0]
-	|>; 
+	|>;
 	If[!IntegerQ[optsAssoc["limit"]] || Negative[optsAssoc["limit"]],
-		Message[MongoCollectionFind::invLimit, optsAssoc["limit"]];
-		Return[$Failed]
+		ThrowFailure[MongoCollectionFind::invLimit, optsAssoc["limit"]]
 	];
-	
-	(* Create BSON query + field docs *)
-	queryBSON = iBSONCreate[query];
-	optsBSON = iBSONCreate[optsAssoc];
-
-	iteratorHandle = CreateManagedLibraryExpression["MongoIterator", MongoIterator];
-	safeLibraryInvoke[mongoCollectionFind,
-		ManagedLibraryExpressionID[First @ collection], 
-		ManagedLibraryExpressionID[First @ queryBSON],
-		ManagedLibraryExpressionID[First @ optsBSON],
-		ManagedLibraryExpressionID[iteratorHandle]
-	];
-	
-	(* Return iterator object *)
-	NewIterator[
-		MongoIterator, 
-		{iter = iteratorHandle}, 
-		Replace[
-			MongoIteratorRead[iter], 
-			$Failed :> IteratorExhausted
+	If[batchSize =!= Automatic, 
+		optsAssoc["batchSize"] = batchSize;
+		If[!IntegerQ[batchSize] || Negative[batchSize],
+			ThrowFailure[MongoCollectionFind::invBatchSize, batchSize]
 		]
-	]
+	];
+
+	(* Create BSON query + field docs *)
+	queryBSON = iToBSON[query];
+	optsBSON = iToBSON[optsAssoc];
+
+	cursorHandle = CreateManagedLibraryExpression["Cursor", cursorMLE];
+	safeLibraryInvoke[mongoCollectionFind,
+		getMLEID[coll],
+		getMLEID[queryBSON],
+		getMLEID[optsBSON],
+		getMLEID[cursorHandle]
+	];
+	System`Private`SetNoEntry @ 
+		MongoCursor[cursorHandle, getClient[coll]] 
 ]
 
-MongoCollectionFind[collection_MongoCollectionObject, opts:OptionsPattern[]] := 
-	MongoCollectionFind[collection, <||>, opts]
+MongoCollectionFind[coll_MongoCollection, opts:OptionsPattern[]] := 
+	MongoCollectionFind[coll, <||>, opts]
 
 (*----------------------------------------------------------------------------*)
-PackageExport["MongoCollectionInsert"]
+PackageExport["MongoCollectionInsertOne"]
+
 
 Options[MongoCollectionInsert] = {
 	"WriteConcern" -> Automatic,
@@ -255,9 +288,9 @@ Options[MongoCollectionInsert] = {
 MongoCollectionInsert::ordered = 
 	"The option \"Ordered\" was ``, but must be either True or False.";
 MongoCollectionInsert::writeconcern = 
-	"The option \"WriteConcern\" was ``, but must be a MongoWriteConcernObject or Automatic.";
+	"The option \"WriteConcern\" was ``, but must be a MongoWriteConcern or Automatic.";
 
-MongoCollectionInsert[coll_MongoCollectionObject, doc_, opts:OptionsPattern[]] := 
+MongoCollectionInsert[coll_MongoCollection, doc_, opts:OptionsPattern[]] := 
 CatchFailureAsMessage @ Module[
 	{wc, ordered},
 	(** parse options **)
@@ -265,25 +298,24 @@ CatchFailureAsMessage @ Module[
 	If[!BooleanQ[ordered],
 		ThrowFailure[MongoCollectionInsert::ordered]
 	];
-	If[Not[(Head[wc] === MongoWriteConcernObject) || (wc === Automatic)],
+	If[Not[(Head[wc] === MongoWriteConcern) || (wc === Automatic)],
 		ThrowFailure[MongoCollectionInsert::invwriteconcern, wc];
 	];
 	(* use 0 to encode NULL on C side, which uses defaults *)
-	wc = If[wc === Automatic, 0, ManagedLibraryExpressionID[First @ wc]];
+	wc = If[wc === Automatic, 0, getMLEID[wc]];
 	iMongoCollectionInsert[coll, doc, wc, ordered]
 ]
 
 iMongoCollectionInsert[
-	collection_MongoCollectionObject, docs:{__BSONObject}, wc_Integer, ordered_] := Module[
-	{bulkHandle}
-	,
+	collection_MongoCollection, docs:{__BSONObject}, wc_Integer, ordered_] := Module[
+	{bulkHandle},
 	(* Create bulk op *)
-	bulkHandle = CreateManagedLibraryExpression["MongoBulkOperation", MongoBulkOperation];
+	bulkHandle = CreateManagedLibraryExpression["BulkOp", bulkopMLE];
 	safeLibraryInvoke[mongoCollectionCreateBulkOp,
-		ManagedLibraryExpressionID[First @ collection],
+		getMLEID[collection],
 		Boole[ordered],
 		wc,
-		ManagedLibraryExpressionID[bulkHandle]
+		getMLEID[bulkHandle]
 	];
 	Scan[
 		bulkOperationInsert[bulkHandle, #]&,
@@ -293,18 +325,18 @@ iMongoCollectionInsert[
 	bulkOperationExecute[bulkHandle]
 ]
 
-iMongoCollectionInsert[coll_MongoCollectionObject, doc_BSONObject, wc_, ordered_] := 
+iMongoCollectionInsert[coll_MongoCollection, doc_BSONObject, wc_, ordered_] := 
 	iMongoCollectionInsert[coll, {doc}, wc, ordered]
 
-iMongoCollectionInsert[coll_MongoCollectionObject, doc_Association|doc_String, wc_, ordered_] := 
-	iMongoCollectionInsert[coll, {iBSONCreate[doc]}, wc, ordered]
+iMongoCollectionInsert[coll_MongoCollection, doc_Association|doc_String, wc_, ordered_] := 
+	iMongoCollectionInsert[coll, {iToBSON[doc]}, wc, ordered]
 
-iMongoCollectionInsert[coll_MongoCollectionObject, doc_List, wc_, ordered_] := 
-	iMongoCollectionInsert[coll, iBSONCreate /@ doc, wc, ordered]
+iMongoCollectionInsert[coll_MongoCollection, doc_List, wc_, ordered_] := 
+	iMongoCollectionInsert[coll, iToBSON /@ doc, wc, ordered]
 
 iMongoCollectionInsert::invtype =
 	"Document to be inserted must be an Association, String or BSONObject, or a list of these.";
-iMongoCollectionInsert[coll_MongoCollectionObject, doc_, wc_, ordered_] := 
+iMongoCollectionInsert[coll_MongoCollection, doc_, wc_, ordered_] := 
 	ThrowFailure[iMongoCollectionInsert::invtype];
 
 (*----------------------------------------------------------------------------*)
@@ -317,20 +349,20 @@ Options[MongoCollectionUpdate] = {
 };
 
 MongoCollectionUpdate::invwriteconcern = 
-	"The Option \"WriteConcern\" must be a MongoWriteConcernObject or Automatic, but `` was given.";
+	"The Option \"WriteConcern\" must be a MongoWriteConcern or Automatic, but `` was given.";
 MongoCollectionUpdate::invupsert = 
 	"The Option \"Upsert\" must be either True or False, but `` was given."
 MongoCollectionUpdate::invmulti = 
 	"The Option \"MultiDocumentUpdate\" must be either True or False, but `` was given."
 
-MongoCollectionUpdate[MongoCollectionObject[handle_, ___], 
+MongoCollectionUpdate[MongoCollection[handle_, ___], 
 	selector_, updaterDoc_, OptionsPattern[]] := CatchFailureAsMessage @ Module[
 	{queryBSON, updaterDocBSON, wc, upsert, multiDocumentUpdate},
 	(** parse options **)
 	{wc, upsert, multiDocumentUpdate}  = 
 		OptionValue[{"WriteConcern", "Upsert", "MultiDocumentUpdate"}];	
 
-	If[Not[(Head[wc] === MongoWriteConcernObject) || (wc === Automatic)],
+	If[Not[(Head[wc] === MongoWriteConcern) || (wc === Automatic)],
 		ThrowFailure[MongoCollectionUpdate::invwriteconcern, wc];
 	];
 	(* use 0 to encode NULL on C side, which uses defaults *)
@@ -343,18 +375,18 @@ MongoCollectionUpdate[MongoCollectionObject[handle_, ___],
 		ThrowFailure[MongoCollectionUpdate::invmulti, multiDocumentUpdate];
 	];
 	(* Create BSON query + update docs *)
-	queryBSON = iBSONCreate[selector];
-	updaterDocBSON = iBSONCreate[updaterDoc];
+	queryBSON = iToBSON[selector];
+	updaterDocBSON = iToBSON[updaterDoc];
 	(* Execute *)
 	safeLibraryInvoke[mongoCollectionUpdate,
-		ManagedLibraryExpressionID[handle],
-		ManagedLibraryExpressionID[First @ queryBSON],
-		ManagedLibraryExpressionID[First @ updaterDocBSON],
+		getMLEID[handle],
+		getMLEID[queryBSON],
+		getMLEID[updaterDocBSON],
 		wc,
 		Boole[upsert],
 		Boole[multiDocumentUpdate]
 	]
-]	
+]
 
 (*----------------------------------------------------------------------------*)
 PackageExport["MongoCollectionRemove"]
@@ -366,18 +398,18 @@ Options[MongoCollectionRemove] =
 };
 
 MongoCollectionRemove::invwriteconcern = 
-	"The Option \"WriteConcern\" must be a MongoWriteConcernObject or Automatic, but `` was given.";
+	"The Option \"WriteConcern\" must be a MongoWriteConcern or Automatic, but `` was given.";
 MongoCollectionRemove::invmulti = 
 	"The Option \"MultiDocumentUpdate\" must be either True or False, but `` was given."
 
-MongoCollectionRemove[MongoCollectionObject[handle_, ___], 
+MongoCollectionRemove[MongoCollection[handle_, ___], 
 	selector_, OptionsPattern[]] := CatchFailureAsMessage @ Module[
 	{queryBSON, multiDocumentUpdate, wc},
 	(** parse options **)
 	{wc, multiDocumentUpdate}  = 
 		OptionValue[{"WriteConcern", "MultiDocumentUpdate"}];	
 		
-	If[Not[(Head[wc] === MongoWriteConcernObject) || (wc === Automatic)],
+	If[Not[(Head[wc] === MongoWriteConcern) || (wc === Automatic)],
 		ThrowFailure[MongoCollectionRemove::invwriteconcern, wc];
 	];
 	(* use 0 to encode NULL on C side, which uses defaults *)
@@ -385,15 +417,14 @@ MongoCollectionRemove[MongoCollectionObject[handle_, ___],
 	If[!BooleanQ[multiDocumentUpdate],
 		ThrowFailure[MongoCollectionRemove::invmulti, multiDocumentUpdate];
 	];
-	
 	(* Create BSON query *)
-	queryBSON = iBSONCreate[selector];
+	queryBSON = iToBSON[selector];
 	multiDocumentUpdate = OptionValue["MultiDocumentUpdate"];
 	(* Execute *)
 	safeLibraryInvoke[mongoCollectionRemove,
-		ManagedLibraryExpressionID[handle],
+		getMLEID[handle],
 		Boole[multiDocumentUpdate],
-		ManagedLibraryExpressionID[First @ queryBSON],
+		getMLEID[queryBSON],
 		wc
 	]
 ]
@@ -401,41 +432,46 @@ MongoCollectionRemove[MongoCollectionObject[handle_, ___],
 (*----------------------------------------------------------------------------*)
 PackageExport["MongoCollectionAggregate"]
 
-MongoCollectionAggregate[collection_MongoCollectionObject, pipeline_] := Module[
-	{iteratorHandle, pipelineBSON},
-	iteratorHandle = CreateManagedLibraryExpression["MongoIterator", MongoIterator];
-	pipelineBSON = iBSONCreate[<|"pipeline" -> pipeline|>];
+MongoCollectionAggregate[coll_MongoCollection, pipeline_] := Module[
+	{cursorHandle, pipelineBSON},
+	cursorHandle = CreateManagedLibraryExpression["Cursor", cursorMLE];
+	pipelineBSON = iToBSON[<|"pipeline" -> pipeline|>];
 
 	safeLibraryInvoke[mongoCollectionAggregate,
-		ManagedLibraryExpressionID[First @ collection], 
-		ManagedLibraryExpressionID[First @ pipelineBSON], 
-		ManagedLibraryExpressionID[iteratorHandle]
+		getMLEID[coll], 
+		getMLEID[pipelineBSON], 
+		getMLEID[cursorHandle]
 	];
 
-	(* Return iterator object *)
-	NewIterator[
-		MongoIterator, 
-		{iter = iteratorHandle}, 
-		Replace[
-			MongoIteratorRead[iter], 
-			$Failed :> IteratorExhausted
-		]
+	System`Private`SetNoEntry @ MongoCursor[
+		cursorHandle, getClient[coll]
 	]
+]
+
+(*----------------------------------------------------------------------------*)
+PackageExport["MongoCollectionStats"]
+
+MongoCollectionStats[coll_MongoCollection] := CatchFailureAsMessage @ Module[
+	{optsBSON, replyBSON},
+	(* don't support opts yet *)
+	optsBSON = ToBSON[<||>];
+	replyBSON = CreateManagedLibraryExpression["BSON", bsonMLE];	
+	
+	safeLibraryInvoke[mongoCollectionStats,
+		getMLEID[coll],
+		getMLEID[optsBSON], 
+		getMLEID[replyBSON]
+	];
+	BSONToAssociation[BSONObject[replyBSON]]
 ]
 
 (*----------------------------------------------------------------------------*)
 PackageExport["MongoReferenceGet"]
 
-SetUsage[MongoReferenceGet, "
-MongoReferenceGet[MongoDatabase[$$], MongoReference[$$]] returns the corresponding document \
-referenced by MongoReference[$$].
-"
-]
-
-MongoReferenceGet[database_MongoDatabaseObject, mong_MongoDBReference] := 
+MongoReferenceGet[database_MongoDatabase, mong_MongoDBReference] := 
 CatchFailureAsMessage @ Module[
 	{coll, docIter},
-	coll = MongoGetCollection[database, First@mong];
+	coll = MongoGetCollection[database, First[mong]];
 	docIter = MongoCollectionFind[coll, <|"_id" -> <|"$oid" -> Last[mong]|>|>];
 	If[FailureQ[docIter], Return[$Failed]];
 	Read[docIter]

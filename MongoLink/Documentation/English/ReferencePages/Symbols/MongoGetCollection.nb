@@ -199,9 +199,9 @@ Cell[TextData[{
   "28cbe199-813d-402d-a387-9cd8074399bf"],
  " \[LineSeparator]Create a collection object ",
  Cell[BoxData[
-  ButtonBox["MongoCollectionObject",
+  ButtonBox["MongoCollection",
    BaseStyle->"Link",
-   ButtonData->"paclet:MongoLink/ref/MongoCollectionObject"]], 
+   ButtonData->"paclet:MongoLink/ref/MongoCollection"]], 
   "InlineFormula",ExpressionUUID->"14fd90f7-d874-46bf-bd2b-563e888a1460"],
  " to connect to a named collection through database connection ",
  Cell[BoxData[
@@ -221,9 +221,9 @@ Cell[TextData[{
   "0d48774b-85a5-470f-9c42-12d6d5df80fc"],
  " will also create a ",
  Cell[BoxData[
-  ButtonBox["MongoCollectionObject",
+  ButtonBox["MongoCollection",
    BaseStyle->"Link",
-   ButtonData->"paclet:MongoLink/ref/MongoCollectionObject"]], 
+   ButtonData->"paclet:MongoLink/ref/MongoCollection"]], 
   "InlineFormula",ExpressionUUID->"9b454e70-78a7-43c4-a50f-abf34ae98ee4"],
  "."
 }], "Notes",
@@ -360,7 +360,7 @@ Cell[BoxData[
 Cell[BoxData[
  InterpretationBox[
   RowBox[{
-   TagBox["MongoLink`MongoCollectionObject",
+   TagBox["MongoLink`MongoCollection",
     "SummaryHead"], "[", 
    DynamicModuleBox[{Typeset`open$$ = False}, 
     PanelBox[
@@ -442,12 +442,12 @@ Cell[BoxData[
       ImageSize->Automatic],
      BaselinePosition->Baseline],
     DynamicModuleValues:>{}], "]"}],
-  MongoLink`MongoCollectionObject[
+  MongoLink`MongoCollection[
    MongoLink`Collection`PackagePrivate`MongoCollection[1], "NewDB", 
    "NewCollection", 
-   MongoLink`MongoDatabaseObject[
+   MongoLink`MongoDatabase[
     MongoLink`Database`PackagePrivate`MongoDatabase[1], "NewDB", 
-    MongoLink`MongoClientObject[
+    MongoLink`MongoClient[
      MongoLink`Client`PackagePrivate`MongoClient[1]]]],
   Editable->False,
   SelectWithContents->True,
@@ -492,7 +492,7 @@ Cell[BoxData[{
 Cell[BoxData[
  InterpretationBox[
   RowBox[{
-   TagBox["MongoLink`MongoCollectionObject",
+   TagBox["MongoLink`MongoCollection",
     "SummaryHead"], "[", 
    DynamicModuleBox[{Typeset`open$$ = False}, 
     PanelBox[
@@ -574,12 +574,12 @@ Cell[BoxData[
       ImageSize->Automatic],
      BaselinePosition->Baseline],
     DynamicModuleValues:>{}], "]"}],
-  MongoLink`MongoCollectionObject[
+  MongoLink`MongoCollection[
    MongoLink`Collection`PackagePrivate`MongoCollection[2], "NewDB", 
    "NewCollection", 
-   MongoLink`MongoDatabaseObject[
+   MongoLink`MongoDatabase[
     MongoLink`Database`PackagePrivate`MongoDatabase[2], "NewDB", 
-    MongoLink`MongoClientObject[
+    MongoLink`MongoClient[
      MongoLink`Client`PackagePrivate`MongoClient[2]]]],
   Editable->False,
   SelectWithContents->True,

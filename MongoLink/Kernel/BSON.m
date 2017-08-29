@@ -2,11 +2,16 @@
 
 BSON: create BSON objects from either JSON or associations
 
+Note: BSON is independent of MongoDB, so don't prepend name MongoBSON. Rather,
+use name BSONObject.
+
 *******************************************************************************)
 
 Package["MongoLink`"]
 
 PackageImport["GeneralUtilities`"]
+
+PackageScope["bsonMLE"] (* bson ManagedLibraryExpression *)
 
 (*----------------------------------------------------------------------------*)
 (****** Load Library Functions ******)
@@ -21,7 +26,8 @@ createBSONfromJSON = LibraryFunctionLoad[$MongoLinkLib, "WL_CreateBSONfromJSON",
 
 bsonAsJSON = LibraryFunctionLoad[$MongoLinkLib, "WL_bsonAsJSON",
 	{
-		Integer					(* bson handle *)
+		Integer,				(* bson handle *)
+		Integer					(* relaxed json true/false *)
 
 	},
 	"UTF8String"				(* json *)
@@ -49,97 +55,135 @@ parseBSON = LibraryFunctionLoad[$MongoLinkLib, "WL_ParseBSON",
 	LinkObject
 ]
 
+bsonGetBSONKey = LibraryFunctionLoad[$MongoLinkLib, "WL_get_bson_key",
+	{
+		Integer, 				(* bson handle *)
+		Integer,				(* return bson *)
+		"UTF8String"			(* key *)
+
+	},
+	Integer
+]
+
 (*----------------------------------------------------------------------------*)
 PackageExport["BSONObject"]
 
 (* This is a utility function defined in GeneralUtilities, which makes a nicely
 formatted display box *)
 DefineCustomBoxes[BSONObject, 
-	e:BSONObject[id_] :> Block[{},
+	e:BSONObject[bsonMLE_] :> Block[{},
 	BoxForm`ArrangeSummaryBox[
 		BSONObject, e, None, 
 		{
-			BoxForm`SummaryItem[{"ID: ", ManagedLibraryExpressionID[id]}]
+			BoxForm`SummaryItem[{"ID: ", getMLEID[bsonMLE]}]
 		},
 		{},
 		StandardForm
 	]
 ]];
 
+getMLE[BSONObject[bsonMLE_]] := bsonMLE;
+getMLEID[BSONObject[bsonMLE_]] := ManagedLibraryExpressionID[bsonMLE];
+
 BSONObject /: ByteArray[bson_BSONObject] := BSONToByteArray[bson]
-BSONObject /: Normal[bson_BSONObject] := BSONToExpression[bson]
+BSONObject /: Normal[bson_BSONObject] := BSONToAssociation[bson]
 
 (*----------------------------------------------------------------------------*)
 (* conversion funcs *)
 
 PackageExport["BSONToRawArray"]
 BSONToRawArray[BSONObject[id_]] := 
-	safeLibraryInvoke[bsonAsRawArray, ManagedLibraryExpressionID[id]]
+	safeLibraryInvoke[bsonAsRawArray, getMLEID[id]]
 
 PackageExport["BSONToByteArray"]
 BSONToByteArray[bson_BSONObject] := 
 	ByteArray[Normal @ BSONToRawArray[bson]]
 
+(*----------------------------------------------------------------------------*)
 PackageExport["BSONToJSON"]
-BSONToJSON[BSONObject[id_]] := CatchFailureAsMessage[ 
-	safeLibraryInvoke[bsonAsJSON, ManagedLibraryExpressionID[id]]
+
+Options[BSONToJSON] = {
+	"Relaxed" -> False
+};
+
+BSONToJSON::invrelaxed = "Value for option \"Relaxed\" must be boolean, but `` was given.";
+
+BSONToJSON[BSONObject[id_], opts:OptionsPattern[]] := CatchFailureAsMessage @ Module[
+	{relaxed = OptionValue["Relaxed"]},
+	If[!BooleanQ[relaxed], ThrowFailure[BSONToJSON::invrelaxed, relaxed]];
+	safeLibraryInvoke[bsonAsJSON, getMLEID[id], Boole[relaxed]]
 ]
 
-PackageExport["BSONToExpression"]
+(*----------------------------------------------------------------------------*)
+PackageExport["BSONToAssociation"]
 
-BSONToExpression[x_BSONObject] := CatchFailureAsMessage @ iBSONToExpression[x]
+BSONToAssociation[x_BSONObject] := CatchFailureAsMessage @ iBSONToAssociation[x]
 
-iBSONToExpression[BSONObject[id_]] := safeLibraryInvoke[parseBSON, ManagedLibraryExpressionID[id]]
-iBSONToExpression[x:{__BSONObject}] := iBSONToExpression /@ x
+iBSONToAssociation[bson_BSONObject] := safeLibraryInvoke[parseBSON, getMLEID[bson]]
+iBSONToAssociation[x:{__BSONObject}] := iBSONToAssociation /@ x
 
-iBSONToExpression::invarg = "Invalid argument."
-iBSONToExpression[___] := ThrowFailure[iBSONToExpression::invarg]
+iBSONToAssociation::invarg = "Invalid argument."
+iBSONToAssociation[___] := ThrowFailure[iBSONToAssociation::invarg]
 
 (*----------------------------------------------------------------------------*)
-PackageExport["BSONCreate"]
-PackageScope["iBSONCreate"]
+PackageExport["ToBSON"]
+PackageScope["iToBSON"]
 
-iBSONCreate::invjson = "Cannot parse the input into json.";
-iBSONCreate::invtype = "Argument must be string, Association or list.";
+iToBSON::invjson = "Cannot parse the input into json.";
+iToBSON::invtype = "Argument must be string, Association or list.";
 
-iBSONCreate[doc_Association] := Module[
+iToBSON[doc_Association] := Module[
 	{json},
 	json = Developer`WriteRawJSONString[doc,
 	 	"Compact" -> True,
 	 	"ConversionRules" -> $EncodingRules
 	];
 	If[FailureQ[json],
-	 	ThrowFailure[iBSONCreate::invjson]
+	 	ThrowFailure[iToBSON::invjson]
 	];
-	 iBSONCreate[json]
+	 iToBSON[json]
 ]
 
 (* assumes doc is json *)
-iBSONCreate[doc_String] := Module[
+iToBSON[doc_String] := Module[
 	{bsonHandle},
-	bsonHandle = CreateManagedLibraryExpression["MongoBSON", MongoBSON];
-	safeLibraryInvoke[createBSONfromJSON, ManagedLibraryExpressionID[bsonHandle], doc];
+	bsonHandle = CreateManagedLibraryExpression["BSON", bsonMLE];
+	safeLibraryInvoke[createBSONfromJSON, getMLEID[bsonHandle], doc];
 	BSONObject[bsonHandle]
 ]
 
-iBSONCreate[doc_RawArray /; (Developer`RawArrayType[doc] === "UnsignedInteger8")] := Module[
+iToBSON[doc_RawArray /; (Developer`RawArrayType[doc] === "UnsignedInteger8")] := Module[
 	{bsonHandle}, 
-	bsonHandle = CreateManagedLibraryExpression["MongoBSON", MongoBSON];
-	safeLibraryInvoke[rawarrayToBSON, ManagedLibraryExpressionID[bsonHandle], doc];
+	bsonHandle = CreateManagedLibraryExpression["BSON", bsonMLE];
+	safeLibraryInvoke[rawarrayToBSON, getMLEID[bsonHandle], doc];
 	BSONObject[bsonHandle]
 ]
 
-iBSONCreate[doc_ByteArray] := iBSONCreate[RawArray["UnsignedInteger8", Normal[doc]]]
+iToBSON[doc_ByteArray] := iToBSON[RawArray["UnsignedInteger8", Normal[doc]]]
 
-iBSONCreate[doc_] := ThrowFailure[iBSONCreate::invtype]
+iToBSON[doc_] := ThrowFailure[iToBSON::invtype]
 
-iBSONCreate[doc_BSONObject] := doc (* idempotency *)
+iToBSON[doc_BSONObject] := doc (* idempotency *)
 
-BSONCreate[doc_] := CatchFailureAsMessage @ iBSONCreate[doc];
+ToBSON[doc_] := CatchFailureAsMessage @ iToBSON[doc];
+
+(*----------------------------------------------------------------------------*)
+PackageScope["bsonLookup"]
+
+bsonLookup[bson_BSONObject, key_String] := Module[
+	{bsonOut, res},
+	bsonOut = CreateManagedLibraryExpression["BSON", bsonMLE];
+	res = safeLibraryInvoke[bsonGetBSONKey, getMLEID[bson], getMLEID[bsonOut], key];
+	If[res === 0, Return @ Missing["KeyAbsent", key]];
+	Lookup[BSONToAssociation[BSONObject[bsonOut]], key]
+]
 
 (*----------------------------------------------------------------------------*)
 (*********** BSON Types *************)
 (* see https://docs.mongodb.com/manual/reference/mongodb-extended-json/ *)
+(* This is also useful:
+	https://github.com/mongodb/specifications/blob/master/source/extended-json.rst
+*)
 (* Many of these types are not supported yet. *)
 
 (* Note: json converter already handles True, False, Null *)
@@ -147,6 +191,12 @@ BSONCreate[doc_] := CatchFailureAsMessage @ iBSONCreate[doc];
 $EncodingRules = {
 	Infinity :> <|"$maxKey" -> 1|>,
 	Minus[Infinity] :> <|"$minKey" -> 1|>,
+	(* for binary data 00 is the recommended default type for drivers, 
+		see http://bsonspec.org/spec.html *)
+	x_ByteArray :> <|"$binary" -> <|
+		"base64" -> Developer`EncodeBase64[x],
+		"subType" -> "00"
+	|>|>,
 	x_DateObject :> <|"$date" -> Round @ ToMillisecondUnixTime[x]|>,
 	BSONObjectID[x_] :> <|"$oid" -> x|>,
 	BSONDBReference[coll_, id_] :> <|"$ref" -> coll, "$id" -> First[id]|>

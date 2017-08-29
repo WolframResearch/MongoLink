@@ -191,9 +191,9 @@ Cell[TextData[{
  " \[LineSeparator]",
  Cell[BoxData[
   RowBox[{"Create", " ", "a", " ", "URI", " ", "object", " ", 
-   ButtonBox["MongoURIObject",
+   ButtonBox["MongoURI",
     BaseStyle->"Link",
-    ButtonData->"paclet:MongoLink/ref/MongoURIObject"], "using", "  ", 
+    ButtonData->"paclet:MongoLink/ref/MongoURI"], "using", "  ", 
    "default", " ", "hostname", "\"\<\!\(\*
 StyleBox[\"localhost\", \"TI\"]\)\>\"", " ", "and", " ", "port", " ", 
    "27017."}]],
@@ -231,9 +231,9 @@ StyleBox[\"localhost\", \"TI\"]\)\>\"", " ", "and", " ", "port", " ",
  " \[LineSeparator]",
  Cell[BoxData[
   RowBox[{"Create", " ", "a", " ", 
-   ButtonBox["MongoURIObject",
+   ButtonBox["MongoURI",
     BaseStyle->"Link",
-    ButtonData->"paclet:MongoLink/ref/MongoURIObject"], "using"}]],
+    ButtonData->"paclet:MongoLink/ref/MongoURI"], "using"}]],
   CellChangeTimes->{
    3.708708019355571*^9, {3.708708324379857*^9, 3.708708344018951*^9}, {
     3.7087745609812517`*^9, 3.708774561061348*^9}, {3.708774717175157*^9, 
@@ -275,9 +275,9 @@ StyleBox[\"localhost\", \"TI\"]\)\>\"", " ", "and", " ", "port", " ",
  " \[LineSeparator]",
  Cell[BoxData[
   RowBox[{"Create", " ", "a", " ", 
-   ButtonBox["MongoURIObject",
+   ButtonBox["MongoURI",
     BaseStyle->"Link",
-    ButtonData->"paclet:MongoLink/ref/MongoURIObject"], "using"}]],
+    ButtonData->"paclet:MongoLink/ref/MongoURI"], "using"}]],
   CellChangeTimes->{
    3.708708019355571*^9, {3.708708324379857*^9, 3.708708344018951*^9}, {
     3.7087745609812517`*^9, 3.708774561061348*^9}, {3.708774717175157*^9, 
@@ -456,9 +456,9 @@ Cell[BoxData[
 Cell[TextData[{
  "Create a ",
  Cell[BoxData[
-  ButtonBox["MongoURIObject",
+  ButtonBox["MongoURI",
    BaseStyle->"Link",
-   ButtonData->"paclet:MongoLink/ref/MongoURIObject"]], "InlineFormula",
+   ButtonData->"paclet:MongoLink/ref/MongoURI"]], "InlineFormula",
   ExpressionUUID->"cb910b1b-6b20-44f9-9757-a70cf2290472"],
  " that can be used to connect to a Mongo database:"
 }], "ExampleText",
@@ -479,7 +479,7 @@ Cell[BoxData[
 Cell[BoxData[
  InterpretationBox[
   RowBox[{
-   TagBox["MongoLink`MongoURIObject",
+   TagBox["MongoLink`MongoURI",
     "SummaryHead"], "[", 
    DynamicModuleBox[{Typeset`open$$ = False}, 
     PanelBox[
@@ -537,7 +537,7 @@ Cell[BoxData[
       ImageSize->Automatic],
      BaselinePosition->Baseline],
     DynamicModuleValues:>{}], "]"}],
-  MongoLink`MongoURIObject[
+  MongoLink`MongoURI[
    MongoLink`URI`PackagePrivate`MongoURI[1], "mongodb://localhost:27017"],
   Editable->False,
   SelectWithContents->True,
@@ -616,7 +616,7 @@ Cell[BoxData[
 Cell[BoxData[
  InterpretationBox[
   RowBox[{
-   TagBox["MongoLink`MongoURIObject",
+   TagBox["MongoLink`MongoURI",
     "SummaryHead"], "[", 
    DynamicModuleBox[{Typeset`open$$ = False}, 
     PanelBox[
@@ -674,7 +674,7 @@ Cell[BoxData[
       ImageSize->Automatic],
      BaselinePosition->Baseline],
     DynamicModuleValues:>{}], "]"}],
-  MongoLink`MongoURIObject[
+  MongoLink`MongoURI[
    MongoLink`URI`PackagePrivate`MongoURI[2], 
    "mongodb://user:abc123@localhost:27017/Test/?ssl=true"],
   Editable->False,

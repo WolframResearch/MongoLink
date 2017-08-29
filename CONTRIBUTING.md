@@ -15,7 +15,9 @@ to individual repositories.
 
 ## Style
 
-Please use the [LLVM style](http://llvm.org/docs/CodingStandards.html) for the C/C++ interface code. Use of `clang-format` to conform contributions is encouraged.
+Please use the [LLVM style](http://llvm.org/docs/CodingStandards.html) for the C/C++ interface code. Use of `clang-format` to conform code is encouraged, rather than conforming by hand.
+
+For Wolfram Language code, try follow the style used in the current 
 
 ## Bug reports
 

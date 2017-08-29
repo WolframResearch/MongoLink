@@ -8,6 +8,19 @@ Package["MongoLink`"]
 
 PackageImport["GeneralUtilities`"]
 
+(*----------------------------------------------------------------------------*)
+(* declare some common symbols, overloaded for different objects *)
+PackageScope["getMLE"]
+getMLE[___] := Panic["Invalid argument to getMLE"]
+
+PackageScope["getMLEID"]
+getMLEID[x_ /; ManagedLibraryExpressionQ[x]] := ManagedLibraryExpressionID[x]
+getMLEID[___] := Panic["Invalid argument to getMLEID"]
+
+PackageScope["getClient"]
+getClient[___] := Panic["Invalid argument to getClient"]
+
+(*----------------------------------------------------------------------------*)
 (****** Global Variables ******)
 $LibraryResources = FileNameJoin[{FileNameTake[$InputFileName, {1, -4}], "LibraryResources", $SystemID}];
 

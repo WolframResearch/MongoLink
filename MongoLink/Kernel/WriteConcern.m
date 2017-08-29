@@ -8,7 +8,7 @@ Package["MongoLink`"]
 
 PackageImport["GeneralUtilities`"]
 
-PackageScope["MongoWriteConcern"]
+PackageScope["writeConcernMLE"] (* write concern ManagedLibraryExpression *)
 
 (*----------------------------------------------------------------------------*)
 (****** Load Library Functions ******)
@@ -45,45 +45,26 @@ WriteConcernSetJournal = LibraryFunctionLoad[$MongoLinkLib, "WL_WriteConcernSetJ
 ]	
 
 (*----------------------------------------------------------------------------*)
-PackageExport["MongoWriteConcernObject"]
+PackageExport["MongoWriteConcern"]
 
 (* This is a utility function defined in GeneralUtilities, which makes a nicely
 formatted display box *)
-DefineCustomBoxes[MongoWriteConcernObject, 
-	e:MongoWriteConcernObject[id_] :> Block[{},
+DefineCustomBoxes[MongoWriteConcern, 
+	e:MongoWriteConcern[wcMLE_] :> Block[{},
 	BoxForm`ArrangeSummaryBox[
-		MongoWriteConcernObject, e, None, 
+		MongoWriteConcern, e, None, 
 		{
-			BoxForm`SummaryItem[{"ID: ", ManagedLibraryExpressionID[id]}]
+			BoxForm`SummaryItem[{"ID: ", getMLE[wcMLE]}]
 		},
 		{},
 		StandardForm
 	]
 ]];
 
+getMLE[MongoWriteConcern[wcMLE_]] := wcMLE;
+
 (*----------------------------------------------------------------------------*)
 PackageExport["MongoWriteConcernCreate"]
-
-SetUsage[MongoWriteConcernCreate,
-"MongoWriteConcernCreate[] creates an immutable WriteConcernObject[$$] with the default settings.
-MongoWriteConcernCreate[w$] where w$ is an integer >= 0. Used with replication, write \
-operations will block until they have been replicated to the specified number or \
-tagged set of servers. w$ always includes the replica set primary (e.g. \
-w$ = 3 means write to the primary and wait until replicated to two secondaries). \
-w$ = 0 disables acknowledgement of write operations and can not be used with \
-other write concern options.
-
-The following options are available:
-| 'Journal' | True | block until write operations have been committed to the journal. \
-Cannot be used in combination with fsync. Prior to MongoDB 2.6 this option was ignored \
-if the server was running without journaling. Starting with MongoDB 2.6 write \
-operations will fail with an exception if this option is used when the server \
-is running without journaling. |
-| 'Timeout' | None | Used in conjunction with w$. Specify a value in milliseconds \
-to control how long to wait for write propagation to complete. If replication \
-does not complete in the given timeframe, a timeout exception is raised.|
-"
-]
 
 MongoWriteConcernCreate::journal = 
 	"The Option \"Journal\" must have value True or False, but value `` was given.";
@@ -114,18 +95,18 @@ CatchFailureAsMessage @ Module[
 		ThrowFailure[MongoWriteConcernCreate::concern, concern];
 	];
 
-	handle = CreateManagedLibraryExpression["MongoWriteConcern", MongoWriteConcern];
-	safeLibraryInvoke[writeConcernNew, ManagedLibraryExpressionID[handle]];
-	safeLibraryInvoke[WriteConcernSet, ManagedLibraryExpressionID[handle], concern];
+	handle = CreateManagedLibraryExpression["WriteConcern", writeConcernMLE];
+	safeLibraryInvoke[writeConcernNew, getMLEID[handle]];
+	safeLibraryInvoke[WriteConcernSet, getMLEID[handle], concern];
 	safeLibraryInvoke[
 		WriteConcernSetJournal, 
-		ManagedLibraryExpressionID[handle], 
+		getMLEID[handle], 
 		Boole[journal]
 	];
 
 	If[timeout =!= None,
-		safeLibraryInvoke[WriteConcernSetWtimeout, ManagedLibraryExpressionID[handle], timeout]
+		safeLibraryInvoke[WriteConcernSetWtimeout, getMLEID[handle], timeout]
 	];
 	(* Return handle to write concern *)
-	MongoWriteConcernObject[handle]
+	MongoWriteConcern[handle]
 ]

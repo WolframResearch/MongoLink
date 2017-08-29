@@ -8,6 +8,8 @@ Package["MongoLink`"]
 
 PackageImport["GeneralUtilities`"]
 
+PackageScope["uriMLE"] (* URI ManagedLibraryExpression *)
+
 (*----------------------------------------------------------------------------*)
 (****** Load Library Functions ******)
 
@@ -16,50 +18,53 @@ uriCreate = LibraryFunctionLoad[$MongoLinkLib, "WL_URICreate",
 		Integer,					(* uri handle *)
 		"UTF8String"				(* uri *)
 	}, 
-	"Void"						
+	"Void"
 ]
 
 (*----------------------------------------------------------------------------*)
-PackageExport["MongoURIObject"]
+PackageExport["MongoURI"]
 
-SetUsage[MongoURIObject,
-"MongoURIObject[$$] is a symbolic representation of a MongoDB URI.
+SetUsage[MongoURI,
+"MongoURI[$$] is a symbolic representation of a MongoDB URI.
 
-The following operations are defined on the MongoURIObject object:
-| ToString @ MongoURIObject[$$] | Converts MongoURIObject[$$] into its string representation. |
+The following operations are defined on the MongoURI object:
+| ToString @ MongoURI[$$] | Converts MongoURI[$$] into its string representation. |
 "
 ]
 
-MongoURIObject /: ToString[MongoURIObject[id_, uri_]] := URLDecode[uri]
+MongoURI /: ToString[MongoURI[uriMLE_, uri_String]] := URLDecode[uri]
 
 (* This is a utility function defined in GeneralUtilities, which makes a nicely
 formatted display box *)
-DefineCustomBoxes[MongoURIObject, 
-	e:MongoURIObject[id_, uri_] :> Block[{},
+DefineCustomBoxes[MongoURI, 
+	e:MongoURI[uriMLE_, uri_String] :> Block[{},
 	BoxForm`ArrangeSummaryBox[
-		MongoURIObject, e, None, 
-		{BoxForm`SummaryItem[{"ID: ", ManagedLibraryExpressionID[id]}]},
+		MongoURI, e, None,
+		{BoxForm`SummaryItem[{"ID: ", ManagedLibraryExpressionID[uriMLE]}]},
 		{},
 		StandardForm
 	]
 ]];
 
+getMLE[MongoURI[uriMLE_, __]] := uriMLE;
+getMLEID[MongoCollection[uriMLE_, __]] := ManagedLibraryExpressionID[uriMLE];
+
 (*----------------------------------------------------------------------------*)
 PackageExport["MongoURIFromString"]
 
 (*SetUsage[URIFromString,
-"URIFromString[uri$] creates a MongoURIObject[$$] from a uri$ string. 
+"URIFromString[uri$] creates a MongoURI[$$] from a uri$ string. 
 "
 ]*)
 MongoURIFromString::inv = "Invalid URI."
 
 MongoURIFromString[uri_String] := CatchFailureAsMessage @ Module[
 	{
-		handle = CreateManagedLibraryExpression["MongoURI", MongoURI],
+		handle = CreateManagedLibraryExpression["URI", uriMLE],
 		res
 	},
 	res = safeLibraryInvoke[uriCreate, ManagedLibraryExpressionID[handle], uri];
-	MongoURIObject[handle, uri]
+	System`Private`SetNoEntry @ MongoURI[handle, uri]
 ]
 
 (*----------------------------------------------------------------------------*)

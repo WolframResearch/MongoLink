@@ -52,12 +52,12 @@ DLLEXPORT void manage_instance_mongodatabase(WolframLibraryData libData,
   }
 }
 
-DLLEXPORT void manage_instance_mongoiterator(WolframLibraryData libData,
-                                             mbool mode, mint id) {
+DLLEXPORT void manage_instance_mongocursor(WolframLibraryData libData,
+                                           mbool mode, mint id) {
   // Destruction
-  if ((mode != 0) && (iteratorHandleMap.count(id) > 0)) {
-    mongoc_cursor_destroy(iteratorHandleMap[id]);
-    iteratorHandleMap.erase(id);
+  if ((mode != 0) && (cursorHandleMap.count(id) > 0)) {
+    mongoc_cursor_destroy(cursorHandleMap[id]);
+    cursorHandleMap.erase(id);
   }
 }
 
@@ -91,22 +91,19 @@ EXTERN_C DLLEXPORT int WolframLibrary_initialize(WolframLibraryData libData) {
   // initialize mongodb
   mongoc_init();
   // Register All Library Managers
-  (*libData->registerLibraryExpressionManager)("MongoURI",
-                                               manage_instance_mongouri);
-  (*libData->registerLibraryExpressionManager)("MongoClient",
+  (*libData->registerLibraryExpressionManager)("URI", manage_instance_mongouri);
+  (*libData->registerLibraryExpressionManager)("Client",
                                                manage_instance_mongoclient);
-  (*libData->registerLibraryExpressionManager)("MongoDatabase",
+  (*libData->registerLibraryExpressionManager)("Database",
                                                manage_instance_mongodatabase);
-  (*libData->registerLibraryExpressionManager)("MongoCollection",
+  (*libData->registerLibraryExpressionManager)("Collection",
                                                manage_instance_mongocollection);
   (*libData->registerLibraryExpressionManager)(
-      "MongoBulkOperation", manage_instance_mongobulkoperation);
-  (*libData->registerLibraryExpressionManager)(
-      "MongoWriteConcern", manage_instance_mongowriteconcern);
-  (*libData->registerLibraryExpressionManager)("MongoBSON",
+      "WriteConcern", manage_instance_mongowriteconcern);
+  (*libData->registerLibraryExpressionManager)("BSON",
                                                manage_instance_mongobson);
-  (*libData->registerLibraryExpressionManager)("MongoIterator",
-                                               manage_instance_mongoiterator);
+  (*libData->registerLibraryExpressionManager)("Cursor",
+                                               manage_instance_mongocursor);
   return 0;
 }
 
@@ -115,14 +112,13 @@ WolframLibrary_uninitialize(WolframLibraryData libData) {
   // Cleanup mongo
   mongoc_cleanup();
   // Unitialize All Library Managers
-  (*libData->unregisterLibraryExpressionManager)("MongoURI");
-  (*libData->unregisterLibraryExpressionManager)("MongoClient");
-  (*libData->unregisterLibraryExpressionManager)("MongoDatabase");
-  (*libData->unregisterLibraryExpressionManager)("MongoCollection");
-  (*libData->unregisterLibraryExpressionManager)("MongoBulkOperation");
-  (*libData->unregisterLibraryExpressionManager)("MongoWriteConcern");
-  (*libData->unregisterLibraryExpressionManager)("MongoBSON");
-  (*libData->unregisterLibraryExpressionManager)("MongoIterator");
+  (*libData->unregisterLibraryExpressionManager)("URI");
+  (*libData->unregisterLibraryExpressionManager)("Client");
+  (*libData->unregisterLibraryExpressionManager)("Database");
+  (*libData->unregisterLibraryExpressionManager)("Collection");
+  (*libData->unregisterLibraryExpressionManager)("WriteConcern");
+  (*libData->unregisterLibraryExpressionManager)("BSON");
+  (*libData->unregisterLibraryExpressionManager)("Cursor");
   return;
 }
 

@@ -198,7 +198,7 @@ Cell[TextData[{
  StyleBox["Create a client object ", "ExampleText"],
  Cell[BoxData[
   RowBox[{
-   ButtonBox["MongoClientObject",
+   ButtonBox["MongoClient",
     BaseStyle->"Link"], " "}]], "InlineFormula",ExpressionUUID->
   "7a019518-2db8-4416-8e35-87fe2bce400a"],
  StyleBox["using ", "ExampleText"],
@@ -221,7 +221,7 @@ StyleBox[\"localhost\", \"TI\"]\)\>\""], "InlineFormula",ExpressionUUID->
  StyleBox["Create a ", "ExampleText"],
  Cell[BoxData[
   RowBox[{
-   ButtonBox["MongoClientObject",
+   ButtonBox["MongoClient",
     BaseStyle->"Link"], " "}]], "InlineFormula",ExpressionUUID->
   "fb973509-4b55-43fe-9660-bcc954fa4c1b"],
  StyleBox["using", "ExampleText"],
@@ -242,7 +242,7 @@ StyleBox[\"localhost\", \"TI\"]\)\>\""], "InlineFormula",ExpressionUUID->
  StyleBox["Create a ", "ExampleText"],
  Cell[BoxData[
   RowBox[{
-   ButtonBox["MongoClientObject",
+   ButtonBox["MongoClient",
     BaseStyle->"Link"], " "}]], "InlineFormula",ExpressionUUID->
   "efe89791-2632-4544-a756-e7cae09856f2"],
  StyleBox["using", "ExampleText"],
@@ -260,14 +260,14 @@ StyleBox[\"localhost\", \"TI\"]\)\>\""], "InlineFormula",ExpressionUUID->
  Cell[BoxData[
   RowBox[{"MongoClientConnect", "[", 
    RowBox[{
-    ButtonBox["MongoURIObject",
+    ButtonBox["MongoURI",
      BaseStyle->"Link"], "[", "\[Ellipsis]", "]"}], "]"}]], "InlineFormula",
   ExpressionUUID->"a2092a32-cc4b-4677-bc07-3b220a428dec"],
  "\[LineSeparator]",
  StyleBox["Create a ", "ExampleText"],
  Cell[BoxData[
   RowBox[{
-   ButtonBox["MongoClientObject",
+   ButtonBox["MongoClient",
     BaseStyle->"Link"], " "}]], "InlineFormula",ExpressionUUID->
   "04023224-6732-4422-be5f-1ffab8cbaf69"],
  StyleBox["using", "ExampleText"],
@@ -275,7 +275,7 @@ StyleBox[\"localhost\", \"TI\"]\)\>\""], "InlineFormula",ExpressionUUID->
  StyleBox["the URI defined by the ", "ExampleText"],
  StyleBox[Cell[BoxData[
   RowBox[{
-   ButtonBox["MongoURIObject",
+   ButtonBox["MongoURI",
     BaseStyle->"Link"], "[", "\[Ellipsis]", "]"}]], "InlineFormula",
   ExpressionUUID->"53006c55-141d-43a8-88bb-78ae43847089"], "ExampleText"],
  StyleBox[".", "ExampleText"]
@@ -449,7 +449,7 @@ Cell[BoxData[
 Cell[BoxData[
  InterpretationBox[
   RowBox[{
-   TagBox["MongoClientObject",
+   TagBox["MongoClient",
     "SummaryHead"], "[", 
    DynamicModuleBox[{Typeset`open$$ = False}, 
     PanelBox[
@@ -507,7 +507,7 @@ Cell[BoxData[
       ImageSize->Automatic],
      BaselinePosition->Baseline],
     DynamicModuleValues:>{}], "]"}],
-  MongoLink`MongoClientObject[
+  MongoLink`MongoClient[
    MongoLink`Client`PackagePrivate`MongoClient[1]],
   Editable->False,
   SelectWithContents->True,

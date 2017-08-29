@@ -9,6 +9,8 @@ Package["MongoLink`"]
 PackageImport["GeneralUtilities`"]
 PackageImport["DatabaseLink`"]
 
+PackageScope["clientMLE"] (* client ManagedLibraryExpression *)
+
 (*----------------------------------------------------------------------------*)
 (****** Load Library Functions ******)
 
@@ -39,29 +41,33 @@ getDatabaseNames = LibraryFunctionLoad[$MongoLinkLib, "WL_GetDatabaseNames",
 ]
 
 (*----------------------------------------------------------------------------*)
-PackageExport["MongoClientObject"]
+PackageExport["MongoClient"]
 
 (* This is a utility function defined in GeneralUtilities, which makes a nicely
 formatted display box *)
-DefineCustomBoxes[MongoClientObject, 
-	e:MongoClientObject[id_] :> Block[{},
+DefineCustomBoxes[MongoClient, 
+	e:MongoClient[clientMLE_] :> Block[{},
 	BoxForm`ArrangeSummaryBox[
-		MongoClientObject, e, None, 
-		{BoxForm`SummaryItem[{"ID: ", ManagedLibraryExpressionID[id]}]},
+		MongoClient, e, None, 
+		{BoxForm`SummaryItem[{"ID: ", getMLEID[clientMLE]}]},
 		{},
 		StandardForm
 	]
 ]];
 
-MongoClientObject[id_][database_String] := MongoGetDatabase[MongoClientObject[id], database]
+getMLE[MongoClient[clientMLE_]] := clientMLE;
+getMLEID[MongoClient[clientMLE_]] := ManagedLibraryExpressionID[clientMLE];
+
+MongoClient[clientMLE_][db_String] := 
+	MongoGetDatabase[MongoClient[clientMLE], db]
 
 (*----------------------------------------------------------------------------*)
-PackageExport["MongoClientConnect"]
+PackageExport["OpenMongoConnection"]
 
-MongoClientConnect::winpem = "Support for encrypted PEM files requiring \
+OpenMongoConnection::winpem = "Support for encrypted PEM files requiring \
 a PemFilePassword is not available on Windows."
 
-Options[MongoClientConnect] = {
+Options[OpenMongoConnection] = {
 	"Username" -> None,
 	"Password" -> None,
 	"SSL" -> Automatic,
@@ -74,7 +80,7 @@ Options[MongoClientConnect] = {
 };
 
 (* URI Client connect *)
-MongoClientConnect[MongoURIObject[uri_, _], opts:OptionsPattern[]] := 
+OpenMongoConnection[MongoURI[uri_, _], opts:OptionsPattern[]] := 
 	CatchFailureAsMessage @ Module[
 	{
 		ssl = OptionValue["SSL"],
@@ -84,16 +90,16 @@ MongoClientConnect[MongoURIObject[uri_, _], opts:OptionsPattern[]] :=
 		crList = fileConform @ OptionValue["CertificateRevocationList"],
 		verifyCert = OptionValue[VerifySecurityCertificates],
 		invHost = OptionValue["AllowInvalidHostname"],
-		clientHandle = CreateManagedLibraryExpression["MongoClient", MongoClient],
+		clientHandle = CreateManagedLibraryExpression["Client", clientMLE],
 		clientID, result
 	},
-	clientID = ManagedLibraryExpressionID[clientHandle];
-	result = safeLibraryInvoke[clientHandleCreate, clientID, ManagedLibraryExpressionID[uri]];
+	clientID = getMLEID[clientHandle];
+	result = safeLibraryInvoke[clientHandleCreate, clientID, getMLEID[uri]];
 	(***** SSL Opts ******)
 	(* See http://mongoc.org/libmongoc/current/mongoc_ssl_opt_t.html for 
 		this issue *)
 	If[($OperatingSystem === "Windows") && (pemFilePassword =!= None),
-		Message[MongoClientConnect::winpem];
+		Message[OpenMongoConnection::winpem];
 		Return[$Failed]
 	];
 	If[(ssl =!= False) && ((pemFile =!= "") || (caFile =!= "") || (crList =!= "")),
@@ -110,16 +116,15 @@ MongoClientConnect[MongoURIObject[uri_, _], opts:OptionsPattern[]] :=
 	];
 	
 	(* return client object *)
-	MongoClientObject[clientHandle]
+	System`Private`SetNoEntry @ MongoClient[clientHandle]
 ]
 
-MongoClientConnect[host_String, port_Integer, opts:OptionsPattern[]] := Module[
+OpenMongoConnection[host_String, port_Integer, opts:OptionsPattern[]] := Module[
 	{
 		username = OptionValue["Username"],
 		password = OptionValue["Password"],
 		uri
 	},
-
 	If[password === "$Prompt",
 		{username, password} = 
 			DatabaseLink`UI`Private`PasswordDialog[{username, ""}]
@@ -127,23 +132,23 @@ MongoClientConnect[host_String, port_Integer, opts:OptionsPattern[]] := Module[
 	
 	(* this should never fail *)
 	uri = MongoURIConstruct[host, port, "Username" -> username, "Password" -> password];
-	MongoClientConnect[uri, opts]
+	OpenMongoConnection[uri, opts]
 ]
 
-MongoClientConnect[host_String, opts:OptionsPattern[]] := 
-	MongoClientConnect[host, 27017, opts]
-	
-MongoClientConnect[opts:OptionsPattern[]] := 
-	MongoClientConnect["localhost", 27017, opts]
+OpenMongoConnection[host_String, opts:OptionsPattern[]] := 
+	OpenMongoConnection[host, 27017, opts]
+
+OpenMongoConnection[opts:OptionsPattern[]] := 
+	OpenMongoConnection["localhost", 27017, opts]
 
 (*----------------------------------------------------------------------------*)
 PackageExport["MongoDatabaseNames"]
 
 SetUsage[MongoDatabaseNames,
-"MongoDatabaseNames[MongoClientObject[$$]] returns a list of databases on the \
+"MongoDatabaseNames[MongoClient[$$]] returns a list of databases on the \
 connected server. 
 "
 ]
 
-MongoDatabaseNames[MongoClientObject[database_MongoClient]] := 
-	CatchFailureAsMessage @ safeLibraryInvoke[getDatabaseNames, ManagedLibraryExpressionID[database]]
+MongoDatabaseNames[client_MongoClient] := 
+	CatchFailureAsMessage @ safeLibraryInvoke[getDatabaseNames, getMLEID[client]]

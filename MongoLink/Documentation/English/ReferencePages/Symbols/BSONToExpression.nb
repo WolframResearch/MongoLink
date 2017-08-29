@@ -54,7 +54,7 @@ Cell["System`", "Categorization",
  CellLabel->"Context",
  CellID->468444828,ExpressionUUID->"20069a4a-e413-4f60-bb01-d5c0a4a5c22f"],
 
-Cell["ref/BSONToExpression", "Categorization",
+Cell["ref/BSONToAssociation", "Categorization",
  CellLabel->"URI",ExpressionUUID->"0b07020c-7bb0-4ab0-9df7-db7beb534911"],
 
 Cell["XXXX", "Categorization",
@@ -184,13 +184,13 @@ Cell[BoxData[
 
 Cell[CellGroupData[{
 
-Cell["BSONToExpression", "ObjectName",
+Cell["BSONToAssociation", "ObjectName",
  CellID->1224892054,ExpressionUUID->"ab4a0b5a-522e-4b2d-b1cc-d0cd37f76182"],
 
 Cell[TextData[{
  Cell["   ", "ModInfo",ExpressionUUID->"abd7fc82-5035-42d5-a0b5-f1c13372c8f6"],
  Cell[BoxData[
-  RowBox[{"BSONToExpression", "[", "BSON", "]"}]], "InlineFormula",
+  RowBox[{"BSONToAssociation", "[", "BSON", "]"}]], "InlineFormula",
   ExpressionUUID->"3b259b22-320c-4e31-9591-e9cda19bc9aa"],
  " \[LineSeparator]convert BSONObject to an association"
 }], "Usage",
@@ -277,7 +277,7 @@ Cell[CellGroupData[{
 
 Cell[BoxData[
  RowBox[{"bson", "=", 
-  RowBox[{"MongoLink`BSONCreate", "[", 
+  RowBox[{"MongoLink`ToBSON", "[", 
    RowBox[{"<|", 
     RowBox[{"\"\<hello\>\"", "\[Rule]", 
      RowBox[{"{", 
@@ -377,7 +377,7 @@ Cell[TextData[{
 Cell[CellGroupData[{
 
 Cell[BoxData[
- RowBox[{"MongoLink`BSONToExpression", "[", "bson", "]"}]], "Input",
+ RowBox[{"MongoLink`BSONToAssociation", "[", "bson", "]"}]], "Input",
  CellChangeTimes->{{3.710783897630073*^9, 3.710783905237378*^9}, {
   3.7107839370005608`*^9, 3.710783955467743*^9}, {3.7107841738306*^9, 
   3.710784176164074*^9}},

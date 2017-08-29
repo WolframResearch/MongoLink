@@ -8,6 +8,7 @@ Package["MongoLink`"]
 
 PackageImport["GeneralUtilities`"]
 
+PackageScope["databaseMLE"] (* database ManagedLibraryExpression *)
 
 (*----------------------------------------------------------------------------*)
 (****** Load Library Functions ******)
@@ -51,16 +52,16 @@ mongoDatabaseDrop = LibraryFunctionLoad[$MongoLinkLib, "WL_mongoc_database_drop"
 ]
 
 (*----------------------------------------------------------------------------*)
-PackageExport["MongoDatabaseObject"]
+PackageExport["MongoDatabase"]
 
 (* This is a utility function defined in GeneralUtilities, which makes a nicely
 formatted display box *)
-DefineCustomBoxes[MongoDatabaseObject, 
-	e:MongoDatabaseObject[id_, name_, client_] :> Block[{},
+DefineCustomBoxes[MongoDatabase, 
+	e:MongoDatabase[dbMLE_, name_, client_] :> Block[{},
 	BoxForm`ArrangeSummaryBox[
-		MongoDatabaseObject, e, None, 
+		MongoDatabase, e, None, 
 		{
-			BoxForm`SummaryItem[{"ID: ", ManagedLibraryExpressionID[id]}],
+			BoxForm`SummaryItem[{"ID: ", ManagedLibraryExpressionID[dbMLE]}],
 			BoxForm`SummaryItem[{"Name: ", name}]
 		},
 		{},
@@ -68,81 +69,65 @@ DefineCustomBoxes[MongoDatabaseObject,
 	]
 ]];
 
-MongoDatabaseObject[id_, name_, client_][collname_String] := 
-	MongoGetCollection[MongoDatabaseObject[id, name, client], collname]
+getClient[MongoDatabase[__, client_]] := client
+getMLE[MongoDatabase[dbMLE_, __]] := dbMLE;
+getMLEID[MongoDatabase[dbMLE_, __]] := ManagedLibraryExpressionID[dbMLE];
+
+(* connect to collection syntactic sugar *)
+MongoDatabase[dbMLE_, name_, clientMLE_][collname_String] := 
+	MongoGetCollection[MongoDatabase[dbMLE, name, clientMLE], collname]
 
 PackageExport["MongoDatabaseName"]
-MongoDatabaseName[MongoDatabaseObject[_, name_, _]] := name;
+MongoDatabaseName[MongoDatabase[_, name_, _]] := name;
 MongoDatabaseName[___] := $Failed
-
-PackageExport["MongoDatabaseHandle"]
-MongoDatabaseHandle[MongoDatabaseObject[id_, _, _]] := id;
-MongoDatabaseHandle[___] := $Failed
 
 (*----------------------------------------------------------------------------*)
 PackageExport[MongoGetDatabase]
 
-SetUsage[MongoGetDatabase,
-"DatabaseConnect[MongoClientObject[$$], databaseName$] connects to a database \
-databaseName$ part of the client MongoClientObject[$$]. Equivalent to \
-MongoClientObject[$$][databaseName$]."
-]
-
-MongoGetDatabase[MongoClientObject[client_], databaseName_String] := 
+MongoGetDatabase[client_MongoClient, databaseName_String] := 
 CatchFailureAsMessage @ Module[
-	{databaseHandle, result},
-	databaseHandle = CreateManagedLibraryExpression["MongoDatabase", MongoDatabase];
+	{dbMLE, result},
+	dbMLE = CreateManagedLibraryExpression["Database", databaseMLE];
 	result = safeLibraryInvoke[databaseHandleCreate,
-		ManagedLibraryExpressionID[client], 
-		ManagedLibraryExpressionID[databaseHandle],
+		getMLEID[client], 
+		ManagedLibraryExpressionID[dbMLE],
 		databaseName
 	];
-	MongoDatabaseObject[databaseHandle, databaseName, MongoClientObject[client]]
+	System`Private`SetNoEntry @ 
+		MongoDatabase[dbMLE, databaseName, client]
 ]
 
 (*----------------------------------------------------------------------------*)
 PackageExport[MongoCollectionNames]
 
-SetUsage[MongoCollectionNames,
-"DatabaseConnect[MongoDatabaseObject[$$]] gets a list of all the \
-collection names in the database MongoDatabaseObject[$$]. 
-"
-]
-
-MongoCollectionNames[MongoDatabaseObject[handle_, _, _]] := CatchFailureAsMessage @
-	safeLibraryInvoke[getCollectionNames, ManagedLibraryExpressionID[handle]]
+MongoCollectionNames[db_MongoDatabase] := CatchFailureAsMessage @
+	safeLibraryInvoke[getCollectionNames, getMLEID @ db]
 
 (*----------------------------------------------------------------------------*)
 PackageExport[MongoCreateCollection]
-
-SetUsage[MongoCreateCollection,
-"MongoCreateCollection[MongoDatabaseObject[$$], collectionName$] creates a new \
-collection with name collectionName$ inside the database MongoDatabaseObject[$$]. 
-"
-]
 
 Options[MongoCreateCollection] =
 {
 	"Options" -> <||>
 };
 
-MongoCreateCollection[MongoDatabaseObject[handle_, dbname_, client_], 
-	collectionName_String, opts:OptionsPattern[]] := CatchFailureAsMessage @ Module[
-	{result, options, collection},
+MongoCreateCollection[db_MongoDatabase, collName_String, 
+	opts:OptionsPattern[]] := CatchFailureAsMessage @ Module[
+	{result, options, collHandle},
 	
-	options = iBSONCreate[OptionValue["Options"]];
-	collection = CreateManagedLibraryExpression["MongoCollection", MongoCollection];
+	options = iToBSON[OptionValue["Options"]];
+	collHandle = CreateManagedLibraryExpression["Collection", collectionMLE];
 	result = safeLibraryInvoke[databaseCreateCollection,
-		ManagedLibraryExpressionID[handle],
-		collectionName,
-		ManagedLibraryExpressionID[First @ options],
-		ManagedLibraryExpressionID[collection]
+		getMLEID[db],
+		collName,
+		getMLEID[options],
+		ManagedLibraryExpressionID[collHandle]
 	];
-	MongoCollectionObject[collection, dbname, collectionName, MongoDatabaseObject[handle, dbname, client]]
+	MongoCollection[collHandle, MongoDatabaseName[db], collName, client]
 ]
 
 (*----------------------------------------------------------------------------*)
 PackageExport[MongoDatabaseDrop]
 
-MongoDatabaseDrop[MongoDatabaseObject[handle_, _, _]] := CatchFailureAsMessage @ 
-	safeLibraryInvoke[mongoDatabaseDrop, ManagedLibraryExpressionID[handle]];
+MongoDatabaseDrop[db_MongoDatabase] := CatchFailureAsMessage @ 
+	safeLibraryInvoke[mongoDatabaseDrop, getMLEID[db]];

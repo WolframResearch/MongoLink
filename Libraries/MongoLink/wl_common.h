@@ -22,7 +22,7 @@ extern std::map<mint, mongoc_uri_t *> uriHandleMap;
 extern std::map<mint, mongoc_client_t *> clientHandleMap;
 extern std::map<mint, mongoc_database_t *> databaseHandleMap;
 extern std::map<mint, mongoc_collection_t *> collectionHandleMap;
-extern std::map<mint, mongoc_cursor_t *> iteratorHandleMap;
+extern std::map<mint, mongoc_cursor_t *> cursorHandleMap;
 extern std::map<mint, mongoc_bulk_operation_t *> bulkOperationHandleMap;
 extern std::map<mint, mongoc_write_concern_t *> writeConcernHandleMap;
 extern std::map<mint, bson_t *> bsonHandleMap;
@@ -62,10 +62,10 @@ extern std::string errorString;
 
 #define ITERATOR_GET(var, key)                                                 \
   mongoc_cursor_t *var;                                                        \
-  if (iteratorHandleMap.count(MArgument_getInteger(Args[key])) == 0) {         \
+  if (cursorHandleMap.count(MArgument_getInteger(Args[key])) == 0) {         \
     return LIBRARY_FUNCTION_ERROR;                                             \
   }                                                                            \
-  var = iteratorHandleMap[MArgument_getInteger(Args[key])];
+  var = cursorHandleMap[MArgument_getInteger(Args[key])];
 
 #define BULK_OP_GET(var, key)                                                  \
   mongoc_bulk_operation_t *var;                                                \

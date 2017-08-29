@@ -838,7 +838,7 @@ Cell[CellGroupData[{
 Cell["Reading", "Subsubsection"],
 
 Cell["\<\
-Create iterator that iterates over all docs in the collection:\
+Create cursor that iterates over all docs in the collection:\
 \>", "Item"],
 
 Cell[CellGroupData[{
@@ -849,10 +849,10 @@ Cell[BoxData[
 
 Cell[BoxData[
  InterpretationBox[
-  RowBox[{"Iterator", "[", 
+  RowBox[{"Cursor", "[", 
    TagBox[GridBox[{
       {
-       StyleBox["MongoIterator", "Text",
+       StyleBox["MongoCursor", "Text",
         StripOnInput->False], "\[SpanFromLeft]"},
       {
        StyleBox["\<\"iter\"\>",
@@ -869,7 +869,7 @@ Cell[BoxData[
         FontColor->RGBColor[0, 
           Rational[2, 3], 0]], 
        TagBox[
-        RowBox[{"MongoIterator", "[", "1", "]"}],
+        RowBox[{"MongoCursor", "[", "1", "]"}],
         Short]}
      },
      AutoDelete->False,
@@ -882,9 +882,9 @@ Cell[BoxData[
      GridBoxItemStyle->{"Columns" -> {{"Output"}}, "Rows" -> {{"Output"}}},
      GridBoxSpacings->{"Columns" -> {{1}}, "Rows" -> {{1}}}],
     "Grid"], "]"}],
-  GeneralUtilities`Iterator[MongoLink`MongoIterator, 
+  GeneralUtilities`Cursor[MongoLink`MongoCursor, 
    Replace[
-    Iterators`iter$3[], $Failed :> GeneralUtilities`IteratorExhausted], 
+    Cursors`iter$3[], $Failed :> GeneralUtilities`CursorExhausted], 
    None]]], "Output"]
 }, Open  ]],
 
@@ -948,14 +948,14 @@ Cell[BoxData[
 |>\"\>"}]}], "\[RightAssociation]"}]], "Output"]
 }, Open  ]],
 
-Cell["If nothing is left to iterator over:", "Item"],
+Cell["If nothing is left to cursor over:", "Item"],
 
 Cell[CellGroupData[{
 
 Cell[BoxData[
  RowBox[{"Read", "@", "iter"}]], "Input"],
 
-Cell[BoxData["IteratorExhausted"], "Output"]
+Cell[BoxData["CursorExhausted"], "Output"]
 }, Open  ]],
 
 Cell[CellGroupData[{
@@ -2032,7 +2032,7 @@ Cell[BoxData[
 Cell[BoxData[
  TagBox[GridBox[{
     {
-     StyleBox["MongoIterator", "Text",
+     StyleBox["MongoCursor", "Text",
       StripOnInput->False], "\[SpanFromLeft]"}
    },
    AutoDelete->False,

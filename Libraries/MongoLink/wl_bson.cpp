@@ -29,10 +29,18 @@ EXTERN_C DLLEXPORT int WL_CreateBSONfromJSON(WolframLibraryData libData,
 EXTERN_C DLLEXPORT int WL_bsonAsJSON(WolframLibraryData libData, mint Argc,
                                      MArgument *Args, MArgument Res) {
   BSON_GET(bson, 0)
+  bool relaxed = MArgument_getInteger(Args[1]);
+  // the returned json strings lifetime must be longer than this function
+  // (standard string return in LibraryLink)
   if (returnBSONJSON) {
     bson_free(returnBSONJSON);
+    returnBSONJSON = NULL;
   }
-  returnBSONJSON = bson_as_json(bson, NULL);
+  if (relaxed) {
+    returnBSONJSON = bson_as_relaxed_extended_json(bson, NULL);
+  } else {
+    returnBSONJSON = bson_as_canonical_extended_json(bson, NULL);
+  }
   MArgument_setUTF8String(Res, returnBSONJSON);
   return LIBRARY_NO_ERROR;
 }
@@ -73,5 +81,27 @@ EXTERN_C DLLEXPORT int WL_bson_to_rawarray(WolframLibraryData libData,
 
   // Return RawArray
   MArgument_setMRawArray(Res, output_raw);
+  return LIBRARY_NO_ERROR;
+}
+
+EXTERN_C DLLEXPORT int WL_get_bson_key(WolframLibraryData libData, mint Argc,
+                                       MArgument *Args, MArgument Res) {
+  BSON_GET(bson, 0)
+  mint out_bson_key = MArgument_getInteger(Args[1]);
+  char *key = MArgument_getUTF8String(Args[2]);
+
+  bson_iter_t *iter;
+  // return 0 if key not found, 1 if found
+  // http://mongoc.org/libbson/current/bson_iter_init_find_case.html
+  bool result = bson_iter_init_find(iter, bson, key);
+
+  bson_t *out_bson = bson_new();
+  bsonHandleMap[out_bson_key] = out_bson;
+  // http://mongoc.org/libbson/current/bson_append_iter.html
+  if (result)
+    bson_append_iter(out_bson, key, -1, iter);
+
+  libData->UTF8String_disown(key);
+  MArgument_setInteger(Res, static_cast<mint>(result));
   return LIBRARY_NO_ERROR;
 }
