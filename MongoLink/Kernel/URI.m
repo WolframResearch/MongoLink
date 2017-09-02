@@ -24,14 +24,6 @@ uriCreate = LibraryFunctionLoad[$MongoLinkLib, "WL_URICreate",
 (*----------------------------------------------------------------------------*)
 PackageExport["MongoURI"]
 
-SetUsage[MongoURI,
-"MongoURI[$$] is a symbolic representation of a MongoDB URI.
-
-The following operations are defined on the MongoURI object:
-| ToString @ MongoURI[$$] | Converts MongoURI[$$] into its string representation. |
-"
-]
-
 MongoURI /: ToString[MongoURI[uriMLE_, uri_String]] := URLDecode[uri]
 
 (* This is a utility function defined in GeneralUtilities, which makes a nicely
@@ -71,23 +63,6 @@ MongoURIFromString[uri_String] := CatchFailureAsMessage @ Module[
 (* internal Function *)
 PackageExport["MongoURIConstruct"]
 
-SetUsage[MongoURIConstruct,"
-MongoURIConstruct[host$, port$] creates a URI string using string name host$ \
-and port port$.
-MongoURIConstruct[host$] is equivalent to MongoURIConstruct[host$, 27017].
-MongoURIConstruct[] is equivalent to MongoURIConstruct['localhost', 27017].
-
-The following options are available:
-| 'Username' | None | The username to connect to MongoDB database. \
-Username will be ignored if no password option is supplied. |
-| 'Password' | None | The password to connect to MongoDB database. \
-Password will be ignored if no username option is supplied. \
-If you enter '$Prompt' as a password, \
-a dialog box opens that will prompt you for the password. |
-| 'Database' | None | The name of the MongoDB database.|
-"
-]
-
 Options[MongoURIConstruct] = {
 	"Username" -> None,
 	"Password" -> None,
@@ -122,10 +97,9 @@ MongoURIConstruct[host_String, port_Integer, opts:OptionsPattern[]] := Module[
 	
 	(* ssl options: add to URI if True or False, but not Automatic *)
 	If[ssl,
-		uri = StringJoin[uri, "/?ssl=true"],
-		uri = StringJoin[uri, "/?ssl=false"]
+		uri = StringJoin[uri, "?ssl=true"],
+		uri = StringJoin[uri, "?ssl=false"]
 	];
-	
 	MongoURIFromString[uri]
 ]
 

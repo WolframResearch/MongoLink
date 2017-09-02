@@ -72,28 +72,6 @@ EXTERN_C DLLEXPORT int WL_GetCollectionNames(WolframLibraryData libData,
   return LIBRARY_NO_ERROR;
 }
 
-EXTERN_C DLLEXPORT int WL_DatabaseCreateCollection(WolframLibraryData libData,
-                                                   mint Argc, MArgument *Args,
-                                                   MArgument Res) {
-  auto database = databaseHandleMap[MArgument_getInteger(Args[0])];
-  char *collectionName = MArgument_getUTF8String(Args[1]);
-  auto options = bsonHandleMap[MArgument_getInteger(Args[2])];
-
-  auto output_collection_key = MArgument_getInteger(Args[3]);
-  bson_error_t error;
-  auto collection = mongoc_database_create_collection(database, collectionName,
-                                                      options, &error);
-  // check for error
-  if (!collection) {
-    errorString = error.message;
-    return LIBRARY_FUNCTION_ERROR;
-  }
-  collectionHandleMap[output_collection_key] = collection;
-  // Disown string
-  libData->UTF8String_disown(collectionName);
-  return LIBRARY_NO_ERROR;
-}
-
 EXTERN_C DLLEXPORT int WL_DatabaseGetCollection(WolframLibraryData libData,
                                                 mint Argc, MArgument *Args,
                                                 MArgument Res) {

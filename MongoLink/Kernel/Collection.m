@@ -55,6 +55,17 @@ mongoCollectionFind = LibraryFunctionLoad[$MongoLinkLib,
 	"Void"				
 ]
 
+mongoCollectionInsert = LibraryFunctionLoad[$MongoLinkLib, 
+	"WL_mongoc_collection_insert", 
+	{
+		Integer,		(* collection handle *)
+		Integer,		(* wc handle *)	
+		True|False,		(* ordered *)
+		{Integer, 1, "Constant"}	(* bson doc list handles *)
+	}, 
+	True|False				
+]
+
 mongoCollectionName = LibraryFunctionLoad[$MongoLinkLib, 
 	"WL_CollectionGetName", 
 	{
@@ -63,28 +74,18 @@ mongoCollectionName = LibraryFunctionLoad[$MongoLinkLib,
 	"UTF8String"		(* name *)						
 ]	
 
-mongoCollectionCreateBulkOp = LibraryFunctionLoad[$MongoLinkLib, 
-	"WL_MongoCollectionCreateBulkOp", 
-	{
-		Integer,		(* collection handle *)
-		Integer,		(* ordered *)
-		Integer,		(* write concern *)
-		Integer			(* output bulk op handle key *)
-	}, 
-	"Void"				
-]
-
 mongoCollectionUpdate = LibraryFunctionLoad[$MongoLinkLib, 
 	"WL_MongoCollectionUpdate", 
 	{
 		Integer,		(* collection handle *)
+		Integer,		(* write concern handle *)
 		Integer,		(* selector bson handle *)
 		Integer,		(* update bson handle *)
-		Integer,		(* write concern handle *)
-		Integer,		(* upsert *)
-		Integer			(* Multi *)
+		Integer,		(* opts bson handle *)
+		Integer,		(* reply bson handle *)
+		True|False		(* many or one *)
 	}, 
-	"Void"				
+	True|False			(* aknowledged *)			
 ]	
 
 mongoCollectionRemove = LibraryFunctionLoad[$MongoLinkLib, 
@@ -161,6 +162,10 @@ MongoCollectionName[___] := $Failed
 
 (*----------------------------------------------------------------------------*)
 PackageExport["MongoGetCollection"]
+
+(* MongoGetCollection can either operate on Client or Database objects, so 
+	its name is not MongoDatabaseGetCollection etc.
+*)
 
 MongoGetCollection[db_MongoDatabase, collectionName_String] := 
 CatchFailureAsMessage @ Module[
@@ -277,18 +282,23 @@ MongoCollectionFind[coll_MongoCollection, opts:OptionsPattern[]] :=
 	MongoCollectionFind[coll, <||>, opts]
 
 (*----------------------------------------------------------------------------*)
-PackageExport["MongoCollectionInsertOne"]
+(* Insertion: Note that the Mongo spec supports three different insert ops:
+	insert, insertOne, insertMany. PyMongo deprecated insert, and recommends 
+	only insertOne and insertMany. We will follow the API of insertMany,
+	and call it MongoCollectionInsert.
+*)
 
+PackageExport["MongoCollectionInsert"]
+
+General::mongoordered = 
+	"The option \"Ordered\" was ``, but must be either True or False.";
+General::mongowriteconcern = 
+	"The option \"WriteConcern\" was ``, but must be a MongoWriteConcern or Automatic.";
 
 Options[MongoCollectionInsert] = {
 	"WriteConcern" -> Automatic,
 	"Ordered" -> True
 };
-
-MongoCollectionInsert::ordered = 
-	"The option \"Ordered\" was ``, but must be either True or False.";
-MongoCollectionInsert::writeconcern = 
-	"The option \"WriteConcern\" was ``, but must be a MongoWriteConcern or Automatic.";
 
 MongoCollectionInsert[coll_MongoCollection, doc_, opts:OptionsPattern[]] := 
 CatchFailureAsMessage @ Module[
@@ -301,28 +311,26 @@ CatchFailureAsMessage @ Module[
 	If[Not[(Head[wc] === MongoWriteConcern) || (wc === Automatic)],
 		ThrowFailure[MongoCollectionInsert::invwriteconcern, wc];
 	];
-	(* use 0 to encode NULL on C side, which uses defaults *)
-	wc = If[wc === Automatic, 0, getMLEID[wc]];
+	(* if wc is Automatic, to encode NULL on C side, which uses defaults *)
+	wc = Replace[wc, Automatic :> CreateManagedLibraryExpression["WriteConcern", writeConcernMLE]];
 	iMongoCollectionInsert[coll, doc, wc, ordered]
 ]
 
 iMongoCollectionInsert[
-	collection_MongoCollection, docs:{__BSONObject}, wc_Integer, ordered_] := Module[
-	{bulkHandle},
-	(* Create bulk op *)
-	bulkHandle = CreateManagedLibraryExpression["BulkOp", bulkopMLE];
-	safeLibraryInvoke[mongoCollectionCreateBulkOp,
+	collection_MongoCollection, docs:{__BSONObject}, wc_, ordered_] := Module[
+	{res, keyNames},
+	res = safeLibraryInvoke[mongoCollectionInsert,
 		getMLEID[collection],
-		Boole[ordered],
-		wc,
-		getMLEID[bulkHandle]
+		getMLEID[wc],
+		ordered,
+		getMLEID /@ docs
 	];
-	Scan[
-		bulkOperationInsert[bulkHandle, #]&,
-		docs
-	];
-	(* Execute *)
-	bulkOperationExecute[bulkHandle]
+	(* mongoCollectionInsert inserts a _id value if no _id exists in doc. 
+		Need to return a list of _id names to be consistent with
+		https://docs.mongodb.com/manual/reference/method/db.collection.insertMany/
+	*)
+	keyNames = bsonLookup[#, "_id"]& /@ docs;
+	Dataset @ <|"Acknowledged" -> res, "InsertedIDs" -> keyNames, "InsertedCount" -> Length[keyNames]|>
 ]
 
 iMongoCollectionInsert[coll_MongoCollection, doc_BSONObject, wc_, ordered_] := 
@@ -455,14 +463,13 @@ MongoCollectionStats[coll_MongoCollection] := CatchFailureAsMessage @ Module[
 	{optsBSON, replyBSON},
 	(* don't support opts yet *)
 	optsBSON = ToBSON[<||>];
-	replyBSON = CreateManagedLibraryExpression["BSON", bsonMLE];	
-	
+	replyBSON = CreateManagedLibraryExpression["BSON", bsonMLE];
 	safeLibraryInvoke[mongoCollectionStats,
 		getMLEID[coll],
 		getMLEID[optsBSON], 
 		getMLEID[replyBSON]
 	];
-	BSONToAssociation[BSONObject[replyBSON]]
+	Dataset @ BSONToAssociation[BSONObject[replyBSON]]
 ]
 
 (*----------------------------------------------------------------------------*)

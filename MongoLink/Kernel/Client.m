@@ -30,8 +30,8 @@ clientSetSSL = LibraryFunctionLoad[$MongoLinkLib, "WL_ClientSetSSL",
 		"UTF8String",					(* ca_file *)
 		"UTF8String",					(* ca_dir *)
 		"UTF8String",					(* crl_file *)
-		Integer,						(* weak cert validation *)
-		Integer							(* inv hostname *)
+		True|False,						(* weak cert validation *)
+		True|False						(* inv hostname *)
 	}, 
 	"Void"						
 ]
@@ -59,7 +59,7 @@ getMLE[MongoClient[clientMLE_]] := clientMLE;
 getMLEID[MongoClient[clientMLE_]] := ManagedLibraryExpressionID[clientMLE];
 
 MongoClient[clientMLE_][db_String] := 
-	MongoGetDatabase[MongoClient[clientMLE], db]
+	MongoClientGetDatabase[MongoClient[clientMLE], db]
 
 (*----------------------------------------------------------------------------*)
 PackageExport["OpenMongoConnection"]
@@ -110,8 +110,8 @@ OpenMongoConnection[MongoURI[uri_, _], opts:OptionsPattern[]] :=
 		 	caFile,
 		 	"", (* ca_dir: not going to support *)
 		 	crList,
-		 	Boole[verifyCert],
-		 	Boole[invHost]
+		 	verifyCert,
+		 	invHost
 		 ]
 	];
 	
@@ -142,13 +142,13 @@ OpenMongoConnection[opts:OptionsPattern[]] :=
 	OpenMongoConnection["localhost", 27017, opts]
 
 (*----------------------------------------------------------------------------*)
-PackageExport["MongoDatabaseNames"]
+PackageExport["MongoClientGetDatabaseNames"]
 
-SetUsage[MongoDatabaseNames,
-"MongoDatabaseNames[MongoClient[$$]] returns a list of databases on the \
+SetUsage[MongoClientGetDatabaseNames,
+"MongoClientGetDatabaseNames[MongoClient[$$]] returns a list of databases on the \
 connected server. 
 "
 ]
 
-MongoDatabaseNames[client_MongoClient] := 
+MongoClientGetDatabaseNames[client_MongoClient] := 
 	CatchFailureAsMessage @ safeLibraryInvoke[getDatabaseNames, getMLEID[client]]

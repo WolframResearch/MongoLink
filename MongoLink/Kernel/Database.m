@@ -34,20 +34,10 @@ mongoDatabaseName = LibraryFunctionLoad[$MongoLinkLib, "WL_DatabaseGetName",
 	"UTF8String"		(* name *)						
 ]
 
-databaseCreateCollection = LibraryFunctionLoad[$MongoLinkLib, "WL_DatabaseCreateCollection", 
-	{
-		Integer,			(* database handle *)
-		"UTF8String",		(* collection handle *)
-		Integer,			(* bson handle *)
-		Integer				(* collection handle *)
-	}, 
-	"Void"					
-]
-
 mongoDatabaseDrop = LibraryFunctionLoad[$MongoLinkLib, "WL_mongoc_database_drop", 
 	{
 		Integer			(* database handle *)
-	}, 
+	},
 	"Void"								
 ]
 
@@ -82,9 +72,9 @@ MongoDatabaseName[MongoDatabase[_, name_, _]] := name;
 MongoDatabaseName[___] := $Failed
 
 (*----------------------------------------------------------------------------*)
-PackageExport[MongoGetDatabase]
+PackageExport[MongoClientGetDatabase]
 
-MongoGetDatabase[client_MongoClient, databaseName_String] := 
+MongoClientGetDatabase[client_MongoClient, databaseName_String] := 
 CatchFailureAsMessage @ Module[
 	{dbMLE, result},
 	dbMLE = CreateManagedLibraryExpression["Database", databaseMLE];
@@ -98,33 +88,10 @@ CatchFailureAsMessage @ Module[
 ]
 
 (*----------------------------------------------------------------------------*)
-PackageExport[MongoCollectionNames]
+PackageExport[MongoDatabaseGetCollectionNames]
 
-MongoCollectionNames[db_MongoDatabase] := CatchFailureAsMessage @
+MongoDatabaseGetCollectionNames[db_MongoDatabase] := CatchFailureAsMessage @
 	safeLibraryInvoke[getCollectionNames, getMLEID @ db]
-
-(*----------------------------------------------------------------------------*)
-PackageExport[MongoCreateCollection]
-
-Options[MongoCreateCollection] =
-{
-	"Options" -> <||>
-};
-
-MongoCreateCollection[db_MongoDatabase, collName_String, 
-	opts:OptionsPattern[]] := CatchFailureAsMessage @ Module[
-	{result, options, collHandle},
-	
-	options = iToBSON[OptionValue["Options"]];
-	collHandle = CreateManagedLibraryExpression["Collection", collectionMLE];
-	result = safeLibraryInvoke[databaseCreateCollection,
-		getMLEID[db],
-		collName,
-		getMLEID[options],
-		ManagedLibraryExpressionID[collHandle]
-	];
-	MongoCollection[collHandle, MongoDatabaseName[db], collName, client]
-]
 
 (*----------------------------------------------------------------------------*)
 PackageExport[MongoDatabaseDrop]

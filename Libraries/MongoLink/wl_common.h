@@ -16,6 +16,7 @@
 #include "WolframLibrary.h"
 #include "WolframRawArrayLibrary.h"
 
+
 /*----------------------------------------------------------------------------*/
 
 extern std::map<mint, mongoc_uri_t *> uriHandleMap;
@@ -62,7 +63,7 @@ extern std::string errorString;
 
 #define ITERATOR_GET(var, key)                                                 \
   mongoc_cursor_t *var;                                                        \
-  if (cursorHandleMap.count(MArgument_getInteger(Args[key])) == 0) {         \
+  if (cursorHandleMap.count(MArgument_getInteger(Args[key])) == 0) {           \
     return LIBRARY_FUNCTION_ERROR;                                             \
   }                                                                            \
   var = cursorHandleMap[MArgument_getInteger(Args[key])];
@@ -74,19 +75,22 @@ extern std::string errorString;
   }                                                                            \
   var = bulkOperationHandleMap[MArgument_getInteger(Args[key])];
 
-#define WRITE_CONCERN_GET(var, key)                                            \
-  mongoc_write_concern_t *var;                                                 \
-  if (writeConcernHandleMap.count(MArgument_getInteger(Args[key])) == 0) {     \
-    return LIBRARY_FUNCTION_ERROR;                                             \
-  }                                                                            \
-  var = writeConcernHandleMap[MArgument_getInteger(Args[key])];
-
 #define BSON_GET(var, key)                                                     \
   bson_t *var;                                                                 \
   if (bsonHandleMap.count(MArgument_getInteger(Args[key])) == 0) {             \
     return LIBRARY_FUNCTION_ERROR;                                             \
   }                                                                            \
   var = bsonHandleMap[MArgument_getInteger(Args[key])];
+
+// This macro is different from others: you often want this to be NULL to
+// inherit this option instead of specifying
+#define WRITE_CONCERN_GET(var, key)                                            \
+mongoc_write_concern_t *var;                                                 \
+if (writeConcernHandleMap.count(MArgument_getInteger(Args[key])) == 0) {     \
+  var = NULL;                                                                \
+} else {                                                                     \
+  var = writeConcernHandleMap[MArgument_getInteger(Args[key])];              \
+}
 
 /*----------------------------------------------------------------------------*/
 

@@ -1,0 +1,505 @@
+Notebook[{
+Cell[TextData[{
+ "New in: ",
+ Cell["11.3", "HistoryData",
+  CellTags->"New",ExpressionUUID->"28c2add5-a715-4237-8f66-47bc7a129c02"],
+ " | Modified in: ",
+ Cell[" ", "HistoryData",
+  CellTags->"Modified",ExpressionUUID->"7365bcca-879a-4c3f-aff4-25ca6ddf7169"],
+ " | Obsolete in: ",
+ Cell[" ", "HistoryData",
+  CellTags->"Obsolete",ExpressionUUID->"e5e253d5-96c0-4ffc-9853-ce8c9b0dd8c6"],
+ " | Excised in: ",
+ Cell[" ", "HistoryData",
+  CellTags->"Excised",ExpressionUUID->"07430502-9705-4dff-8a8b-7c6b995d391b"]
+}], "History",
+ CellChangeTimes->{{3.71007213881288*^9, 3.710072139286495*^9}},
+ CellID->341476719,ExpressionUUID->"7f82ab73-a6f7-4ee0-835c-47d7103644f2"],
+
+Cell["Created by: meghanr on 07-25-2017 16:35:36", "AuthorDate",
+ CellID->900165781,ExpressionUUID->"6e9d9ac8-155d-47f4-a736-ca67b3431823"],
+
+Cell[CellGroupData[{
+
+Cell["Categorization", "CategorizationSection",
+ CellID->1122911449,ExpressionUUID->"f1b4568e-76d7-4973-912f-4f2ce25f3f4d"],
+
+Cell["Symbol", "Categorization",
+ CellLabel->"Entity Type",
+ CellID->686433507,ExpressionUUID->"9b8fa6d1-6767-4363-933c-4b26bc8f5539"],
+
+Cell["MongoLink", "Categorization",
+ CellChangeTimes->{{3.713258433749381*^9, 3.713258437540921*^9}},
+ CellLabel->"Paclet Name",
+ CellID->605800465,ExpressionUUID->"1f701014-50a2-4ce1-9815-c5ade4bc8c79"],
+
+Cell["MongoLink`", "Categorization",
+ CellChangeTimes->{{3.71325844149224*^9, 3.713258442636725*^9}},
+ CellLabel->"Context",
+ CellID->468444828,ExpressionUUID->"00cd82c1-d63c-4b81-ba6c-0a2dd75ac086"],
+
+Cell["MongoLink/ref/MongoClientGetDatabaseNames", "Categorization",
+ CellChangeTimes->{{3.7132584459170303`*^9, 3.713258452769023*^9}, {
+  3.7133411031130123`*^9, 3.7133411099289207`*^9}, {3.713344992310996*^9, 
+  3.713344996252846*^9}},
+ CellLabel->"URI",
+ CellID->926739745,ExpressionUUID->"e562d622-848f-4a7e-b8e4-e65d63de51fa"],
+
+Cell["XXXX", "Categorization",
+ CellLabel->"Title Modifier",
+ CellID->172747495,ExpressionUUID->"681812f2-6d71-449a-ae04-2c894bd092e0"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["Synonyms", "SynonymsSection",
+ CellID->1427418553,ExpressionUUID->"55633e9f-e957-4dcd-a511-65bed1548ed5"],
+
+Cell["XXXX", "Synonyms",
+ CellID->1251652828,ExpressionUUID->"1bf3c910-d858-4a9b-b66c-0821867e8e3b"]
+}, Closed]],
+
+Cell[CellGroupData[{
+
+Cell["Keywords", "KeywordsSection",
+ CellID->477174294,ExpressionUUID->"b179576a-0ef7-422f-a33f-8c05043235c5"],
+
+Cell["XXXX", "Keywords",
+ CellID->1164421360,ExpressionUUID->"dd46b84f-8d73-4818-a88a-9fd2a33584b5"]
+}, Closed]],
+
+Cell[CellGroupData[{
+
+Cell["Syntax Templates", "TemplatesSection",
+ CellID->1872225408,ExpressionUUID->"98e32e9a-712d-42e6-9e2f-513cf5f0b93c"],
+
+Cell[BoxData[""], "Template",
+ CellLabel->"Additional Function Template",
+ CellID->1562036412,ExpressionUUID->"b0a8df16-21b6-4cae-afdb-42c9910f7f47"],
+
+Cell[BoxData[""], "Template",
+ CellLabel->"Arguments Pattern",
+ CellID->158391909,ExpressionUUID->"8e555afb-a46e-4523-9964-95f919f948bd"],
+
+Cell[BoxData[""], "Template",
+ CellLabel->"Local Variables",
+ CellID->1360575930,ExpressionUUID->"4f6a35b8-4a86-47b6-a854-7f39a0deb363"],
+
+Cell[BoxData[""], "Template",
+ CellLabel->"Color Equal Signs",
+ CellID->793782254,ExpressionUUID->"2f2e37da-26bf-48ab-8dbd-8f7ae0398ac4"]
+}, Closed]],
+
+Cell[CellGroupData[{
+
+Cell["Details", "DetailsSection",
+ CellID->307771771,ExpressionUUID->"118ce092-0274-439e-8c2e-6c29d42bc29f"],
+
+Cell["XXXX", "Details",
+ CellLabel->"Lead",
+ CellID->49458704,ExpressionUUID->"bd60ae9a-891f-45e7-b6c7-ea290186e3cd"],
+
+Cell["XXXX", "Details",
+ CellLabel->"Developers",
+ CellID->350963985,ExpressionUUID->"08ccb752-b58a-46c3-9616-15c63a353c84"],
+
+Cell["XXXX", "Details",
+ CellLabel->"Authors",
+ CellID->422270209,ExpressionUUID->"8cd5ac25-acfd-4594-acd4-e3a526d4d0a8"],
+
+Cell["XXXX", "Details",
+ CellLabel->"Feature Name",
+ CellID->545239557,ExpressionUUID->"8274c6b2-b264-4a22-9796-121e3c06df24"],
+
+Cell["XXXX", "Details",
+ CellLabel->"QA",
+ CellID->121292707,ExpressionUUID->"f016dd7c-ed13-453e-9e65-67520a76816c"],
+
+Cell["XXXX", "Details",
+ CellLabel->"DA",
+ CellID->29314406,ExpressionUUID->"4a2e7754-79c4-414c-bb2f-7aca97cf4d05"],
+
+Cell["XXXX", "Details",
+ CellLabel->"Docs",
+ CellID->96001539,ExpressionUUID->"cbb9a182-8d51-4b7f-bd45-3eed981f93c3"],
+
+Cell["XXXX", "Details",
+ CellLabel->"Features Page Notes",
+ CellID->123278822,ExpressionUUID->"63341dee-cadf-446a-bb89-d5792d2135ba"],
+
+Cell["XXXX", "Details",
+ CellLabel->"Comments",
+ CellID->240026365,ExpressionUUID->"4ea8c63f-5629-4048-a720-ace5d7f134a9"]
+}, Closed]],
+
+Cell[CellGroupData[{
+
+Cell["Security Details", "SecuritySection",
+ CellID->13551076,ExpressionUUID->"c40596e0-52b1-45f7-9e5d-cac1114a2666"],
+
+Cell[BoxData[
+ TagBox[GridBox[{
+    {
+     TemplateBox[{CheckboxBox[
+        Dynamic[
+         CurrentValue[
+          EvaluationNotebook[], {TaggingRules, "SecurityRisk"}, False]]],
+       StyleBox[
+       "\"   Potential security risk\"", FontFamily -> "Arial", FontSize -> 
+        10, StripOnInput -> False]},
+      "RowDefault"]},
+    {
+     DynamicBox[ToBoxes[
+       If[
+        TrueQ[
+         CurrentValue[
+          EvaluationNotebook[], {TaggingRules, "SecurityRisk"}]], 
+        InputField[
+         Dynamic[
+          CurrentValue[
+           EvaluationNotebook[], {TaggingRules, "SecurityExplanation"}, ""]], 
+         String, FieldHint -> "How so? (optional)", FieldSize -> {40, 5}, 
+         BaseStyle -> {FontFamily -> "Arial", FontSize -> 12}], ""], 
+       StandardForm],
+      ImageSizeCache->{0., {0., 5.}}]}
+   },
+   DefaultBaseStyle->"Column",
+   GridBoxAlignment->{"Columns" -> {{Left}}},
+   GridBoxItemSize->{"Columns" -> {{Automatic}}, "Rows" -> {{Automatic}}}],
+  "Column"]], "SecurityDetails",
+ CellID->2488900,ExpressionUUID->"0f03aac8-5457-4be5-b341-21fdd29bfb7b"]
+}, Closed]],
+
+Cell[CellGroupData[{
+
+Cell["MongoClientGetDatabaseNames", "ObjectName",
+ CellChangeTimes->{{3.710003739215835*^9, 3.710003746308729*^9}},
+ CellID->1224892054,ExpressionUUID->"948eb85a-6c7f-4ba4-b42a-644d3694d86e"],
+
+Cell[TextData[{
+ Cell["   ", "ModInfo",ExpressionUUID->"f3c9d0d5-4d7b-4ab1-95e6-7875a1fa2054"],
+ Cell[BoxData[
+  RowBox[{"MongoClientGetDatabaseNames", "[", 
+   RowBox[{
+    ButtonBox["MongoDatabase",
+     BaseStyle->"Link"], "[", 
+    StyleBox["\[Ellipsis]", "TR"], "]"}], "]"}]], "InlineFormula",
+  ExpressionUUID->"8ba46d75-bc4c-4a4f-af90-ba37ab3d3bc5"],
+ " \[LineSeparator]get the name of ",
+ Cell[BoxData[
+  RowBox[{
+   ButtonBox["MongoDatabase",
+    BaseStyle->"Link"], "[", 
+   StyleBox["\[Ellipsis]", "TR"], "]"}]], "InlineFormula",ExpressionUUID->
+  "3638cdf7-ccb4-44c1-9b19-f6d9939f31ba"],
+ "."
+}], "Usage",
+ CellChangeTimes->{{3.710003750809737*^9, 3.7100038100233383`*^9}, {
+  3.710072128761386*^9, 3.7100721552939653`*^9}, {3.713344755992837*^9, 
+  3.713344770264647*^9}, {3.7133449651933413`*^9, 3.713344975779357*^9}},
+ CellID->982511436,ExpressionUUID->"af192fc5-5448-4119-990c-aa5991f0edfb"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["Tutorials", "TutorialsSection",
+ CellID->250839057,ExpressionUUID->"98eec61c-aeb9-42c5-aa49-56587b0d69f4"],
+
+Cell["XXXX", "Tutorials",
+ CellID->341631938,ExpressionUUID->"ac4e8d2e-9b6b-4183-988e-41b61dddffed"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["Related Demonstrations", "RelatedDemonstrationsSection",
+ CellID->1268215905,ExpressionUUID->"2429c72a-ae26-4997-a688-5de7e27d9fb0"],
+
+Cell["XXXX", "RelatedDemonstrations",
+ CellID->1129518860,ExpressionUUID->"aa367507-3e40-4eb2-b4bf-2dba130de490"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["Related Links", "RelatedLinksSection",
+ CellID->1584193535,ExpressionUUID->"813af745-7848-46b4-a6b2-89bc28beb0ca"],
+
+Cell["XXXX", "RelatedLinks",
+ CellID->1038487239,ExpressionUUID->"208144fe-b1f4-4a4a-851c-9f923d229bfb"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["See Also", "SeeAlsoSection",
+ CellID->1255426704,ExpressionUUID->"4417b10b-f988-4e5d-980f-0fa211940b2c"],
+
+Cell["XXXX", "SeeAlso",
+ CellID->929782353,ExpressionUUID->"d26070ef-e570-40f2-a650-57f1e5517d1c"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["More About", "MoreAboutSection",
+ CellID->38303248,ExpressionUUID->"cecb0dd4-d95f-4a07-b412-dedecc2b7f6e"],
+
+Cell["Autogenerated", "MoreAbout",
+ CellID->1665078683,ExpressionUUID->"f2fe7b39-ee2c-43f1-ab63-7664d1101fa7"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ InterpretationBox[GridBox[{
+    {
+     StyleBox["Examples", "PrimaryExamplesSection"], 
+     ButtonBox[
+      RowBox[{
+       RowBox[{"More", " ", "Examples"}], " ", "\[RightTriangle]"}],
+      BaseStyle->"ExtendedExamplesLink",
+      ButtonData:>"ExtendedExamples"]}
+   }],
+  $Line = 0; Null]], "PrimaryExamplesSection",
+ CellID->880084151,ExpressionUUID->"6ecff2ae-47e6-4989-8c6f-b222719b144e"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ InterpretationBox[Cell[
+  "\t", "ExampleDelimiter",ExpressionUUID->
+   "ef1bc328-5cd4-49b4-a98b-ee98fa315ee2"],
+  $Line = 0; Null]], "ExampleDelimiter",
+ CellID->330493580,ExpressionUUID->"50480703-1a5a-4b93-bb29-a1296e74c524"],
+
+Cell[BoxData[
+ RowBox[{"Needs", "[", "\"\<MongoLink`\>\"", "]"}]], "Input",
+ CellChangeTimes->{{3.7133449301773777`*^9, 3.713344934469191*^9}},
+ CellID->1102836980,ExpressionUUID->"bc6473ec-c603-4a84-8ce4-2b4a77f8d290"],
+
+Cell["Connect to a client:", "ExampleText",
+ CellChangeTimes->{{3.70966024037395*^9, 3.70966024649963*^9}, {
+  3.709661229380495*^9, 3.709661237113892*^9}},
+ CellID->1212887918,ExpressionUUID->"6e9a24e6-113d-40a5-9f8c-938eca1d5aa3"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"client", "=", 
+  RowBox[{"OpenMongoConnection", "[", "]"}]}]], "Input",
+ CellChangeTimes->{{3.709660249795392*^9, 3.709660264856126*^9}, {
+   3.709660464832882*^9, 3.7096604654166327`*^9}, 3.7096605027142277`*^9, {
+   3.709660863217078*^9, 3.709660900795587*^9}, {3.713344921964082*^9, 
+   3.7133449367892923`*^9}},
+ CellLabel->"In[4]:=",
+ CellID->1092460502,ExpressionUUID->"b0473432-04b8-4313-8f70-27da541fbf20"],
+
+Cell[BoxData[
+ InterpretationBox[
+  RowBox[{
+   TagBox["MongoClient",
+    "SummaryHead"], "[", 
+   DynamicModuleBox[{Typeset`open$$ = False, Typeset`embedState$$ = "Ready"}, 
+    
+    TemplateBox[{PaneSelectorBox[{False -> GridBox[{{
+            GridBox[{{
+               RowBox[{
+                 TagBox["\"ID: \"", "SummaryItemAnnotation"], 
+                 "\[InvisibleSpace]", 
+                 TagBox["1", "SummaryItem"]}]}}, 
+             GridBoxAlignment -> {
+              "Columns" -> {{Left}}, "Rows" -> {{Automatic}}}, AutoDelete -> 
+             False, GridBoxItemSize -> {
+              "Columns" -> {{Automatic}}, "Rows" -> {{Automatic}}}, 
+             GridBoxSpacings -> {"Columns" -> {{2}}, "Rows" -> {{Automatic}}},
+              BaseStyle -> {
+              ShowStringCharacters -> False, NumberMarks -> False, 
+               PrintPrecision -> 3, ShowSyntaxStyles -> False}]}}, 
+          GridBoxAlignment -> {"Rows" -> {{Top}}}, AutoDelete -> False, 
+          GridBoxItemSize -> {
+           "Columns" -> {{Automatic}}, "Rows" -> {{Automatic}}}, 
+          BaselinePosition -> {1, 1}], True -> GridBox[{{
+            GridBox[{{
+               RowBox[{
+                 TagBox["\"ID: \"", "SummaryItemAnnotation"], 
+                 "\[InvisibleSpace]", 
+                 TagBox["1", "SummaryItem"]}]}}, 
+             GridBoxAlignment -> {
+              "Columns" -> {{Left}}, "Rows" -> {{Automatic}}}, AutoDelete -> 
+             False, GridBoxItemSize -> {
+              "Columns" -> {{Automatic}}, "Rows" -> {{Automatic}}}, 
+             GridBoxSpacings -> {"Columns" -> {{2}}, "Rows" -> {{Automatic}}},
+              BaseStyle -> {
+              ShowStringCharacters -> False, NumberMarks -> False, 
+               PrintPrecision -> 3, ShowSyntaxStyles -> False}]}}, 
+          GridBoxAlignment -> {"Rows" -> {{Top}}}, AutoDelete -> False, 
+          GridBoxItemSize -> {
+           "Columns" -> {{Automatic}}, "Rows" -> {{Automatic}}}, 
+          BaselinePosition -> {1, 1}]}, 
+       Dynamic[Typeset`open$$], ImageSize -> Automatic]},
+     "SummaryPanel"],
+    DynamicModuleValues:>{}], "]"}],
+  MongoLink`MongoClient[
+   MongoLink`PackageScope`clientMLE[1]],
+  Editable->False,
+  SelectWithContents->True,
+  Selectable->False]], "Output",
+ CellChangeTimes->{{3.7133450125094547`*^9, 3.713345024999399*^9}, {
+  3.713348092173539*^9, 3.7133481073096857`*^9}},
+ CellLabel->"Out[4]=",
+ CellID->66385584,ExpressionUUID->"9e9c53fd-845c-4f61-8c6f-c33e1fd8bf32"]
+}, Open  ]],
+
+Cell["List name of connected database:", "ExampleText",
+ CellChangeTimes->{{3.710003821436899*^9, 3.710003826993869*^9}},
+ CellID->1453134619,ExpressionUUID->"888205ce-cdee-438f-a2cc-39587880408a"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"MongoClientGetDatabaseNames", "[", "client", "]"}]], "Input",
+ CellChangeTimes->{{3.710003829970565*^9, 3.710003838873869*^9}, {
+   3.710003980317934*^9, 3.710003982885497*^9}, 3.713344958321472*^9, {
+   3.713348122107226*^9, 3.713348122577629*^9}},
+ CellLabel->"In[7]:=",
+ CellID->1649507849,ExpressionUUID->"29b1f70e-63e6-493d-8dc9-d2e017c7a02c"],
+
+Cell[BoxData[
+ RowBox[{"{", 
+  RowBox[{"\<\"MachineLearningData\"\>", ",", "\<\"Temp\"\>", 
+   ",", "\<\"Test\"\>", ",", "\<\"WolframTestDB\"\>", ",", "\<\"admin\"\>", 
+   ",", "\<\"local\"\>", ",", "\<\"test4\"\>"}], "}"}]], "Output",
+ CellChangeTimes->{
+  3.710003997584654*^9, 3.713345028637561*^9, {3.713348095218499*^9, 
+   3.713348122961162*^9}},
+ CellLabel->"Out[7]=",
+ CellID->1345321194,ExpressionUUID->"ad471035-5bbe-4cd8-91f9-252776a76b3d"]
+}, Open  ]]
+}, Open  ]]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["More Examples", "ExtendedExamplesSection",
+ CellTags->"ExtendedExamples",
+ CellID->1854448968,ExpressionUUID->"0c43b46b-c3ac-498f-bdd1-6797c6f53322"],
+
+Cell[BoxData[
+ InterpretationBox[Cell[
+  "Scope", "ExampleSection",ExpressionUUID->
+   "f0661440-3d33-4f4f-bdf0-d53120890d8c"],
+  $Line = 0; Null]], "ExampleSection",
+ CellID->1293636265,ExpressionUUID->"15a9ea70-cfa3-46c3-9dac-88f19301f3fe"],
+
+Cell[BoxData[
+ InterpretationBox[Cell[
+  "Generalizations & Extensions", "ExampleSection",ExpressionUUID->
+   "99155c66-eda2-4d51-a0a9-4688bee8259e"],
+  $Line = 0; Null]], "ExampleSection",
+ CellID->1020263627,ExpressionUUID->"1bb795ed-c628-4916-9ad9-5053c1050776"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ InterpretationBox[Cell[
+  "Options", "ExampleSection",ExpressionUUID->
+   "5b50023b-a2aa-430c-bdbf-e6d865609b89"],
+  $Line = 0; Null]], "ExampleSection",
+ CellID->2061341341,ExpressionUUID->"2fac9556-23d7-43d3-88ca-f9785618a426"],
+
+Cell[BoxData[
+ InterpretationBox[Cell[
+  "XXXX", "ExampleSubsection",ExpressionUUID->
+   "7111511a-7c4c-409d-8ed2-73ea382af325"],
+  $Line = 0; Null]], "ExampleSubsection",
+ CellID->1757724783,ExpressionUUID->"d4d0a6fc-cf60-4331-bb63-db274c4de8a6"],
+
+Cell[BoxData[
+ InterpretationBox[Cell[
+  "XXXX", "ExampleSubsection",ExpressionUUID->
+   "fa9fa19e-733c-4997-9bfc-07cb47195ed9"],
+  $Line = 0; Null]], "ExampleSubsection",
+ CellID->1295379749,ExpressionUUID->"1dc725e6-b2eb-428b-83a5-ae37ccdd6053"]
+}, Closed]],
+
+Cell[BoxData[
+ InterpretationBox[Cell[
+  "Applications", "ExampleSection",ExpressionUUID->
+   "31f90e7e-692b-472c-b89f-8c1dfa0a1a1b"],
+  $Line = 0; Null]], "ExampleSection",
+ CellID->258228157,ExpressionUUID->"59e87b6f-502b-41e8-90ac-6a7e6a65ab4f"],
+
+Cell[BoxData[
+ InterpretationBox[Cell[
+  "Properties & Relations", "ExampleSection",ExpressionUUID->
+   "4fd08fdf-4b64-4909-9472-b1dc84d4b115"],
+  $Line = 0; Null]], "ExampleSection",
+ CellID->2123667759,ExpressionUUID->"e5bfd1a5-d710-4940-acde-a39808f2700a"],
+
+Cell[BoxData[
+ InterpretationBox[Cell[
+  "Possible Issues", "ExampleSection",ExpressionUUID->
+   "3b468a3d-97fe-4f13-bae5-dd265cac1547"],
+  $Line = 0; Null]], "ExampleSection",
+ CellID->1305812373,ExpressionUUID->"75ea0a5b-74f8-4cef-8c84-5e68731b8cc5"],
+
+Cell[BoxData[
+ InterpretationBox[Cell[
+  "Interactive Examples", "ExampleSection",ExpressionUUID->
+   "87dc8ed3-509e-43d9-b4fb-34640394604d"],
+  $Line = 0; Null]], "ExampleSection",
+ CellID->1653164318,ExpressionUUID->"ddfea5a7-cc3f-4e2f-a49c-210ebfaea4a0"],
+
+Cell[BoxData[
+ InterpretationBox[Cell[
+  "Neat Examples", "ExampleSection",ExpressionUUID->
+   "eaeb21a0-da72-42ea-bfe9-dc4e0255dfa4"],
+  $Line = 0; Null]], "ExampleSection",
+ CellID->589267740,ExpressionUUID->"cf7601a5-edb3-4b8d-8e0d-fb46ad9a5b63"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["Design Discussion", "DesignDiscussionSection",
+ CellID->1775809863,ExpressionUUID->"954a13e5-6406-4a3c-befc-27760ed91208"],
+
+Cell["XXXX", "DesignDiscussion",
+ CellID->308641435,ExpressionUUID->"e9e784b0-124f-444e-b821-fed2c8556ce2"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["Application Notes", "ApplicationNotesSection",
+ CellID->1163590540,ExpressionUUID->"8c530092-3323-43df-b558-23990f316f30"],
+
+Cell["XXXX", "ApplicationNotes",
+ CellID->1480116198,ExpressionUUID->"78b30cd9-f131-4c61-80e4-f4a3c84a01f1"]
+}, Open  ]],
+
+Cell["Test Cases", "TestCasesSection",
+ CellID->725748110,ExpressionUUID->"c0e0c7ba-0f0b-46f9-8500-a818ab44ed5b"],
+
+Cell[CellGroupData[{
+
+Cell["Function Essay", "FunctionEssaySection",
+ CellID->37427227,ExpressionUUID->"6e34762d-7938-45fa-96a9-fb8f34f8b4b6"],
+
+Cell["XXXX", "FunctionEssay",
+ CellID->356990964,ExpressionUUID->"4490c5cb-61e4-4df6-b113-f5a5148133f2"]
+}, Open  ]]
+},
+ScreenStyleEnvironment->"ExperimentalObject",
+WindowSize->{700, 770},
+WindowMargins->{{1312, Automatic}, {207, Automatic}},
+TaggingRules->{
+ "DocuToolsSettingsInternal" -> {
+   "$PacletVersion" -> "0.9.1871", "$MVersion" -> "11", "$FlaggedVersion" -> 
+    10.4, "$ApplicationName" -> "Pubs", "$LinkBase" -> "Pubs", 
+    "$ApplicationDirectory" -> "C:\\Workspace\\Pubs\\", 
+    "$DocumentationDirectory" -> 
+    "C:\\Workspace\\Pubs\\Documentation\\English\\", "$UseNewPageDialog" -> 
+    ""}, "SecurityRisk" -> False, "SecurityExplanation" -> "", "Author" -> 
+  "meghanr", "CreationDate" -> "07-25-2017 16:35:36"},
+FrontEndVersion->"11.3 for Mac OS X x86 (32-bit, 64-bit Kernel) (August 27, \
+2017)",
+StyleDefinitions->FrontEnd`FileName[{"Wolfram"}, "FunctionPageStyles.nb", 
+  CharacterEncoding -> "UTF-8"]
+]
+

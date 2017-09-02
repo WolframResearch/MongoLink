@@ -27,7 +27,7 @@ createBSONfromJSON = LibraryFunctionLoad[$MongoLinkLib, "WL_CreateBSONfromJSON",
 bsonAsJSON = LibraryFunctionLoad[$MongoLinkLib, "WL_bsonAsJSON",
 	{
 		Integer,				(* bson handle *)
-		Integer					(* relaxed json true/false *)
+		True|False				(* relaxed json true/false *)
 
 	},
 	"UTF8String"				(* json *)
@@ -111,7 +111,7 @@ BSONToJSON::invrelaxed = "Value for option \"Relaxed\" must be boolean, but `` w
 BSONToJSON[BSONObject[id_], opts:OptionsPattern[]] := CatchFailureAsMessage @ Module[
 	{relaxed = OptionValue["Relaxed"]},
 	If[!BooleanQ[relaxed], ThrowFailure[BSONToJSON::invrelaxed, relaxed]];
-	safeLibraryInvoke[bsonAsJSON, getMLEID[id], Boole[relaxed]]
+	safeLibraryInvoke[bsonAsJSON, getMLEID[id], relaxed]
 ]
 
 (*----------------------------------------------------------------------------*)

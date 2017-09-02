@@ -6,6 +6,20 @@
 
 #include "wl_common.h"
 
+bool is_transaction_acknowledged(mongoc_write_concern_t *wc,
+                                 mongoc_collection_t *coll) {
+  // if wc was NULL, then the write concern from the collection is used.
+  // insertMany and insertOne require the return of whether the transaction was
+  // acknowledged
+  bool acknowledged;
+  if (!wc)
+    acknowledged = mongoc_write_concern_is_acknowledged(
+        mongoc_collection_get_write_concern(coll));
+  else
+    acknowledged = mongoc_write_concern_is_acknowledged(wc);
+  return acknowledged;
+}
+
 /*----------------------------------------------------------------------------*/
 // Collection handle creation
 EXTERN_C DLLEXPORT int WL_CollectionGetName(WolframLibraryData libData,
@@ -65,62 +79,43 @@ EXTERN_C DLLEXPORT int WL_mongoc_collection_insert(WolframLibraryData libData,
   // Inputs
   COLLECTION_GET(collection, 0)
   WRITE_CONCERN_GET(wc, 1)
-
-  auto doc_keys_tensor = MArgument_getMTensor(Args[2]);
+  bool ordered = MArgument_getInteger(Args[2]);
+  auto doc_keys_tensor = MArgument_getMTensor(Args[3]);
   auto num_docs = libData->MTensor_getFlattenedLength(doc_keys_tensor);
   auto doc_keys = libData->MTensor_getIntegerData(doc_keys_tensor);
-
   mongoc_bulk_operation_t *bulk =
-      mongoc_collection_create_bulk_operation(collection, true, wc);
-
+      mongoc_collection_create_bulk_operation(collection, ordered, wc);
   // insert docs
-  for (i = 0; i < num_docs; i++) {
-    mongoc_bulk_operation_insert(bulk, doc);
-    bson_destroy(doc);
-  }
-
-  BSON_GET(document, 1)
-
-  mint bson_oid_key = MArgument_getInteger(Args[3]);
-
-  // check whether bson has oid. If not, create oid and append to bson
-  // Need to do this as insertOne API requires returning "_id" field of
-  // inserted docs, and C Driver does not support this
+  bson_t *doc;
   bson_oid_t oid;
-  if (!bson_has_field(document, "_id")) {
-    bson_oid_init(&oid, NULL);
-    BSON_APPEND_OID(document, "_id", &oid);
+  for (int i = 0; i < num_docs; i++) {
+    mint doc_key = doc_keys[i];
+    if (bsonHandleMap.count(doc_key) == 0) {
+      return LIBRARY_FUNCTION_ERROR;
+    }
+    doc = bsonHandleMap[doc_key];
+    // check whether bson has oid. If not, create oid and append to bson
+    // Need to do this as insertOne API requires returning "_id" field of
+    // inserted docs, and C Driver does not support this
+    if (!bson_has_field(doc, "_id")) {
+      bson_oid_init(&oid, NULL);
+      BSON_APPEND_OID(doc, "_id", &oid);
+    }
+    // http://mongoc.org/libmongoc/1.3.5/mongoc_bulk_operation_insert.html
+    mongoc_bulk_operation_insert(bulk, doc);
   }
-  // don't support any insert flags yet.
-  // http://mongoc.org/libmongoc/current/mongoc_insert_flags_t.html
-  mongoc_insert_flags_t flags = MONGOC_INSERT_NONE;
 
   bson_error_t error;
-  // http://mongoc.org/libmongoc/current/mongoc_collection_insert.html
-  bool res = mongoc_collection_insert(collection, flags, document,
-                                      write_concern, &error);
+  bson_t reply;
+  // http://mongoc.org/libmongoc/1.3.5/mongoc_bulk_operation_execute.html
+  bool res = mongoc_bulk_operation_execute(bulk, &reply, &error);
   if (!res) {
     errorString = error.message;
     return LIBRARY_FUNCTION_ERROR;
   }
 
-  return LIBRARY_NO_ERROR;
-}
-
-EXTERN_C DLLEXPORT int
-WL_MongoCollectionCreateBulkOp(WolframLibraryData libData, mint Argc,
-                               MArgument *Args, MArgument Res) {
-  // Inputs
-  COLLECTION_GET(collection, 0)
-  bool ordered = MArgument_getInteger(Args[1]);
-  // use wc_key = 0 to encode NULL
-  mint wc_key = MArgument_getInteger(Args[2]);
-  mongoc_write_concern_t *wc =
-      (wc_key == 0) ? writeConcernHandleMap[wc_key] : NULL;
-  mint output_bulk_key = MArgument_getInteger(Args[3]);
-  // http://mongoc.org/libmongoc/current/mongoc_collection_create_bulk_operation.html
-  bulkOperationHandleMap[output_bulk_key] =
-      mongoc_collection_create_bulk_operation(collection, ordered, wc);
+  mbool ack = is_transaction_acknowledged(wc, collection);
+  MArgument_setBoolean(Res, ack);
   return LIBRARY_NO_ERROR;
 }
 
@@ -130,29 +125,41 @@ EXTERN_C DLLEXPORT int WL_MongoCollectionUpdate(WolframLibraryData libData,
                                                 MArgument Res) {
   // Inputs
   COLLECTION_GET(collection, 0)
-  BSON_GET(selector, 1)
-  BSON_GET(update, 2)
-  WRITE_CONCERN_GET(write_concern, 3)
-  bool upsert = MArgument_getInteger(Args[4]);
-  bool multi = MArgument_getInteger(Args[5]);
+  WRITE_CONCERN_GET(wc, 1)
+  BSON_GET(selector, 2)
+  BSON_GET(document, 3)
+  BSON_GET(opts, 4)
+  int reply_bson_key = MArgument_getInteger(Args[5]);
+  bool many = MArgument_getInteger(Args[6]);
 
-  // Deal with update flags
-  mongoc_update_flags_t updateFlag = MONGOC_UPDATE_NONE;
-  if (upsert)
-    updateFlag = (mongoc_update_flags_t)(updateFlag | MONGOC_UPDATE_UPSERT);
-  if (multi)
-    updateFlag =
-        (mongoc_update_flags_t)(updateFlag | MONGOC_UPDATE_MULTI_UPDATE);
-  // API:
-  // http://api.mongodb.org/c/current/mongoc_collection_update.html
+  mongoc_bulk_operation_t *bulk =
+      mongoc_collection_create_bulk_operation(collection, true, wc);
+
   bson_error_t error;
-  bool result = mongoc_collection_update(collection, updateFlag, selector,
-                                         update, write_concern, &error);
-  // Error handling
-  if (!result) {
+  bool res;
+  if (many) {
+    res = mongoc_bulk_operation_update_many_with_opts(bulk, selector, document,
+                                                      opts, &error);
+  } else {
+    res = mongoc_bulk_operation_update_one_with_opts(bulk, selector, document,
+                                                     opts, &error);
+  }
+  if (!res) {
     errorString = error.message;
     return LIBRARY_FUNCTION_ERROR;
   }
+  // execute bulk op
+  bson_t reply;
+  res = mongoc_bulk_operation_execute(bulk, &reply, &error);
+  if (!res) {
+    errorString = error.message;
+    return LIBRARY_FUNCTION_ERROR;
+  }
+  // need reply
+  bsonHandleMap[reply_bson_key] = bson_copy(&reply);
+
+  mbool ack = is_transaction_acknowledged(wc, collection);
+  MArgument_setBoolean(Res, ack);
   return LIBRARY_NO_ERROR;
 }
 
@@ -172,7 +179,6 @@ EXTERN_C DLLEXPORT int WL_MongoCollectionRemove(WolframLibraryData libData,
   bson_error_t error;
   bool result = mongoc_collection_remove(collection, removeFlags, selector,
                                          write_concern, &error);
-  // Error handling
   if (!result) {
     errorString = error.message;
     return LIBRARY_FUNCTION_ERROR;
