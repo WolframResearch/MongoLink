@@ -247,14 +247,10 @@ Cell[TextData[{
  Cell[BoxData[
   StyleBox["projection", "TI"]], "InlineFormula",ExpressionUUID->
   "0ae7adbd-7bd6-454d-a094-8bd6b3f9feed"],
- " must be a type convertible to the BSON format via ",
- Cell[BoxData[
-  ButtonBox["ToBSON",
-   BaseStyle->"Link"]], "InlineFormula",ExpressionUUID->
-  "5f547bd2-c839-4e1e-a200-c63ab648600b"],
- ". They are typically associations."
+ " are Associations."
 }], "Notes",
- CellChangeTimes->{{3.713433881359516*^9, 3.71343397856635*^9}},
+ CellChangeTimes->{{3.713433881359516*^9, 3.71343397856635*^9}, {
+  3.7134355589845753`*^9, 3.713435584735071*^9}},
  CellID->1067943069,ExpressionUUID->"ab324bdd-d44f-4860-a72a-1a9b4aa8f38c"],
 
 Cell[TextData[{
