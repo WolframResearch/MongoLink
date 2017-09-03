@@ -78,7 +78,10 @@ General::mongoinvordered =
 	"The option \"Ordered\" was ``, but must be either True or False.";
 General::mongoinvwriteconcern = 
 	"The option \"WriteConcern\" was ``, but must be a MongoWriteConcern or Automatic.";
+General::mongoinvupsert = 
+	"The option \"Upsert\" was ``, but must be either True or False.";
 
+(*----------------------------------------------------------------------------*)
 createBulkOperation[coll_MongoCollection, wc_, ordered_] := Module[
 	{wcNew, bulkOp, res},
 	If[!BooleanQ[ordered],
@@ -106,7 +109,7 @@ bulkOpExecute[bulk_bulkopMLE] := Module[
 	{reply},
 	reply = CreateManagedLibraryExpression["BSON", bsonMLE];
 	safeLibraryInvoke[bulkOpExecuteLL, getMLEID[bulk], getMLEID[reply]];
-	Normal[reply]
+	Normal[BSONObject[reply]]
 ]
 
 (*----------------------------------------------------------------------------*)
@@ -167,4 +170,141 @@ iMongoCollectionInsert::invtype =
 iMongoCollectionInsert[coll_MongoCollection, doc_, wc_, ordered_] := 
 	ThrowFailure[iMongoCollectionInsert::invtype];
 	
-	
+(*----------------------------------------------------------------------------*)
+PackageExport["MongoCollectionReplaceOne"]
+
+Options[MongoCollectionReplaceOne] = {
+	"WriteConcern" -> Automatic,
+	"Upsert" -> False
+};
+
+MongoCollectionReplaceOne[coll_MongoCollection, filter_Association, replacement_Association, opts:OptionsPattern[]] := 
+CatchFailureAsMessage @ Module[
+	{
+		wc, upsert, auth, bulk, optsBSON,
+		filterBSON = iToBSON[filter],
+		replacementBSON = iToBSON[replacement],
+		reply
+	},
+	(** parse options **)
+	{wc, upsert} = OptionValue[{"WriteConcern", "Upsert"}];
+	If[!BooleanQ[upsert], ThrowFailure["mongoinvupsert", upsert]];
+	(* create bulk op *)
+	{auth, bulk} = createBulkOperation[coll, wc, True];
+	optsBSON = ToBSON[<|"upsert" -> upsert|>];
+	safeLibraryInvoke[bulkOpReplaceOne, 
+		getMLEID[bulk],
+		getMLEID[filterBSON],
+		getMLEID[replacementBSON],
+		getMLEID[optsBSON]
+	];
+	(* execute the bulk op *)
+	reply = bulkOpExecute[bulk];
+	Dataset[<|
+		"Acknowledged" -> auth, 
+		"MatchedCount" -> reply["nMatched"], 
+		"ModifiedCount" -> reply["nModified"]
+	|>]
+]
+
+(*----------------------------------------------------------------------------*)
+PackageExport["MongoCollectionUpdateOne"]
+PackageExport["MongoCollectionUpdateMany"]
+
+(*** update one ***)
+Options[MongoCollectionUpdateOne] = {
+	"WriteConcern" -> Automatic,
+	"Upsert" -> False
+};
+
+MongoCollectionUpdateOne[coll_MongoCollection, filter_Association, update_Association, opts:OptionsPattern[]] := 
+CatchFailureAsMessage[
+	iMongoCollectionUpdate[coll, filter, update, OptionValue["WriteConcern"], OptionValue["Upsert"], False]
+]
+
+(*** update many ***)
+Options[MongoCollectionUpdateMany] = {
+	"WriteConcern" -> Automatic,
+	"Upsert" -> False
+};
+
+MongoCollectionUpdateMany[coll_MongoCollection, filter_Association, update_Association, opts:OptionsPattern[]] := 
+CatchFailureAsMessage[
+	iMongoCollectionUpdate[coll, filter, update, OptionValue["WriteConcern"], OptionValue["Upsert"], True]
+]
+
+(*** dual implementation ***)
+iMongoCollectionUpdate[coll_, filter_, update_, wc_, upsert_, many_] := Module[
+	{
+		auth, bulk, optsBSON,
+		filterBSON = iToBSON[filter],
+		updateBSON = iToBSON[update],
+		reply
+	},
+	If[!BooleanQ[upsert], ThrowFailure["mongoinvupsert", upsert]];
+	(* create bulk op *)
+	{auth, bulk} = createBulkOperation[coll, wc, True];
+	optsBSON = ToBSON[<|"upsert" -> upsert|>];
+	safeLibraryInvoke[bulkOpUpdate, 
+		getMLEID[bulk],
+		getMLEID[filterBSON],
+		getMLEID[updateBSON],
+		getMLEID[optsBSON],
+		many
+	];
+	(* execute the bulk op *)
+	reply = bulkOpExecute[bulk];
+	Dataset[<|
+		"Acknowledged" -> auth, 
+		"MatchedCount" -> reply["nMatched"], 
+		"ModifiedCount" -> reply["nModified"]
+	|>]
+]
+
+(*----------------------------------------------------------------------------*)
+PackageExport["MongoCollectionDeleteOne"]
+PackageExport["MongoCollectionDeleteMany"]
+
+(*** update one ***)
+Options[MongoCollectionDeleteOne] = {
+	"WriteConcern" -> Automatic
+};
+
+MongoCollectionDeleteOne[coll_MongoCollection, filter_Association, opts:OptionsPattern[]] := 
+CatchFailureAsMessage[
+	iMongoCollectionDelete[coll, filter, OptionValue["WriteConcern"], False]
+]
+
+(*** update many ***)
+Options[MongoCollectionDeleteMany] = {
+	"WriteConcern" -> Automatic
+};
+
+MongoCollectionDeleteMany[coll_MongoCollection, filter_Association, opts:OptionsPattern[]] := 
+CatchFailureAsMessage[
+	iMongoCollectionDelete[coll, filter, OptionValue["WriteConcern"], True]
+]
+
+(*** dual implementation ***)
+iMongoCollectionDelete[coll_, filter_, wc_, many_] := Module[
+	{
+		auth, bulk, optsBSON,
+		filterBSON = iToBSON[filter],
+		reply
+	},
+	(* create bulk op *)
+	{auth, bulk} = createBulkOperation[coll, wc, True];
+	optsBSON = ToBSON[<||>];
+	safeLibraryInvoke[bulkOpRemove, 
+		getMLEID[bulk],
+		getMLEID[filterBSON],
+		getMLEID[optsBSON],
+		many
+	];
+	(* execute the bulk op *)
+	reply = bulkOpExecute[bulk];
+	Dataset[<|
+		"Acknowledged" -> auth, 
+		"DeletedCount" -> reply["nRemoved"]
+	|>]
+]
