@@ -244,18 +244,21 @@ MongoCollectionFind::invBatchSize =
 	"The Option BatchSize must have value Automatic or a non-negative integer, but `` was given.";
 
 MongoCollectionFind[coll_MongoCollection, 
-	query_, opts:OptionsPattern[]] := CatchFailureAsMessage @ Module[
+	query_Association, projection_Association, opts:OptionsPattern[]] := 
+CatchFailureAsMessage @ Module[
 	{
 		queryBSON, optsBSON, cursorHandle, optsAssoc,
 		batchSize = OptionValue[BatchSize]
 	},
 	(** parse opts **)
 	optsAssoc = <|
-		"limit" -> Replace[OptionValue["Limit"], None -> 0]
+		"limit" -> Replace[OptionValue["Limit"], None -> 0],
+		"projection" -> projection
 	|>;
 	If[!IntegerQ[optsAssoc["limit"]] || Negative[optsAssoc["limit"]],
 		ThrowFailure[MongoCollectionFind::invLimit, optsAssoc["limit"]]
 	];
+
 	If[batchSize =!= Automatic, 
 		optsAssoc["batchSize"] = batchSize;
 		If[!IntegerQ[batchSize] || Negative[batchSize],
@@ -279,7 +282,10 @@ MongoCollectionFind[coll_MongoCollection,
 ]
 
 MongoCollectionFind[coll_MongoCollection, opts:OptionsPattern[]] := 
-	MongoCollectionFind[coll, <||>, opts]
+	MongoCollectionFind[coll, <||>, <||>, opts]
+
+MongoCollectionFind[coll_MongoCollection, query_, opts:OptionsPattern[]] := 
+	MongoCollectionFind[coll, query, <||>, opts]
 
 (*----------------------------------------------------------------------------*)
 (* Insertion: Note that the Mongo spec supports three different insert ops:
