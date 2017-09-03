@@ -336,7 +336,11 @@ iMongoCollectionInsert[
 		https://docs.mongodb.com/manual/reference/method/db.collection.insertMany/
 	*)
 	keyNames = bsonLookup[#, "_id"]& /@ docs;
-	Dataset @ <|"Acknowledged" -> res, "InsertedIDs" -> keyNames, "InsertedCount" -> Length[keyNames]|>
+	Dataset[<|
+		"Acknowledged" -> res, 
+		"InsertedIDs" -> keyNames, 
+		"InsertedCount" -> Length[keyNames]
+	|>]
 ]
 
 iMongoCollectionInsert[coll_MongoCollection, doc_BSONObject, wc_, ordered_] := 
