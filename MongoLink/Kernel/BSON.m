@@ -205,7 +205,7 @@ $EncodingRules = {
 (*----- ObjectID -------*)
 PackageExport["BSONObjectID"]
 
-BSONObjectID /: Normal[BSONObjectID[hex_String]] :=  <|
+BSONObjectID /: Normal[BSONObjectID[hex_String]] := Dataset @ <|
 	"GenerationTime" -> 
 		FromUnixTime @ Interpreter["HexInteger"][StringTake[hex, {1, 8}]],
 	"MachineID" -> Interpreter["HexInteger"][StringTake[hex, {9, 14}]],
