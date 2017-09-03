@@ -55,48 +55,12 @@ mongoCollectionFind = LibraryFunctionLoad[$MongoLinkLib,
 	"Void"				
 ]
 
-mongoCollectionInsert = LibraryFunctionLoad[$MongoLinkLib, 
-	"WL_mongoc_collection_insert", 
-	{
-		Integer,		(* collection handle *)
-		Integer,		(* wc handle *)	
-		True|False,		(* ordered *)
-		{Integer, 1, "Constant"}	(* bson doc list handles *)
-	}, 
-	True|False				
-]
-
 mongoCollectionName = LibraryFunctionLoad[$MongoLinkLib, 
 	"WL_CollectionGetName", 
 	{
 		Integer			(* collection handle *)
 	}, 
 	"UTF8String"		(* name *)						
-]	
-
-mongoCollectionUpdate = LibraryFunctionLoad[$MongoLinkLib, 
-	"WL_MongoCollectionUpdate", 
-	{
-		Integer,		(* collection handle *)
-		Integer,		(* write concern handle *)
-		Integer,		(* selector bson handle *)
-		Integer,		(* update bson handle *)
-		Integer,		(* opts bson handle *)
-		Integer,		(* reply bson handle *)
-		True|False		(* many or one *)
-	}, 
-	True|False			(* aknowledged *)			
-]	
-
-mongoCollectionRemove = LibraryFunctionLoad[$MongoLinkLib, 
-	"WL_MongoCollectionRemove", 
-	{
-		Integer,		(* collection handle *)
-		Integer,		(* delete single *)
-		Integer,		(* selector bson handle *)
-		Integer			(* write concern handle *)
-	}, 
-	"Void"				
 ]	
 
 mongoCollectionAggregate = LibraryFunctionLoad[$MongoLinkLib, 
@@ -148,8 +112,7 @@ getMLEID[MongoCollection[collMLE_, __]] := ManagedLibraryExpressionID[collMLE];
 
 (* Overload RandomSample for collections *)
 MongoCollection /: RandomSample[coll_MongoCollection, n_] := Module[
-	{pipeline}
-	,
+	{pipeline},
 	pipeline = {<|"$sample" -> <|"size" -> n|>|>};
 	MongoCollectionAggregate[coll, pipeline]
 ]
@@ -286,166 +249,6 @@ MongoCollectionFind[coll_MongoCollection, opts:OptionsPattern[]] :=
 
 MongoCollectionFind[coll_MongoCollection, query_, opts:OptionsPattern[]] := 
 	MongoCollectionFind[coll, query, <||>, opts]
-
-(*----------------------------------------------------------------------------*)
-(* Insertion: Note that the Mongo spec supports three different insert ops:
-	insert, insertOne, insertMany. PyMongo deprecated insert, and recommends 
-	only insertOne and insertMany. We will follow the API of insertMany,
-	and call it MongoCollectionInsert.
-*)
-
-PackageExport["MongoCollectionInsert"]
-
-General::mongoordered = 
-	"The option \"Ordered\" was ``, but must be either True or False.";
-General::mongowriteconcern = 
-	"The option \"WriteConcern\" was ``, but must be a MongoWriteConcern or Automatic.";
-
-Options[MongoCollectionInsert] = {
-	"WriteConcern" -> Automatic,
-	"Ordered" -> True
-};
-
-MongoCollectionInsert[coll_MongoCollection, doc_, opts:OptionsPattern[]] := 
-CatchFailureAsMessage @ Module[
-	{wc, ordered},
-	(** parse options **)
-	{wc, ordered} = OptionValue[{"WriteConcern", "Ordered"}];
-	If[!BooleanQ[ordered],
-		ThrowFailure[MongoCollectionInsert::ordered]
-	];
-	If[Not[(Head[wc] === MongoWriteConcern) || (wc === Automatic)],
-		ThrowFailure[MongoCollectionInsert::invwriteconcern, wc];
-	];
-	(* if wc is Automatic, to encode NULL on C side, which uses defaults *)
-	wc = Replace[wc, Automatic :> CreateManagedLibraryExpression["WriteConcern", writeConcernMLE]];
-	iMongoCollectionInsert[coll, doc, wc, ordered]
-]
-
-iMongoCollectionInsert[
-	collection_MongoCollection, docs:{__BSONObject}, wc_, ordered_] := Module[
-	{res, keyNames},
-	res = safeLibraryInvoke[mongoCollectionInsert,
-		getMLEID[collection],
-		getMLEID[wc],
-		ordered,
-		getMLEID /@ docs
-	];
-	(* mongoCollectionInsert inserts a _id value if no _id exists in doc. 
-		Need to return a list of _id names to be consistent with
-		https://docs.mongodb.com/manual/reference/method/db.collection.insertMany/
-	*)
-	keyNames = bsonLookup[#, "_id"]& /@ docs;
-	Dataset[<|
-		"Acknowledged" -> res, 
-		"InsertedIDs" -> keyNames, 
-		"InsertedCount" -> Length[keyNames]
-	|>]
-]
-
-iMongoCollectionInsert[coll_MongoCollection, doc_BSONObject, wc_, ordered_] := 
-	iMongoCollectionInsert[coll, {doc}, wc, ordered]
-
-iMongoCollectionInsert[coll_MongoCollection, doc_Association|doc_String, wc_, ordered_] := 
-	iMongoCollectionInsert[coll, {iToBSON[doc]}, wc, ordered]
-
-iMongoCollectionInsert[coll_MongoCollection, doc_List, wc_, ordered_] := 
-	iMongoCollectionInsert[coll, iToBSON /@ doc, wc, ordered]
-
-iMongoCollectionInsert::invtype =
-	"Document to be inserted must be an Association, String or BSONObject, or a list of these.";
-iMongoCollectionInsert[coll_MongoCollection, doc_, wc_, ordered_] := 
-	ThrowFailure[iMongoCollectionInsert::invtype];
-
-(*----------------------------------------------------------------------------*)
-PackageExport["MongoCollectionUpdate"]
-
-Options[MongoCollectionUpdate] = {
-	"WriteConcern" -> Automatic,
-	"Upsert" -> False,
-	"MultiDocumentUpdate" -> False
-};
-
-MongoCollectionUpdate::invwriteconcern = 
-	"The Option \"WriteConcern\" must be a MongoWriteConcern or Automatic, but `` was given.";
-MongoCollectionUpdate::invupsert = 
-	"The Option \"Upsert\" must be either True or False, but `` was given."
-MongoCollectionUpdate::invmulti = 
-	"The Option \"MultiDocumentUpdate\" must be either True or False, but `` was given."
-
-MongoCollectionUpdate[MongoCollection[handle_, ___], 
-	selector_, updaterDoc_, OptionsPattern[]] := CatchFailureAsMessage @ Module[
-	{queryBSON, updaterDocBSON, wc, upsert, multiDocumentUpdate},
-	(** parse options **)
-	{wc, upsert, multiDocumentUpdate}  = 
-		OptionValue[{"WriteConcern", "Upsert", "MultiDocumentUpdate"}];	
-
-	If[Not[(Head[wc] === MongoWriteConcern) || (wc === Automatic)],
-		ThrowFailure[MongoCollectionUpdate::invwriteconcern, wc];
-	];
-	(* use 0 to encode NULL on C side, which uses defaults *)
-	wc = If[wc === Automatic, 0, ManagedLibraryExpressionID[First @ wc]];
-	
-	If[!BooleanQ[upsert],
-		ThrowFailure[MongoCollectionUpdate::invupsert, upsert];
-	];
-	If[!BooleanQ[multiDocumentUpdate],
-		ThrowFailure[MongoCollectionUpdate::invmulti, multiDocumentUpdate];
-	];
-	(* Create BSON query + update docs *)
-	queryBSON = iToBSON[selector];
-	updaterDocBSON = iToBSON[updaterDoc];
-	(* Execute *)
-	safeLibraryInvoke[mongoCollectionUpdate,
-		getMLEID[handle],
-		getMLEID[queryBSON],
-		getMLEID[updaterDocBSON],
-		wc,
-		Boole[upsert],
-		Boole[multiDocumentUpdate]
-	]
-]
-
-(*----------------------------------------------------------------------------*)
-PackageExport["MongoCollectionRemove"]
-
-Options[MongoCollectionRemove] =
-{
-	"WriteConcern" -> Automatic,
-	"MultiDocumentUpdate" -> False
-};
-
-MongoCollectionRemove::invwriteconcern = 
-	"The Option \"WriteConcern\" must be a MongoWriteConcern or Automatic, but `` was given.";
-MongoCollectionRemove::invmulti = 
-	"The Option \"MultiDocumentUpdate\" must be either True or False, but `` was given."
-
-MongoCollectionRemove[MongoCollection[handle_, ___], 
-	selector_, OptionsPattern[]] := CatchFailureAsMessage @ Module[
-	{queryBSON, multiDocumentUpdate, wc},
-	(** parse options **)
-	{wc, multiDocumentUpdate}  = 
-		OptionValue[{"WriteConcern", "MultiDocumentUpdate"}];	
-		
-	If[Not[(Head[wc] === MongoWriteConcern) || (wc === Automatic)],
-		ThrowFailure[MongoCollectionRemove::invwriteconcern, wc];
-	];
-	(* use 0 to encode NULL on C side, which uses defaults *)
-	wc = If[wc === Automatic, 0, ManagedLibraryExpressionID[First @ wc]];
-	If[!BooleanQ[multiDocumentUpdate],
-		ThrowFailure[MongoCollectionRemove::invmulti, multiDocumentUpdate];
-	];
-	(* Create BSON query *)
-	queryBSON = iToBSON[selector];
-	multiDocumentUpdate = OptionValue["MultiDocumentUpdate"];
-	(* Execute *)
-	safeLibraryInvoke[mongoCollectionRemove,
-		getMLEID[handle],
-		Boole[multiDocumentUpdate],
-		getMLEID[queryBSON],
-		wc
-	]
-]
 
 (*----------------------------------------------------------------------------*)
 PackageExport["MongoCollectionAggregate"]

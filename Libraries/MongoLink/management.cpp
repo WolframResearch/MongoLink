@@ -94,6 +94,8 @@ EXTERN_C DLLEXPORT int WolframLibrary_initialize(WolframLibraryData libData) {
   (*libData->registerLibraryExpressionManager)("URI", manage_instance_mongouri);
   (*libData->registerLibraryExpressionManager)("Client",
                                                manage_instance_mongoclient);
+  (*libData->registerLibraryExpressionManager)("BulkOp",
+                                               manage_instance_mongoclient);
   (*libData->registerLibraryExpressionManager)("Database",
                                                manage_instance_mongodatabase);
   (*libData->registerLibraryExpressionManager)("Collection",
@@ -113,6 +115,7 @@ WolframLibrary_uninitialize(WolframLibraryData libData) {
   mongoc_cleanup();
   // Unitialize All Library Managers
   (*libData->unregisterLibraryExpressionManager)("URI");
+  (*libData->unregisterLibraryExpressionManager)("BulkOp");
   (*libData->unregisterLibraryExpressionManager)("Client");
   (*libData->unregisterLibraryExpressionManager)("Database");
   (*libData->unregisterLibraryExpressionManager)("Collection");
