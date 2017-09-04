@@ -9,6 +9,7 @@ Begin["`Private`"]
 
 $RootDir = DirectoryName@DirectoryName@$InputFileName;
 
+
 (*************************************************************************)
 SetUsage[BuildMongoLink,
 "BuildMongoLink[includeDir$, libdir$] builds MongoLink library. mongoDir$ is \
@@ -50,7 +51,6 @@ BuildMongoLink[opts:OptionsPattern[]] := Catch @ Module[
 	fullIncl = Join[{FileNameJoin[{$RootDir, "Libraries", "MongoLink"}]}, includeDir];
 
 	(* Build *)
-
 	lib = CreateLibrary[
 		wlSrc, "MongoLink",
 		"IncludeDirectories"-> fullIncl,
@@ -64,7 +64,7 @@ BuildMongoLink[opts:OptionsPattern[]] := Catch @ Module[
 	];
 	
 	(* Postprocessing: copy build to paclet *)
-	libResourceDir = FileNameJoin[{$RootDir , "LibraryResources", $SystemID}];
+	libResourceDir = FileNameJoin[{$RootDir , "MongoLink", "LibraryResources", $SystemID}];
 	libResourceLib = FileNameJoin[{libResourceDir, FileNameTake[lib]}];
 	
 	If[FileExistsQ[libResourceLib], 
