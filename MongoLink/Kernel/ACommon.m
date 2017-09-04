@@ -22,7 +22,7 @@ getClient[___] := Panic["Invalid argument to getClient"]
 
 (*----------------------------------------------------------------------------*)
 (****** Global Variables ******)
-$LibraryResources = FileNameJoin[{FileNameTake[$InputFileName, {1, -4}], "LibraryResources", $SystemID}];
+$LibraryResources = FileNameJoin[{ParentDirectory[DirectoryName @ $InputFileName], "LibraryResources", $SystemID}];
 
 PackageScope["$MongoLinkLib"]
 
