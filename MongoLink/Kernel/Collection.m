@@ -189,6 +189,22 @@ MongoCollectionCount[coll_MongoCollection] :=
 	MongoCollectionCount[coll, <||>]
 
 (*----------------------------------------------------------------------------*)
+PackageExport["MongoCollectionFindOne"]
+
+MongoCollectionFindOne[coll_MongoCollection, query_Association, projection_Association] := Module[
+	{res},	
+	res = MongoCollectionFind[coll, query, projection];
+	If[FailureQ[res], Return[$Failed]];
+	Read[res]
+]
+
+MongoCollectionFindOne[coll_MongoCollection, query_Association] := 
+	MongoCollectionFindOne[coll, query, <||>]
+	
+MongoCollectionFindOne[coll_MongoCollection] := 
+	MongoCollectionFindOne[coll, <||>, <||>]
+
+(*----------------------------------------------------------------------------*)
 PackageExport["MongoCollectionFind"]
 
 (* don't support all opts yet. See 
