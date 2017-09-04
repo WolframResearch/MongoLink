@@ -5249,13 +5249,14 @@ Cell[BoxData[
 
 Cell[CellGroupData[{
 
-Cell["Modify Documents", "Subsection",
+Cell["Modifying Documents", "Subsection",
  CellChangeTimes->{
   3.713467058778674*^9, 3.71346783532425*^9, {3.713467927936228*^9, 
    3.713467934962406*^9}, {3.7134685242603073`*^9, 3.713468527898485*^9}, {
    3.713551564771492*^9, 3.71355156768612*^9}, {3.713553122327734*^9, 
    3.713553137035041*^9}, {3.7135541867857037`*^9, 3.71355419963501*^9}, {
-   3.713554943868698*^9, 3.713554947015177*^9}},
+   3.713554943868698*^9, 3.713554947015177*^9}, {3.71355570642337*^9, 
+   3.7135557066461887`*^9}},
  CellID->803528265,ExpressionUUID->"b03bc921-7a80-4daa-8ce9-e8fc752b2102"],
 
 Cell[CellGroupData[{
@@ -6155,7 +6156,7 @@ Cell["XXXX", "TutorialRelatedLinks",
 },
 ScreenStyleEnvironment->"ExperimentalObject",
 WindowSize->{1354, 1034},
-WindowMargins->{{276, Automatic}, {Automatic, 96}},
+WindowMargins->{{491, Automatic}, {Automatic, 40}},
 TaggingRules->{
  "DocuToolsSettingsInternal" -> {
    "$PacletVersion" -> "0.9.2028", "$MVersion" -> "11.2", "$FlaggedVersion" -> 
