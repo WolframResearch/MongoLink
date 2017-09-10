@@ -22,6 +22,15 @@ getClient[___] := Panic["Invalid argument to getClient"]
 
 (*----------------------------------------------------------------------------*)
 (****** Global Variables ******)
+
+PackageExport["$MongoDefaultCAFile"]
+$MongoDefaultCAFile = File @ FileNameJoin[{
+	DirectoryName @ $InputFileName, 
+	"SSL", 
+	"client.pem"
+}];
+
+PackageScope["$LibraryResources"]
 $LibraryResources = FileNameJoin[{
 	ParentDirectory[DirectoryName @ $InputFileName], 
 	"LibraryResources", 
