@@ -20,36 +20,44 @@ of the driver mongoDir$ is the same as the static library mongoLib$.
 ]
 
 Options[BuildMongoLink] = {
-	"Debug" -> False
+	"Debug" -> False,
+	"CompileOptions" -> "",
+	"ShellCommandFunction" -> None
 };
 
 BuildMongoLink[opts:OptionsPattern[]] := Catch @ Module[
 	{
 	 compileOpts, wlSrc, lib, libResourceLib, libResourceDir,
-	 libNames, fullIncl
+	 libNames, fullIncl, includeDir, libDir
 	}
 	,
-	compileOpts = "";
+	compileOpts = OptionValue["CompileOptions"];
 	Switch[$OperatingSystem,
 		"Windows", 
 			includeDir = {"C:\\mongo-c-driver"};
 			libDir = {"C:\\mongo-c-driver"}
 		,
 		"MacOSX",
-			compileOpts = "-std=c++11";
+			compileOpts = StringJoin[
+				"-std=c++11 ", 
+				"-Xlinker -install_name ",
+				"-Xlinker @rpath/MongoLink.dylib ",
+				"-Xlinker -rpath -Xlinker @loader_path/ ",
+				compileOpts
+			];
 			includeDir = 
 				{"/usr/local/include/libbson-1.0", "/usr/local/include/libmongoc-1.0"};
-			libDir = {"/usr/local/lib"}
+			libDir = {"/usr/local/lib"};
+			libDir = {"/Users/sebastianb/Documents/workspace/MongoC/1.7.0/MacOSX-x86-64/libcxx-min10.9/lib/"}
 		,
 		"Unix",
-			compileOpts = "-std=c++11"
+			compileOpts = "-std=c++11"  <> compileOpts;
 	];
 	libNames = 	{"mongoc-1.0.0", "bson-1.0.0"};
 	
 	(* WL Source *)
 	wlSrc = FileNames["*.cpp", {FileNameJoin[{$RootDir, "Libraries", "MongoLink"}]}];	
 	fullIncl = Join[{FileNameJoin[{$RootDir, "Libraries", "MongoLink"}]}, includeDir];
-
 	(* Build *)
 	lib = CreateLibrary[
 		wlSrc, "MongoLink",
@@ -59,8 +67,8 @@ BuildMongoLink[opts:OptionsPattern[]] := Catch @ Module[
 		"CompileOptions" -> compileOpts,
 		"Language" -> "C++",
 		"Debug" -> OptionValue["Debug"],
-		"CleanIntermediate"-> True
-
+		"CleanIntermediate"-> True,
+		"ShellCommandFunction" -> OptionValue["ShellCommandFunction"]
 	];
 	
 	(* Postprocessing: copy build to paclet *)
