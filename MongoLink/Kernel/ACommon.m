@@ -23,12 +23,7 @@ getClient[___] := Panic["Invalid argument to getClient"]
 (*----------------------------------------------------------------------------*)
 (****** Global Variables ******)
 
-PackageExport["$MongoDefaultCAFile"]
-$MongoDefaultCAFile = File @ FileNameJoin[{
-	DirectoryName @ $InputFileName, 
-	"SSL", 
-	"client.pem"
-}];
+$MongoLinkBaseDir = FileNameTake[$InputFileName, {1, -3}];
 
 PackageScope["$LibraryResources"]
 $LibraryResources = FileNameJoin[{
@@ -36,6 +31,18 @@ $LibraryResources = FileNameJoin[{
 	"LibraryResources", 
 	$SystemID
 }];
+
+(* note: the build process puts the ca file into LibaryResources, but local paclet 
+checkouts don't have this dir, and have the CA file in different place. Perhaps 
+put in same place? *)
+PackageExport["$MongoDefaultCAFile"]
+$MongoDefaultCAFile := $MongoDefaultCAFile = Module[
+	{file1, file2},
+	file1 = FileNameJoin[{$MongoLinkBaseDir, "Kernel", "SSL", "client.pem"}];
+	file2 = FileNameJoin[{$LibraryResources, "client.pem"}];
+	If[FileExistsQ[file2], Return @ File[file2]];
+	If[FileExistsQ[file1], File[file2], $Failed]
+]
 
 PackageScope["$MongoLinkLib"]
 
