@@ -136,7 +136,7 @@ fileConform[file_String] := (
 	file
 )
 
-fileConform[File[file_]] := fileConform[parentSymbol, file]
+fileConform[File[file_]] := fileConform[file]
 fileConform[None] := "";
 
 General::mongoinvfile = "Object `` is not a String, File[...] or None."
