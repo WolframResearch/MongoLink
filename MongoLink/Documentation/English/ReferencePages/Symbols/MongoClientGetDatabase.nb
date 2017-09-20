@@ -714,7 +714,7 @@ TaggingRules->{
     ""}, "SecurityRisk" -> False, "SecurityExplanation" -> "", "Author" -> 
   "meghanr", "CreationDate" -> "07-25-2017 16:13:17"},
 FrontEndVersion->"11.3 for Mac OS X x86 (32-bit, 64-bit Kernel) (September \
-16, 2017)",
+19, 2017)",
 StyleDefinitions->FrontEnd`FileName[{"Wolfram"}, "FunctionPageStyles.nb", 
   CharacterEncoding -> "UTF-8"]
 ]
