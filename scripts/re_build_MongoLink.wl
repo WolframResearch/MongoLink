@@ -15,7 +15,7 @@ $MongoLinkLib = CreateLibrary[
 
 	"CompileOptions" ->
 		Switch[$OperatingSystem,
-			"MacOSX",	"-std=c++11 -O1",
+			"MacOSX",	"-std=c++11 -O0",
 			"Unix",		"-std=c++11",
 			"Windows",	"/EHsc"
 		],
