@@ -196,15 +196,16 @@ bool _bson_as_wl_visit_int64(const bson_iter_t *iter, const char *key,
 bool _bson_as_wl_visit_maxkey(const bson_iter_t *iter, const char *key,
                               void *data) {
   MLINK *mlp = reinterpret_cast<bson_wl_state_t *>(data)->wstp_state;
-  MATH_CHECK(MLPutSymbol(*mlp, "Infinity"));
+  MATH_CHECK(MLPutFunction(*mlp, "DirectedInfinity", 1));
+  MATH_CHECK(MLPutInteger64(*mlp, 1));
   return false;
 }
 
 bool _bson_as_wl_visit_minkey(const bson_iter_t *iter, const char *key,
                               void *data) {
   MLINK *mlp = reinterpret_cast<bson_wl_state_t *>(data)->wstp_state;
-  MATH_CHECK(MLPutFunction(*mlp, "Minus", 1));
-  MATH_CHECK(MLPutSymbol(*mlp, "Infinity"));
+  MATH_CHECK(MLPutFunction(*mlp, "DirectedInfinity", 1));
+  MATH_CHECK(MLPutInteger64(*mlp, -1));
   return false;
 }
 

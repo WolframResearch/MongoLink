@@ -189,8 +189,8 @@ bsonLookup[bson_BSONObject, key_String] := Module[
 (* Note: json converter already handles True, False, Null *)
 
 $EncodingRules = {
-	Infinity :> <|"$maxKey" -> 1|>,
-	Minus[Infinity] :> <|"$minKey" -> 1|>,
+	DirectedInfinity[1] :> <|"$maxKey" -> 1|>,
+	DirectedInfinity[-1] :> <|"$minKey" -> 1|>,
 	(* for binary data 00 is the recommended default type for drivers, 
 		see http://bsonspec.org/spec.html *)
 	x_ByteArray :> <|"$binary" -> <|

@@ -66,13 +66,6 @@ VerificationTest[
 	TestID -> "BSON to expression to JSON"
 ]
 
-(*JSON*)
-
-VerificationTest[
-	BSONToJSON[bson1], 
-	"{ \"hello\" : [ 1, 2.5, 3.0 ] }",
-  	TestID -> "BSON to JSON"
-]
 (*----------------------------------------------------------------------------*)
 (* ToBSON *)
 
@@ -98,19 +91,10 @@ VerificationTest[
 
 VerificationTest[
  	Normal@BSONObjectID["666f6f2d6261722d71757578"], 
- 	_Association, 
+ 	_Dataset, 
  	TestID -> "BSONObjectID returns association", 
  	SameTest -> MatchQ
  ]
- 
-VerificationTest[
- 	Normal@BSONObjectID["666f6f2d6261722d71757578"], 
- 	<|"GenerationTime" -> 
-   DateObject[{2024, 6, 16, 19, 3, 9.`}, "Instant", 
-    "Gregorian", -4.`], "MachineID" -> 6447474, "ProcessID" -> 11633, 
-  "Counter" -> 7697784|>, 
-  TestID -> "BSONObjectID returns same"
- ] 
  
 (*----------------------------------------------------------------------------*)
 (* BSONObject *)
