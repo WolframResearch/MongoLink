@@ -149,11 +149,11 @@ iMongoCollectionInsert[
 	(* execute bulk. reply not used in insert *)
 	bulkOpExecute[bulk];
 	keyNames = bsonLookup[#, "_id"]& /@ docs;
-	Dataset[<|
+	<|
 		"Acknowledged" -> auth, 
 		"InsertedIDs" -> keyNames, 
 		"InsertedCount" -> Length[keyNames]
-	|>]
+	|>
 ]
 
 iMongoCollectionInsert[coll_MongoCollection, doc_BSONObject, wc_, ordered_] := 
@@ -200,11 +200,11 @@ CatchFailureAsMessage @ Module[
 	];
 	(* execute the bulk op *)
 	reply = bulkOpExecute[bulk];
-	Dataset[<|
+	<|
 		"Acknowledged" -> auth, 
 		"MatchedCount" -> reply["nMatched"], 
 		"ModifiedCount" -> reply["nModified"]
-	|>]
+	|>
 ]
 
 (*----------------------------------------------------------------------------*)
@@ -254,11 +254,11 @@ iMongoCollectionUpdate[coll_, filter_, update_, wc_, upsert_, many_] := Module[
 	];
 	(* execute the bulk op *)
 	reply = bulkOpExecute[bulk];
-	Dataset[<|
+	<|
 		"Acknowledged" -> auth, 
 		"MatchedCount" -> reply["nMatched"], 
 		"ModifiedCount" -> reply["nModified"]
-	|>]
+	|>
 ]
 
 (*----------------------------------------------------------------------------*)
@@ -303,8 +303,8 @@ iMongoCollectionDelete[coll_, filter_, wc_, many_] := Module[
 	];
 	(* execute the bulk op *)
 	reply = bulkOpExecute[bulk];
-	Dataset[<|
+	<|
 		"Acknowledged" -> auth, 
 		"DeletedCount" -> reply["nRemoved"]
-	|>]
+	|>
 ]
