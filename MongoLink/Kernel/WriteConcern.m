@@ -54,7 +54,7 @@ DefineCustomBoxes[MongoWriteConcern,
 	BoxForm`ArrangeSummaryBox[
 		MongoWriteConcern, e, None, 
 		{
-			BoxForm`SummaryItem[{"ID: ", getMLE[wcMLE]}]
+			BoxForm`SummaryItem[{"ID: ", getMLEID[wcMLE]}]
 		},
 		{},
 		StandardForm
@@ -62,6 +62,7 @@ DefineCustomBoxes[MongoWriteConcern,
 ]];
 
 getMLE[MongoWriteConcern[wcMLE_]] := wcMLE;
+getMLEID[MongoWriteConcern[wcMLE_]] := ManagedLibraryExpressionID[wcMLE];
 
 (*----------------------------------------------------------------------------*)
 PackageExport["MongoWriteConcernCreate"]
