@@ -165,10 +165,10 @@ iMongoCollectionInsert[coll_MongoCollection, doc_Association|doc_String, wc_, or
 iMongoCollectionInsert[coll_MongoCollection, doc_List, wc_, ordered_] := 
 	iMongoCollectionInsert[coll, iToBSON /@ doc, wc, ordered]
 
-iMongoCollectionInsert::invtype =
-	"Document to be inserted must be an Association, String or BSONObject, or a list of these.";
+MongoCollectionInsert::invtype =
+	"Document to be inserted must be an Association, JSON String or BSONObject, or a list of these.";
 iMongoCollectionInsert[coll_MongoCollection, doc_, wc_, ordered_] := 
-	ThrowFailure[iMongoCollectionInsert::invtype];
+	ThrowFailure[MongoCollectionInsert::invtype];
 	
 (*----------------------------------------------------------------------------*)
 PackageExport["MongoCollectionReplaceOne"]
