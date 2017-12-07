@@ -96,7 +96,7 @@ DefineCustomBoxes[MongoCollection,
 		MongoCollection, e, None,
 		{
 			BoxForm`SummaryItem[{"ID: ", getMLEID[collMLE]}],
-			BoxForm`SummaryItem[{"Name: ", collname}],
+			BoxForm`SummaryItem[{"Collection: ", collname}],
 			BoxForm`SummaryItem[{"Database: ", dbasename}]
 		},
 		{},

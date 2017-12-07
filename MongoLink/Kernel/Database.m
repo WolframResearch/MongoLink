@@ -52,7 +52,7 @@ DefineCustomBoxes[MongoDatabase,
 		MongoDatabase, e, None, 
 		{
 			BoxForm`SummaryItem[{"ID: ", ManagedLibraryExpressionID[dbMLE]}],
-			BoxForm`SummaryItem[{"Name: ", name}]
+			BoxForm`SummaryItem[{"Database: ", name}]
 		},
 		{},
 		StandardForm
