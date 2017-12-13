@@ -10,10 +10,10 @@
 NotebookFileLineBreakTest
 NotebookFileLineBreakTest
 NotebookDataPosition[       158,          7]
-NotebookDataLength[    193505,       4458]
-NotebookOptionsPosition[    173684,       3996]
-NotebookOutlinePosition[    174700,       4024]
-CellTagsIndexPosition[    174657,       4021]
+NotebookDataLength[    190438,       4377]
+NotebookOptionsPosition[    170905,       3923]
+NotebookOutlinePosition[    171922,       3951]
+CellTagsIndexPosition[    171879,       3948]
 WindowFrame->Normal*)
 
 (* Beginning of Notebook Content *)
@@ -175,7 +175,9 @@ Cell["Load the MongoLink Paclet:", "Text",
 
 Cell[BoxData[
  RowBox[{"Needs", "[", "\"\<MongoLink`\>\"", "]"}]], "Input",
- CellLabel->"In[4]:=",
+ CellChangeTimes->{{3.722197284391241*^9, 3.722197285046316*^9}, {
+  3.722197707004602*^9, 3.722197729796729*^9}},
+ CellLabel->"In[33]:=",
  CellID->783915468,ExpressionUUID->"e0e00b8a-ae36-4423-975c-7ae12c14545d"]
 }, Open  ]],
 
@@ -199,7 +201,8 @@ Cell[CellGroupData[{
 
 Cell[BoxData[
  RowBox[{"client", "=", 
-  RowBox[{"OpenMongoConnection", "[", "]"}]}]], "Input",
+  RowBox[{"MongoConnect", "[", "]"}]}]], "Input",
+ CellChangeTimes->{{3.722197293438895*^9, 3.722197295015047*^9}},
  CellLabel->"In[5]:=",
  CellID->2058623809,ExpressionUUID->"ef87ce5c-7ece-4991-8253-c2d7cfaf99e9"],
 
@@ -254,9 +257,10 @@ Cell[BoxData[
   SelectWithContents->True,
   Selectable->False]], "Output",
  CellChangeTimes->{
-  3.71796026306644*^9, {3.717960303365617*^9, 3.717960325542996*^9}},
+  3.71796026306644*^9, {3.717960303365617*^9, 3.717960325542996*^9}, 
+   3.722197295556552*^9, 3.7221977327392282`*^9},
  CellLabel->"Out[5]=",
- CellID->2067123241,ExpressionUUID->"c57cc8be-5702-4c9b-b3c1-62aa81b35290"]
+ CellID->430097690,ExpressionUUID->"0420cd18-d307-46fd-b9bf-5aef460e2f00"]
 }, Open  ]]
 }, Open  ]],
 
@@ -269,9 +273,14 @@ Cell[CellGroupData[{
 
 Cell[BoxData[
  RowBox[{"client", "=", 
-  RowBox[{"OpenMongoConnection", "[", 
-   RowBox[{"\"\<localhost\>\"", ",", "27017"}], "]"}]}]], "Input",
- CellLabel->"In[6]:=",
+  RowBox[{"MongoConnect", "[", 
+   RowBox[{"<|", 
+    RowBox[{
+     RowBox[{"\"\<Host\>\"", "\[Rule]", "\"\<localhost\>\""}], ",", 
+     RowBox[{"\"\<Port\>\"", "->", "27017"}]}], "|>"}], "]"}]}]], "Input",
+ CellChangeTimes->{{3.722197302733548*^9, 3.722197324573641*^9}, 
+   3.7221977400554533`*^9},
+ CellLabel->"In[7]:=",
  CellID->1246814610,ExpressionUUID->"d7af958d-1a83-4288-b74e-3fa05f8cd120"],
 
 Cell[BoxData[
@@ -324,104 +333,38 @@ Cell[BoxData[
   Editable->False,
   SelectWithContents->True,
   Selectable->False]], "Output",
- CellChangeTimes->{{3.71796030431222*^9, 3.717960326668067*^9}},
- CellLabel->"Out[6]=",
- CellID->70070407,ExpressionUUID->"4f988654-35f1-4623-8182-c5771c5bddde"]
+ CellChangeTimes->{{3.71796030431222*^9, 3.717960326668067*^9}, 
+   3.7221977409317417`*^9},
+ CellLabel->"Out[7]=",
+ CellID->1663457543,ExpressionUUID->"13159e5d-1cac-4e78-bb95-d5b024620e9d"]
 }, Open  ]]
 }, Open  ]],
 
 Cell[CellGroupData[{
 
 Cell[TextData[{
- "Or use the MongoDB URI format can be used. First create a ",
- Cell[BoxData[
-  ButtonBox["MongoURI",
-   BaseStyle->"Link"]], "InlineFormula",ExpressionUUID->
-  "6937fa77-ac89-4ace-923c-0de33efbba1f"],
- " object from a URI string:"
+ "Or use the ",
+ ButtonBox["MongoDB Connection String URI",
+  BaseStyle->"Hyperlink",
+  ButtonData->{
+    URL["https://docs.mongodb.com/manual/reference/connection-string/"], None},
+  ButtonNote->
+   "https://docs.mongodb.com/manual/reference/connection-string/"],
+ " format:"
 }], "Text",
+ CellChangeTimes->{{3.722197350022946*^9, 3.7221973978798923`*^9}},
  CellID->128274779,ExpressionUUID->"3aa3756e-63e3-4d64-92d1-087d5f64bd9b"],
 
 Cell[CellGroupData[{
 
 Cell[BoxData[
- RowBox[{"uri", "=", 
-  RowBox[{
-  "MongoURIFromString", "[", "\"\<mongodb://localhost:27017/\>\"", 
-   "]"}]}]], "Input",
- CellLabel->"In[7]:=",
- CellID->1988112712,ExpressionUUID->"72b2482d-a387-4315-a409-537eddd39034"],
-
-Cell[BoxData[
- InterpretationBox[
-  RowBox[{
-   TagBox["MongoURI",
-    "SummaryHead"], "[", 
-   DynamicModuleBox[{Typeset`open$$ = False, Typeset`embedState$$ = "Ready"}, 
-    
-    TemplateBox[{PaneSelectorBox[{False -> GridBox[{{
-            GridBox[{{
-               RowBox[{
-                 TagBox["\"ID: \"", "SummaryItemAnnotation"], 
-                 "\[InvisibleSpace]", 
-                 TagBox["3", "SummaryItem"]}]}}, 
-             GridBoxAlignment -> {
-              "Columns" -> {{Left}}, "Rows" -> {{Automatic}}}, AutoDelete -> 
-             False, GridBoxItemSize -> {
-              "Columns" -> {{Automatic}}, "Rows" -> {{Automatic}}}, 
-             GridBoxSpacings -> {"Columns" -> {{2}}, "Rows" -> {{Automatic}}},
-              BaseStyle -> {
-              ShowStringCharacters -> False, NumberMarks -> False, 
-               PrintPrecision -> 3, ShowSyntaxStyles -> False}]}}, 
-          GridBoxAlignment -> {"Rows" -> {{Top}}}, AutoDelete -> False, 
-          GridBoxItemSize -> {
-           "Columns" -> {{Automatic}}, "Rows" -> {{Automatic}}}, 
-          BaselinePosition -> {1, 1}], True -> GridBox[{{
-            GridBox[{{
-               RowBox[{
-                 TagBox["\"ID: \"", "SummaryItemAnnotation"], 
-                 "\[InvisibleSpace]", 
-                 TagBox["3", "SummaryItem"]}]}}, 
-             GridBoxAlignment -> {
-              "Columns" -> {{Left}}, "Rows" -> {{Automatic}}}, AutoDelete -> 
-             False, GridBoxItemSize -> {
-              "Columns" -> {{Automatic}}, "Rows" -> {{Automatic}}}, 
-             GridBoxSpacings -> {"Columns" -> {{2}}, "Rows" -> {{Automatic}}},
-              BaseStyle -> {
-              ShowStringCharacters -> False, NumberMarks -> False, 
-               PrintPrecision -> 3, ShowSyntaxStyles -> False}]}}, 
-          GridBoxAlignment -> {"Rows" -> {{Top}}}, AutoDelete -> False, 
-          GridBoxItemSize -> {
-           "Columns" -> {{Automatic}}, "Rows" -> {{Automatic}}}, 
-          BaselinePosition -> {1, 1}]}, 
-       Dynamic[Typeset`open$$], ImageSize -> Automatic]},
-     "SummaryPanel"],
-    DynamicModuleValues:>{}], "]"}],
-  MongoLink`MongoURI[
-   MongoLink`PackageScope`uriMLE[3], "mongodb://localhost:27017/"],
-  Editable->False,
-  SelectWithContents->True,
-  Selectable->False]], "Output",
- CellChangeTimes->{{3.717960308024803*^9, 3.7179603313519297`*^9}},
- CellLabel->"Out[7]=",
- CellID->1406730618,ExpressionUUID->"8e1da757-07b3-4ab6-88a9-032b53c03b2a"]
-}, Open  ]]
-}, Open  ]],
-
-Cell[CellGroupData[{
-
-Cell["\<\
-Then use this URI object to connect to the local database server:\
-\>", "Text",
- CellID->188496812,ExpressionUUID->"66750983-dbf1-464d-aaf6-7cf2127312b1"],
-
-Cell[CellGroupData[{
-
-Cell[BoxData[
  RowBox[{"client", "=", 
-  RowBox[{"OpenMongoConnection", "[", "uri", "]"}]}]], "Input",
+  RowBox[{
+  "MongoConnect", "[", "\"\<mongodb://localhost:27017/\>\"", "]"}]}]], "Input",\
+
+ CellChangeTimes->{{3.722197337350657*^9, 3.722197343080524*^9}},
  CellLabel->"In[8]:=",
- CellID->321450595,ExpressionUUID->"92195d11-6cdf-47e9-b5c9-e31c0b9f4800"],
+ CellID->75053706,ExpressionUUID->"2f74bc32-d99a-44c6-947f-2bfe6a80c08d"],
 
 Cell[BoxData[
  InterpretationBox[
@@ -473,9 +416,10 @@ Cell[BoxData[
   Editable->False,
   SelectWithContents->True,
   Selectable->False]], "Output",
- CellChangeTimes->{{3.71796030931315*^9, 3.7179603324304*^9}},
+ CellChangeTimes->{{3.71796030931315*^9, 3.7179603324304*^9}, 
+   3.722197743237523*^9},
  CellLabel->"Out[8]=",
- CellID->1691607770,ExpressionUUID->"ec061899-6f39-48f5-9d4b-6a1a29477fb5"]
+ CellID->1581134955,ExpressionUUID->"0f4cb3e5-158d-4570-b153-c139b17c5142"]
 }, Open  ]]
 }, Open  ]]
 }, Open  ]],
@@ -509,11 +453,13 @@ Cell[BoxData[
 
 Cell[BoxData[
  RowBox[{"{", 
-  RowBox[{"\<\"MachineLearningData\"\>", ",", "\<\"admin\"\>", 
-   ",", "\<\"local\"\>"}], "}"}]], "Output",
- CellChangeTimes->{3.717960334397739*^9},
+  RowBox[{"\<\"MachineLearningData\"\>", ",", "\<\"Test\"\>", 
+   ",", "\<\"WolframTestDB\"\>", ",", "\<\"admin\"\>", ",", "\<\"local\"\>"}],
+   "}"}]], "Output",
+ CellChangeTimes->{3.717960334397739*^9, 3.7221974044845657`*^9, 
+  3.7221977458920517`*^9},
  CellLabel->"Out[9]=",
- CellID->168516612,ExpressionUUID->"a9c9d26c-28e9-48f9-8f7a-92b7401446c6"]
+ CellID->228931126,ExpressionUUID->"4c4faaf6-07b9-47cd-9e10-85b677c6da21"]
 }, Open  ]]
 }, Open  ]],
 
@@ -544,7 +490,7 @@ Cell[BoxData[
                  "\[InvisibleSpace]", 
                  TagBox["1", "SummaryItem"]}]}, {
                RowBox[{
-                 TagBox["\"Name: \"", "SummaryItemAnnotation"], 
+                 TagBox["\"Database: \"", "SummaryItemAnnotation"], 
                  "\[InvisibleSpace]", 
                  TagBox["\"WolframTestDB\"", "SummaryItem"]}]}}, 
              GridBoxAlignment -> {
@@ -565,7 +511,7 @@ Cell[BoxData[
                  "\[InvisibleSpace]", 
                  TagBox["1", "SummaryItem"]}]}, {
                RowBox[{
-                 TagBox["\"Name: \"", "SummaryItemAnnotation"], 
+                 TagBox["\"Database: \"", "SummaryItemAnnotation"], 
                  "\[InvisibleSpace]", 
                  TagBox["\"WolframTestDB\"", "SummaryItem"]}]}}, 
              GridBoxAlignment -> {
@@ -590,9 +536,10 @@ Cell[BoxData[
   Editable->False,
   SelectWithContents->True,
   Selectable->False]], "Output",
- CellChangeTimes->{3.717960335603877*^9},
+ CellChangeTimes->{3.717960335603877*^9, 3.722197407415572*^9, 
+  3.7221977475032663`*^9},
  CellLabel->"Out[10]=",
- CellID->1836877860,ExpressionUUID->"06db980d-e9c9-45cf-bed1-a5cc847f62f7"]
+ CellID->163055421,ExpressionUUID->"7b1c1682-cce5-4fd0-a372-edbc11f0e6ba"]
 }, Open  ]]
 }, Open  ]],
 
@@ -624,7 +571,7 @@ Cell[BoxData[
                  "\[InvisibleSpace]", 
                  TagBox["2", "SummaryItem"]}]}, {
                RowBox[{
-                 TagBox["\"Name: \"", "SummaryItemAnnotation"], 
+                 TagBox["\"Database: \"", "SummaryItemAnnotation"], 
                  "\[InvisibleSpace]", 
                  TagBox["\"WolframTestDB\"", "SummaryItem"]}]}}, 
              GridBoxAlignment -> {
@@ -645,7 +592,7 @@ Cell[BoxData[
                  "\[InvisibleSpace]", 
                  TagBox["2", "SummaryItem"]}]}, {
                RowBox[{
-                 TagBox["\"Name: \"", "SummaryItemAnnotation"], 
+                 TagBox["\"Database: \"", "SummaryItemAnnotation"], 
                  "\[InvisibleSpace]", 
                  TagBox["\"WolframTestDB\"", "SummaryItem"]}]}}, 
              GridBoxAlignment -> {
@@ -670,9 +617,10 @@ Cell[BoxData[
   Editable->False,
   SelectWithContents->True,
   Selectable->False]], "Output",
- CellChangeTimes->{3.717960336635284*^9},
+ CellChangeTimes->{3.717960336635284*^9, 3.722197410808663*^9, 
+  3.722197748931631*^9},
  CellLabel->"Out[11]=",
- CellID->555871164,ExpressionUUID->"ffa3aa89-f754-411a-a24d-c8f9df8ad4c9"]
+ CellID->744666744,ExpressionUUID->"a49538c9-f584-4f66-988b-0dac7f22d0d3"]
 }, Open  ]]
 }, Open  ]]
 }, Open  ]],
@@ -720,7 +668,7 @@ Cell[BoxData[
                  "\[InvisibleSpace]", 
                  TagBox["1", "SummaryItem"]}]}, {
                RowBox[{
-                 TagBox["\"Name: \"", "SummaryItemAnnotation"], 
+                 TagBox["\"Collection: \"", "SummaryItemAnnotation"], 
                  "\[InvisibleSpace]", 
                  TagBox["\"WolframTest\"", "SummaryItem"]}]}, {
                RowBox[{
@@ -745,7 +693,7 @@ Cell[BoxData[
                  "\[InvisibleSpace]", 
                  TagBox["1", "SummaryItem"]}]}, {
                RowBox[{
-                 TagBox["\"Name: \"", "SummaryItemAnnotation"], 
+                 TagBox["\"Collection: \"", "SummaryItemAnnotation"], 
                  "\[InvisibleSpace]", 
                  TagBox["\"WolframTest\"", "SummaryItem"]}]}, {
                RowBox[{
@@ -754,8 +702,7 @@ Cell[BoxData[
                  TagBox["\"WolframTestDB\"", "SummaryItem"]}]}}, 
              GridBoxAlignment -> {
               "Columns" -> {{Left}}, "Rows" -> {{Automatic}}}, AutoDelete -> 
-             False, 
-             GridBoxItemSize -> {
+             False, GridBoxItemSize -> {
               "Columns" -> {{Automatic}}, "Rows" -> {{Automatic}}}, 
              GridBoxSpacings -> {"Columns" -> {{2}}, "Rows" -> {{Automatic}}},
               BaseStyle -> {
@@ -775,9 +722,10 @@ Cell[BoxData[
   Editable->False,
   SelectWithContents->True,
   Selectable->False]], "Output",
- CellChangeTimes->{3.717960338563465*^9},
+ CellChangeTimes->{3.717960338563465*^9, 3.7221974139522943`*^9, 
+  3.722197751001045*^9},
  CellLabel->"Out[12]=",
- CellID->2089819749,ExpressionUUID->"0fd86602-7f5d-4b46-be1b-6c53a31cde4b"]
+ CellID->2133729099,ExpressionUUID->"e159af58-08f2-4301-b720-95487d364d69"]
 }, Open  ]]
 }, Open  ]],
 
@@ -809,7 +757,7 @@ Cell[BoxData[
                  "\[InvisibleSpace]", 
                  TagBox["2", "SummaryItem"]}]}, {
                RowBox[{
-                 TagBox["\"Name: \"", "SummaryItemAnnotation"], 
+                 TagBox["\"Collection: \"", "SummaryItemAnnotation"], 
                  "\[InvisibleSpace]", 
                  TagBox["\"WolframTest\"", "SummaryItem"]}]}, {
                RowBox[{
@@ -834,7 +782,7 @@ Cell[BoxData[
                  "\[InvisibleSpace]", 
                  TagBox["2", "SummaryItem"]}]}, {
                RowBox[{
-                 TagBox["\"Name: \"", "SummaryItemAnnotation"], 
+                 TagBox["\"Collection: \"", "SummaryItemAnnotation"], 
                  "\[InvisibleSpace]", 
                  TagBox["\"WolframTest\"", "SummaryItem"]}]}, {
                RowBox[{
@@ -843,8 +791,7 @@ Cell[BoxData[
                  TagBox["\"WolframTestDB\"", "SummaryItem"]}]}}, 
              GridBoxAlignment -> {
               "Columns" -> {{Left}}, "Rows" -> {{Automatic}}}, AutoDelete -> 
-             False, 
-             GridBoxItemSize -> {
+             False, GridBoxItemSize -> {
               "Columns" -> {{Automatic}}, "Rows" -> {{Automatic}}}, 
              GridBoxSpacings -> {"Columns" -> {{2}}, "Rows" -> {{Automatic}}},
               BaseStyle -> {
@@ -864,9 +811,10 @@ Cell[BoxData[
   Editable->False,
   SelectWithContents->True,
   Selectable->False]], "Output",
- CellChangeTimes->{3.717960343179574*^9},
+ CellChangeTimes->{3.717960343179574*^9, 3.7221974194589643`*^9, 
+  3.722197753069447*^9},
  CellLabel->"Out[13]=",
- CellID->734591859,ExpressionUUID->"442a6e08-71a9-45fb-85af-c100024bb0ba"]
+ CellID->701825466,ExpressionUUID->"131683ff-5a69-411c-921a-a8dc94b5edf6"]
 }, Open  ]]
 }, Open  ]],
 
@@ -918,23 +866,23 @@ Cell[BoxData[
    RowBox[{"\<\"age\"\>", "\[Rule]", "3"}], ",", 
    RowBox[{"\<\"sex\"\>", "\[Rule]", "\<\"female\"\>"}], ",", 
    RowBox[{"\<\"date\"\>", "\[Rule]", 
-    TemplateBox[{RowBox[{"\"Wed 25 Oct 2017 17:45:46\"", 
+    TemplateBox[{RowBox[{"\"Thu 14 Dec 2017 01:49:16\"", 
         StyleBox[
-         RowBox[{"\"GMT\"", "\[InvisibleSpace]", 
-           RowBox[{"-", "5.`"}]}], FontColor -> GrayLevel[0.5]]}],
-      RowBox[{"DateObject", "[", 
+         RowBox[{"\"GMT+\"", "\[InvisibleSpace]", 
+           StyleBox["2.`", NumberMarks -> False, StripOnInput -> False]}], 
+         FontColor -> GrayLevel[0.5]]}],RowBox[{"DateObject", "[", 
         RowBox[{
           RowBox[{"{", 
             
-            RowBox[{"2017", ",", "10", ",", "25", ",", "17", ",", "45", ",", 
-              "46.647576`8.421404057553803"}], "}"}], ",", "\"Instant\"", ",",
-           "\"Gregorian\"", ",", 
-          RowBox[{"-", "5.`"}]}], "]"}]},
+            RowBox[{"2017", ",", "12", ",", "14", ",", "1", ",", "49", ",", 
+              "16.178059`7.961501399713955"}], "}"}], ",", "\"Instant\"", ",",
+           "\"Gregorian\"", ",", "2.`"}], "]"}]},
      "DateObject",
      Editable->False]}]}], "\[RightAssociation]"}]], "Output",
- CellChangeTimes->{3.717960346734386*^9},
+ CellChangeTimes->{3.717960346734386*^9, 3.72219742325909*^9, 
+  3.722197756192787*^9},
  CellLabel->"Out[14]=",
- CellID->784392062,ExpressionUUID->"f55e3abd-d33b-462a-9679-f48c474a5263"]
+ CellID->776550139,ExpressionUUID->"06592b21-a6e6-46cc-976c-3b63803e9d7b"]
 }, Open  ]]
 }, Open  ]],
 
@@ -976,70 +924,145 @@ Cell[BoxData[
  CellID->598403327,ExpressionUUID->"81411af9-80fe-4afa-be93-fb89ee539517"],
 
 Cell[BoxData[
- RowBox[{"\[LeftAssociation]", 
+ InterpretationBox[
   RowBox[{
-   RowBox[{"\<\"Acknowledged\"\>", "\[Rule]", "True"}], ",", 
-   RowBox[{"\<\"InsertedIDs\"\>", "\[Rule]", 
-    RowBox[{"{", 
-     InterpretationBox[
-      RowBox[{
-       TagBox["BSONObjectID",
-        "SummaryHead"], "[", 
-       DynamicModuleBox[{Typeset`open$$ = False, Typeset`embedState$$ = 
-        "Ready"}, 
-        TemplateBox[{PaneSelectorBox[{False -> GridBox[{{
-                GridBox[{{
-                   RowBox[{
-                    TagBox["\"OID: \"", "SummaryItemAnnotation"], 
-                    "\[InvisibleSpace]", 
-                    TagBox["\"59f1141caf09c5553f73e174\"", "SummaryItem"]}]}},
-                  GridBoxAlignment -> {
-                  "Columns" -> {{Left}}, "Rows" -> {{Automatic}}}, AutoDelete -> 
-                 False, GridBoxItemSize -> {
-                  "Columns" -> {{Automatic}}, "Rows" -> {{Automatic}}}, 
-                 GridBoxSpacings -> {
-                  "Columns" -> {{2}}, "Rows" -> {{Automatic}}}, 
-                 BaseStyle -> {
-                  ShowStringCharacters -> False, NumberMarks -> False, 
-                   PrintPrecision -> 3, ShowSyntaxStyles -> False}]}}, 
-              GridBoxAlignment -> {"Rows" -> {{Top}}}, AutoDelete -> False, 
-              GridBoxItemSize -> {
-               "Columns" -> {{Automatic}}, "Rows" -> {{Automatic}}}, 
-              BaselinePosition -> {1, 1}], True -> GridBox[{{
-                GridBox[{{
-                   RowBox[{
-                    TagBox["\"OID: \"", "SummaryItemAnnotation"], 
-                    "\[InvisibleSpace]", 
-                    TagBox["\"59f1141caf09c5553f73e174\"", "SummaryItem"]}]}},
-                  GridBoxAlignment -> {
-                  "Columns" -> {{Left}}, "Rows" -> {{Automatic}}}, AutoDelete -> 
-                 False, GridBoxItemSize -> {
-                  "Columns" -> {{Automatic}}, "Rows" -> {{Automatic}}}, 
-                 GridBoxSpacings -> {
-                  "Columns" -> {{2}}, "Rows" -> {{Automatic}}}, 
-                 BaseStyle -> {
-                  ShowStringCharacters -> False, NumberMarks -> False, 
-                   PrintPrecision -> 3, ShowSyntaxStyles -> False}]}}, 
-              GridBoxAlignment -> {"Rows" -> {{Top}}}, AutoDelete -> False, 
-              GridBoxItemSize -> {
-               "Columns" -> {{Automatic}}, "Rows" -> {{Automatic}}}, 
-              BaselinePosition -> {1, 1}]}, 
-           Dynamic[Typeset`open$$], ImageSize -> Automatic]},
-         "SummaryPanel"],
-        DynamicModuleValues:>{}], "]"}],
-      MongoLink`BSONObjectID["59f1141caf09c5553f73e174"],
-      Editable->False,
-      SelectWithContents->True,
-      Selectable->False], "}"}]}], ",", 
-   RowBox[{"\<\"InsertedCount\"\>", "\[Rule]", "1"}]}], 
-  "\[RightAssociation]"}]], "Output",
- CellChangeTimes->{3.717960348911291*^9},
+   TagBox["MongoInsertResult",
+    "SummaryHead"], "[", 
+   DynamicModuleBox[{Typeset`open$$ = False, Typeset`embedState$$ = "Ready"}, 
+    
+    TemplateBox[{PaneSelectorBox[{False -> GridBox[{{
+            GridBox[{{
+               RowBox[{
+                 TagBox["\"InsertedCount: \"", "SummaryItemAnnotation"], 
+                 "\[InvisibleSpace]", 
+                 TagBox["1", "SummaryItem"]}]}, {
+               RowBox[{
+                 TagBox["\"Acknowledged: \"", "SummaryItemAnnotation"], 
+                 "\[InvisibleSpace]", 
+                 TagBox["True", "SummaryItem"]}]}}, 
+             GridBoxAlignment -> {
+              "Columns" -> {{Left}}, "Rows" -> {{Automatic}}}, AutoDelete -> 
+             False, GridBoxItemSize -> {
+              "Columns" -> {{Automatic}}, "Rows" -> {{Automatic}}}, 
+             GridBoxSpacings -> {"Columns" -> {{2}}, "Rows" -> {{Automatic}}},
+              BaseStyle -> {
+              ShowStringCharacters -> False, NumberMarks -> False, 
+               PrintPrecision -> 3, ShowSyntaxStyles -> False}]}}, 
+          GridBoxAlignment -> {"Rows" -> {{Top}}}, AutoDelete -> False, 
+          GridBoxItemSize -> {
+           "Columns" -> {{Automatic}}, "Rows" -> {{Automatic}}}, 
+          BaselinePosition -> {1, 1}], True -> GridBox[{{
+            GridBox[{{
+               RowBox[{
+                 TagBox["\"InsertedCount: \"", "SummaryItemAnnotation"], 
+                 "\[InvisibleSpace]", 
+                 TagBox["1", "SummaryItem"]}]}, {
+               RowBox[{
+                 TagBox["\"Acknowledged: \"", "SummaryItemAnnotation"], 
+                 "\[InvisibleSpace]", 
+                 TagBox["True", "SummaryItem"]}]}}, 
+             GridBoxAlignment -> {
+              "Columns" -> {{Left}}, "Rows" -> {{Automatic}}}, AutoDelete -> 
+             False, GridBoxItemSize -> {
+              "Columns" -> {{Automatic}}, "Rows" -> {{Automatic}}}, 
+             GridBoxSpacings -> {"Columns" -> {{2}}, "Rows" -> {{Automatic}}},
+              BaseStyle -> {
+              ShowStringCharacters -> False, NumberMarks -> False, 
+               PrintPrecision -> 3, ShowSyntaxStyles -> False}]}}, 
+          GridBoxAlignment -> {"Rows" -> {{Top}}}, AutoDelete -> False, 
+          GridBoxItemSize -> {
+           "Columns" -> {{Automatic}}, "Rows" -> {{Automatic}}}, 
+          BaselinePosition -> {1, 1}]}, 
+       Dynamic[Typeset`open$$], ImageSize -> Automatic]},
+     "SummaryPanel"],
+    DynamicModuleValues:>{}], "]"}],
+  MongoLink`MongoInsertResult[
+   Association["Acknowledged" -> True, "InsertedIDs" -> {
+      MongoLink`BSONObjectID["5a31bc7dd682eea61f6c1504"]}, "InsertedCount" -> 
+    1]],
+  Editable->False,
+  SelectWithContents->True,
+  Selectable->False]], "Output",
+ CellChangeTimes->{3.717960348911291*^9, 3.722197425240303*^9, 
+  3.722197757914098*^9},
  CellLabel->"Out[15]=",
- CellID->1577834574,ExpressionUUID->"316f4aca-0b5f-4995-beee-09b147dc617d"]
+ CellID->1062890344,ExpressionUUID->"90bd6d45-eb47-4c8a-a345-a0d9d6396316"]
 }, Open  ]]
 }, Open  ]],
 
 Cell[CellGroupData[{
+
+Cell["Get a list of the inserted document IDs:", "Text",
+ CellChangeTimes->{{3.722197477510805*^9, 3.722197551380974*^9}},
+ CellID->1292760799,ExpressionUUID->"9942e14e-4509-443e-9395-35473c447a74"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"ids", "=", 
+  RowBox[{"inserted", "[", "\"\<InsertedIDs\>\"", "]"}]}]], "Input",
+ CellChangeTimes->{{3.717960353783633*^9, 3.717960355383415*^9}, {
+   3.722197453733921*^9, 3.722197457637353*^9}, 3.722197560910397*^9},
+ CellLabel->"In[16]:=",
+ CellID->1639233800,ExpressionUUID->"7d8933a7-a9b1-4971-9167-684ab05c180e"],
+
+Cell[BoxData[
+ RowBox[{"{", 
+  InterpretationBox[
+   RowBox[{
+    TagBox["BSONObjectID",
+     "SummaryHead"], "[", 
+    DynamicModuleBox[{Typeset`open$$ = False, Typeset`embedState$$ = "Ready"}, 
+     TemplateBox[{PaneSelectorBox[{False -> GridBox[{{
+             GridBox[{{
+                RowBox[{
+                  TagBox["\"OID: \"", "SummaryItemAnnotation"], 
+                  "\[InvisibleSpace]", 
+                  TagBox["\"5a31bc7dd682eea61f6c1504\"", "SummaryItem"]}]}}, 
+              GridBoxAlignment -> {
+               "Columns" -> {{Left}}, "Rows" -> {{Automatic}}}, AutoDelete -> 
+              False, GridBoxItemSize -> {
+               "Columns" -> {{Automatic}}, "Rows" -> {{Automatic}}}, 
+              GridBoxSpacings -> {
+               "Columns" -> {{2}}, "Rows" -> {{Automatic}}}, 
+              BaseStyle -> {
+               ShowStringCharacters -> False, NumberMarks -> False, 
+                PrintPrecision -> 3, ShowSyntaxStyles -> False}]}}, 
+           GridBoxAlignment -> {"Rows" -> {{Top}}}, AutoDelete -> False, 
+           GridBoxItemSize -> {
+            "Columns" -> {{Automatic}}, "Rows" -> {{Automatic}}}, 
+           BaselinePosition -> {1, 1}], True -> GridBox[{{
+             GridBox[{{
+                RowBox[{
+                  TagBox["\"OID: \"", "SummaryItemAnnotation"], 
+                  "\[InvisibleSpace]", 
+                  TagBox["\"5a31bc7dd682eea61f6c1504\"", "SummaryItem"]}]}}, 
+              GridBoxAlignment -> {
+               "Columns" -> {{Left}}, "Rows" -> {{Automatic}}}, AutoDelete -> 
+              False, GridBoxItemSize -> {
+               "Columns" -> {{Automatic}}, "Rows" -> {{Automatic}}}, 
+              GridBoxSpacings -> {
+               "Columns" -> {{2}}, "Rows" -> {{Automatic}}}, 
+              BaseStyle -> {
+               ShowStringCharacters -> False, NumberMarks -> False, 
+                PrintPrecision -> 3, ShowSyntaxStyles -> False}]}}, 
+           GridBoxAlignment -> {"Rows" -> {{Top}}}, AutoDelete -> False, 
+           GridBoxItemSize -> {
+            "Columns" -> {{Automatic}}, "Rows" -> {{Automatic}}}, 
+           BaselinePosition -> {1, 1}]}, 
+        Dynamic[Typeset`open$$], ImageSize -> Automatic]},
+      "SummaryPanel"],
+     DynamicModuleValues:>{}], "]"}],
+   MongoLink`BSONObjectID["5a31bc7dd682eea61f6c1504"],
+   Editable->False,
+   SelectWithContents->True,
+   Selectable->False], "}"}]], "Output",
+ CellChangeTimes->{3.7179603556044197`*^9, 3.722197458432452*^9, 
+  3.72219757410303*^9, 3.72219776035983*^9},
+ CellLabel->"Out[16]=",
+ CellID->1795531912,ExpressionUUID->"9ac668aa-0b13-4198-814c-d1618d187acd"]
+}, Open  ]]
+}, Open  ]],
 
 Cell[TextData[{
  StyleBox["Note",
@@ -1069,72 +1092,6 @@ automatically added to the document with value of type ",
 
 Cell[CellGroupData[{
 
-Cell[BoxData[
- RowBox[{"id", "=", 
-  RowBox[{"inserted", "[", 
-   RowBox[{"[", 
-    RowBox[{"\"\<InsertedIDs\>\"", ",", "1"}], "]"}], "]"}]}]], "Input",
- CellChangeTimes->{{3.717960353783633*^9, 3.717960355383415*^9}},
- CellLabel->"In[16]:=",
- CellID->1982438038,ExpressionUUID->"5e6fcf34-dd79-46a1-af08-12b525303f61"],
-
-Cell[BoxData[
- InterpretationBox[
-  RowBox[{
-   TagBox["BSONObjectID",
-    "SummaryHead"], "[", 
-   DynamicModuleBox[{Typeset`open$$ = False, Typeset`embedState$$ = "Ready"}, 
-    
-    TemplateBox[{PaneSelectorBox[{False -> GridBox[{{
-            GridBox[{{
-               RowBox[{
-                 TagBox["\"OID: \"", "SummaryItemAnnotation"], 
-                 "\[InvisibleSpace]", 
-                 TagBox["\"59f1141caf09c5553f73e174\"", "SummaryItem"]}]}}, 
-             GridBoxAlignment -> {
-              "Columns" -> {{Left}}, "Rows" -> {{Automatic}}}, AutoDelete -> 
-             False, GridBoxItemSize -> {
-              "Columns" -> {{Automatic}}, "Rows" -> {{Automatic}}}, 
-             GridBoxSpacings -> {"Columns" -> {{2}}, "Rows" -> {{Automatic}}},
-              BaseStyle -> {
-              ShowStringCharacters -> False, NumberMarks -> False, 
-               PrintPrecision -> 3, ShowSyntaxStyles -> False}]}}, 
-          GridBoxAlignment -> {"Rows" -> {{Top}}}, AutoDelete -> False, 
-          GridBoxItemSize -> {
-           "Columns" -> {{Automatic}}, "Rows" -> {{Automatic}}}, 
-          BaselinePosition -> {1, 1}], True -> GridBox[{{
-            GridBox[{{
-               RowBox[{
-                 TagBox["\"OID: \"", "SummaryItemAnnotation"], 
-                 "\[InvisibleSpace]", 
-                 TagBox["\"59f1141caf09c5553f73e174\"", "SummaryItem"]}]}}, 
-             GridBoxAlignment -> {
-              "Columns" -> {{Left}}, "Rows" -> {{Automatic}}}, AutoDelete -> 
-             False, GridBoxItemSize -> {
-              "Columns" -> {{Automatic}}, "Rows" -> {{Automatic}}}, 
-             GridBoxSpacings -> {"Columns" -> {{2}}, "Rows" -> {{Automatic}}},
-              BaseStyle -> {
-              ShowStringCharacters -> False, NumberMarks -> False, 
-               PrintPrecision -> 3, ShowSyntaxStyles -> False}]}}, 
-          GridBoxAlignment -> {"Rows" -> {{Top}}}, AutoDelete -> False, 
-          GridBoxItemSize -> {
-           "Columns" -> {{Automatic}}, "Rows" -> {{Automatic}}}, 
-          BaselinePosition -> {1, 1}]}, 
-       Dynamic[Typeset`open$$], ImageSize -> Automatic]},
-     "SummaryPanel"],
-    DynamicModuleValues:>{}], "]"}],
-  MongoLink`BSONObjectID["59f1141caf09c5553f73e174"],
-  Editable->False,
-  SelectWithContents->True,
-  Selectable->False]], "Output",
- CellChangeTimes->{3.7179603556044197`*^9},
- CellLabel->"Out[16]=",
- CellID->811652596,ExpressionUUID->"ef9dd466-3262-4fe9-b75b-44b6dd3c3d24"]
-}, Open  ]]
-}, Open  ]],
-
-Cell[CellGroupData[{
-
 Cell[TextData[{
  Cell[BoxData[
   ButtonBox["BSONObjectID",
@@ -1147,8 +1104,11 @@ Cell[TextData[{
 Cell[CellGroupData[{
 
 Cell[BoxData[
- RowBox[{"Normal", "[", "id", "]"}]], "Input",
- CellLabel->"In[17]:=",
+ RowBox[{"Normal", "[", 
+  RowBox[{"First", "@", "ids"}], "]"}]], "Input",
+ CellChangeTimes->{{3.722197576269753*^9, 3.722197579496422*^9}, {
+  3.722197767118774*^9, 3.72219777058887*^9}},
+ CellLabel->"In[18]:=",
  CellID->1132788613,ExpressionUUID->"30ab5aac-7810-4119-af88-8c1958a20d48"],
 
 Cell[BoxData[
@@ -1170,14 +1130,14 @@ Cell[BoxData[
            TypeSystem`PackageScope`AtomShape[34], {"ProcessID"} -> 
            TypeSystem`PackageScope`AtomShape[34], {"Counter"} -> 
            TypeSystem`PackageScope`AtomShape[34]], 1], "InitialData" -> 
-        TypeSystem`PackageScope`CacheHandle[1831364957], "Type" -> 
+        TypeSystem`PackageScope`CacheHandle[1889567723], "Type" -> 
         TypeSystem`Struct[{
           "GenerationTime", "MachineID", "ProcessID", "Counter"}, {
            TypeSystem`Atom[DateObject], 
            TypeSystem`Atom[Integer], 
            TypeSystem`Atom[Integer], 
            TypeSystem`Atom[Integer]}], "HandleQ" -> True, "RowTarget" -> 20, 
-        "Data" -> TypeSystem`PackageScope`CacheHandle[1831364957]], 
+        "Data" -> TypeSystem`PackageScope`CacheHandle[1889567723]], 
       TypeSystem`NestedGrid`PackagePrivate`$path$$ = {}, 
       TypeSystem`NestedGrid`PackagePrivate`$pos$$ = 1, 
       TypeSystem`NestedGrid`PackagePrivate`$grid$$ = 
@@ -1210,9 +1170,9 @@ Cell[BoxData[
                    TypeSystem`NestedGrid`PackagePrivate`$state$$, 
                     TypeSystem`NestedGrid`PackagePrivate`$path$$, 
                     TypeSystem`NestedGrid`PackagePrivate`$pos$$, 
-                    TypeSystem`NestedGrid`PackagePrivate`$grid$$, 1932635267][{
+                    TypeSystem`NestedGrid`PackagePrivate`$grid$$, 1584714868][{
                     Key["GenerationTime"]}]], 
-                 TypeSystem`NestedGrid`PackagePrivate`$SliceMarker[1932635267][
+                 TypeSystem`NestedGrid`PackagePrivate`$SliceMarker[1584714868][
                   GeneralUtilities`Slice[
                    Key["GenerationTime"]]], "Mouse"], Background -> 
                 GrayLevel[0.95], Alignment -> {Left, Baseline}], 
@@ -1220,11 +1180,11 @@ Cell[BoxData[
                 Annotation[
                  RawBoxes[
                   StyleBox[
-                  "\"Wed 25 Oct 2017 17:45:48\"", FontColor -> RGBColor[{
+                  "\"Thu 14 Dec 2017 01:49:17\"", FontColor -> RGBColor[{
                     Rational[33, 74], 
                     Rational[27, 74], 
                     Rational[117, 370]}]]], 
-                 TypeSystem`NestedGrid`PackagePrivate`$SliceMarker[1932635267][
+                 TypeSystem`NestedGrid`PackagePrivate`$SliceMarker[1584714868][
                   GeneralUtilities`Slice[
                    Key["GenerationTime"]]], "Mouse"], 
                 ImageSize -> {{75, Full}, Automatic}, 
@@ -1254,16 +1214,16 @@ Cell[BoxData[
                    TypeSystem`NestedGrid`PackagePrivate`$state$$, 
                     TypeSystem`NestedGrid`PackagePrivate`$path$$, 
                     TypeSystem`NestedGrid`PackagePrivate`$pos$$, 
-                    TypeSystem`NestedGrid`PackagePrivate`$grid$$, 1932635267][{
+                    TypeSystem`NestedGrid`PackagePrivate`$grid$$, 1584714868][{
                     Key["MachineID"]}]], 
-                 TypeSystem`NestedGrid`PackagePrivate`$SliceMarker[1932635267][
+                 TypeSystem`NestedGrid`PackagePrivate`$SliceMarker[1584714868][
                   GeneralUtilities`Slice[
                    Key["MachineID"]]], "Mouse"], Background -> 
                 GrayLevel[0.95], Alignment -> {Left, Baseline}], 
                Pane[
                 Annotation[
-                 RawBoxes["11471301"], 
-                 TypeSystem`NestedGrid`PackagePrivate`$SliceMarker[1932635267][
+                 RawBoxes["14058222"], 
+                 TypeSystem`NestedGrid`PackagePrivate`$SliceMarker[1584714868][
                   GeneralUtilities`Slice[
                    Key["MachineID"]]], "Mouse"], 
                 ImageSize -> {{34, Full}, Automatic}, 
@@ -1293,16 +1253,16 @@ Cell[BoxData[
                    TypeSystem`NestedGrid`PackagePrivate`$state$$, 
                     TypeSystem`NestedGrid`PackagePrivate`$path$$, 
                     TypeSystem`NestedGrid`PackagePrivate`$pos$$, 
-                    TypeSystem`NestedGrid`PackagePrivate`$grid$$, 1932635267][{
+                    TypeSystem`NestedGrid`PackagePrivate`$grid$$, 1584714868][{
                     Key["ProcessID"]}]], 
-                 TypeSystem`NestedGrid`PackagePrivate`$SliceMarker[1932635267][
+                 TypeSystem`NestedGrid`PackagePrivate`$SliceMarker[1584714868][
                   GeneralUtilities`Slice[
                    Key["ProcessID"]]], "Mouse"], Background -> 
                 GrayLevel[0.95], Alignment -> {Left, Baseline}], 
                Pane[
                 Annotation[
-                 RawBoxes["21823"], 
-                 TypeSystem`NestedGrid`PackagePrivate`$SliceMarker[1932635267][
+                 RawBoxes["42527"], 
+                 TypeSystem`NestedGrid`PackagePrivate`$SliceMarker[1584714868][
                   GeneralUtilities`Slice[
                    Key["ProcessID"]]], "Mouse"], 
                 ImageSize -> {{34, Full}, Automatic}, 
@@ -1331,16 +1291,16 @@ Cell[BoxData[
                    TypeSystem`NestedGrid`PackagePrivate`$state$$, 
                     TypeSystem`NestedGrid`PackagePrivate`$path$$, 
                     TypeSystem`NestedGrid`PackagePrivate`$pos$$, 
-                    TypeSystem`NestedGrid`PackagePrivate`$grid$$, 1932635267][{
+                    TypeSystem`NestedGrid`PackagePrivate`$grid$$, 1584714868][{
                     Key["Counter"]}]], 
-                 TypeSystem`NestedGrid`PackagePrivate`$SliceMarker[1932635267][
+                 TypeSystem`NestedGrid`PackagePrivate`$SliceMarker[1584714868][
                   GeneralUtilities`Slice[
                    Key["Counter"]]], "Mouse"], Background -> GrayLevel[0.95], 
                 Alignment -> {Left, Baseline}], 
                Pane[
                 Annotation[
-                 RawBoxes["7594356"], 
-                 TypeSystem`NestedGrid`PackagePrivate`$SliceMarker[1932635267][
+                 RawBoxes["7083268"], 
+                 TypeSystem`NestedGrid`PackagePrivate`$SliceMarker[1584714868][
                   GeneralUtilities`Slice[
                    Key["Counter"]]], "Mouse"], 
                 ImageSize -> {{34, Full}, Automatic}, 
@@ -1391,7 +1351,7 @@ Cell[BoxData[
                 TypeSystem`NestedGrid`PackagePrivate`$state$$, 
                  TypeSystem`NestedGrid`PackagePrivate`$path$$, 
                  TypeSystem`NestedGrid`PackagePrivate`$pos$$, 
-                 TypeSystem`NestedGrid`PackagePrivate`$grid$$, 1932635267][
+                 TypeSystem`NestedGrid`PackagePrivate`$grid$$, 1584714868][
                 TypeSystem`NestedGrid`PackagePrivate`tmpData$]]; If[
                Not[
                 FailureQ[TypeSystem`NestedGrid`PackagePrivate`tmpGrid$]], 
@@ -1422,14 +1382,14 @@ Cell[BoxData[
            TypeSystem`NestedGrid`PackagePrivate`$state$$, 
             TypeSystem`NestedGrid`PackagePrivate`$path$$, 
             TypeSystem`NestedGrid`PackagePrivate`$pos$$, 
-            TypeSystem`NestedGrid`PackagePrivate`$grid$$, 1932635267]]]], 
+            TypeSystem`NestedGrid`PackagePrivate`$grid$$, 1584714868]]]], 
         TrackedSymbols :> {TypeSystem`NestedGrid`PackagePrivate`$path$$}], 
       TypeSystem`NestedGrid`PackagePrivate`$bottomBar$$ = Framed[
         Dynamic[
          Replace[
           MouseAnnotation[Null], {
-          TypeSystem`NestedGrid`PackagePrivate`$SliceMarker[1932635267][Null] -> 
-           "", TypeSystem`NestedGrid`PackagePrivate`$SliceMarker[1932635267][
+          TypeSystem`NestedGrid`PackagePrivate`$SliceMarker[1584714868][Null] -> 
+           "", TypeSystem`NestedGrid`PackagePrivate`$SliceMarker[1584714868][
              Pattern[TypeSystem`NestedGrid`PackagePrivate`path, 
               Blank[]]] :> (
             TypeSystem`NestedGrid`PackagePrivate`$lastPath = 
@@ -1463,7 +1423,7 @@ Cell[BoxData[
            TypeSystem`NestedGrid`PackagePrivate`$bottomBar$$]]}], Spacings -> 
         If[TypeSystem`NestedGrid`PackagePrivate`$path$$ == {}, 
           0, {{}, {0, 0.05, 0}}]], StandardForm], 
-      ImageSizeCache -> {426., {83.53173828125, 91.46826171875}}, 
+      ImageSizeCache -> {423., {83.53173828125, 91.46826171875}}, 
       TrackedSymbols :> {
        TypeSystem`NestedGrid`PackagePrivate`$state$$, 
         TypeSystem`NestedGrid`PackagePrivate`$grid$$}], 
@@ -1476,9 +1436,11 @@ Cell[BoxData[
   "CopyTag",
   DisplayFunction->(#& ),
   InterpretationFunction->("Dataset[<>]"& )]], "Output",
- CellChangeTimes->{3.717960357012569*^9},
- CellLabel->"Out[17]=",
- CellID->538494031,ExpressionUUID->"3accb327-5b37-471f-b28f-3079ed6e794c"]
+ CellChangeTimes->{
+  3.717960357012569*^9, 3.722197580082871*^9, {3.7221977629287987`*^9, 
+   3.7221977717443123`*^9}},
+ CellLabel->"Out[18]=",
+ CellID->801493738,ExpressionUUID->"dddffd83-0bce-4e31-88ef-d8410d8bff07"]
 }, Open  ]]
 }, Open  ]]
 }, Open  ]],
@@ -1515,7 +1477,7 @@ Cell[BoxData[
       RowBox[{"\"\<sex\>\"", "\[Rule]", "\"\<female\>\""}], ",", 
       RowBox[{"\"\<date\>\"", "\[Rule]", 
        RowBox[{"DateObject", "[", "]"}]}]}], "|>"}]}], "}"}]}]], "Input",
- CellLabel->"In[18]:=",
+ CellLabel->"In[20]:=",
  CellID->1804895542,ExpressionUUID->"ae71ea05-67e6-4321-8898-e4b7c8de2f70"],
 
 Cell[BoxData[
@@ -1526,18 +1488,17 @@ Cell[BoxData[
      RowBox[{"\<\"age\"\>", "\[Rule]", "5"}], ",", 
      RowBox[{"\<\"sex\"\>", "\[Rule]", "\<\"male\"\>"}], ",", 
      RowBox[{"\<\"date\"\>", "\[Rule]", 
-      TemplateBox[{RowBox[{"\"Wed 25 Oct 2017 17:45:59\"", 
+      TemplateBox[{RowBox[{"\"Thu 14 Dec 2017 01:49:37\"", 
           StyleBox[
-           RowBox[{"\"GMT\"", "\[InvisibleSpace]", 
-             RowBox[{"-", "5.`"}]}], FontColor -> GrayLevel[0.5]]}],
-        RowBox[{"DateObject", "[", 
+           RowBox[{"\"GMT+\"", "\[InvisibleSpace]", 
+             StyleBox["2.`", NumberMarks -> False, StripOnInput -> False]}], 
+           FontColor -> GrayLevel[0.5]]}],RowBox[{"DateObject", "[", 
           RowBox[{
             RowBox[{"{", 
               
-              RowBox[{"2017", ",", "10", ",", "25", ",", "17", ",", "45", ",",
-                 "59.177071`8.524728438792152"}], "}"}], ",", "\"Instant\"", 
-            ",", "\"Gregorian\"", ",", 
-            RowBox[{"-", "5.`"}]}], "]"}]},
+              RowBox[{"2017", ",", "12", ",", "14", ",", "1", ",", "49", ",", 
+                "37.648672`8.328324640793557"}], "}"}], ",", "\"Instant\"", 
+            ",", "\"Gregorian\"", ",", "2.`"}], "]"}]},
        "DateObject",
        Editable->False]}]}], "\[RightAssociation]"}], ",", 
    RowBox[{"\[LeftAssociation]", 
@@ -1545,23 +1506,24 @@ Cell[BoxData[
      RowBox[{"\<\"age\"\>", "\[Rule]", "4"}], ",", 
      RowBox[{"\<\"sex\"\>", "\[Rule]", "\<\"female\"\>"}], ",", 
      RowBox[{"\<\"date\"\>", "\[Rule]", 
-      TemplateBox[{RowBox[{"\"Wed 25 Oct 2017 17:45:59\"", 
+      TemplateBox[{RowBox[{"\"Thu 14 Dec 2017 01:49:37\"", 
           StyleBox[
-           RowBox[{"\"GMT\"", "\[InvisibleSpace]", 
-             RowBox[{"-", "5.`"}]}], FontColor -> GrayLevel[0.5]]}],
-        RowBox[{"DateObject", "[", 
+           RowBox[{"\"GMT+\"", "\[InvisibleSpace]", 
+             StyleBox["2.`", NumberMarks -> False, StripOnInput -> False]}], 
+           FontColor -> GrayLevel[0.5]]}],RowBox[{"DateObject", "[", 
           RowBox[{
             RowBox[{"{", 
               
-              RowBox[{"2017", ",", "10", ",", "25", ",", "17", ",", "45", ",",
-                 "59.177087`8.524728556214503"}], "}"}], ",", "\"Instant\"", 
-            ",", "\"Gregorian\"", ",", 
-            RowBox[{"-", "5.`"}]}], "]"}]},
+              RowBox[{"2017", ",", "12", ",", "14", ",", "1", ",", "49", ",", 
+                "37.648689`8.328324836896211"}], "}"}], ",", "\"Instant\"", 
+            ",", "\"Gregorian\"", ",", "2.`"}], "]"}]},
        "DateObject",
        Editable->False]}]}], "\[RightAssociation]"}]}], "}"}]], "Output",
- CellChangeTimes->{3.71796035919422*^9},
- CellLabel->"Out[18]=",
- CellID->1704795378,ExpressionUUID->"cdce57f2-ea65-4cd1-bcc3-ff22f5f0265c"]
+ CellChangeTimes->{
+  3.71796035919422*^9, 3.72219758593537*^9, {3.722197773740443*^9, 
+   3.72219777766724*^9}},
+ CellLabel->"Out[20]=",
+ CellID->1545199584,ExpressionUUID->"f30d79e9-7e40-47ad-91a1-4ed2ec289d70"]
 }, Open  ]]
 }, Open  ]],
 
@@ -1573,125 +1535,77 @@ Cell["Insert these two documents into the collection:", "Text",
 Cell[CellGroupData[{
 
 Cell["MongoCollectionInsert[coll,catsData]", "Input",
- CellLabel->"In[19]:=",
+ CellChangeTimes->{{3.7221976344620256`*^9, 3.722197698636623*^9}},
+ CellLabel->"In[21]:=",
  CellID->1514949325,ExpressionUUID->"591ffddb-ab84-4053-aaa9-4439cc1f7beb"],
 
 Cell[BoxData[
- RowBox[{"\[LeftAssociation]", 
+ InterpretationBox[
   RowBox[{
-   RowBox[{"\<\"Acknowledged\"\>", "\[Rule]", "True"}], ",", 
-   RowBox[{"\<\"InsertedIDs\"\>", "\[Rule]", 
-    RowBox[{"{", 
-     RowBox[{
-      InterpretationBox[
-       RowBox[{
-        TagBox["BSONObjectID",
-         "SummaryHead"], "[", 
-        DynamicModuleBox[{Typeset`open$$ = False, Typeset`embedState$$ = 
-         "Ready"}, 
-         TemplateBox[{PaneSelectorBox[{False -> GridBox[{{
-                 GridBox[{{
-                    RowBox[{
-                    TagBox["\"OID: \"", "SummaryItemAnnotation"], 
-                    "\[InvisibleSpace]", 
-                    TagBox["\"59f11429af09c5553f73e175\"", "SummaryItem"]}]}},
-                   GridBoxAlignment -> {
-                   "Columns" -> {{Left}}, "Rows" -> {{Automatic}}}, 
-                  AutoDelete -> False, 
-                  GridBoxItemSize -> {
-                   "Columns" -> {{Automatic}}, "Rows" -> {{Automatic}}}, 
-                  GridBoxSpacings -> {
-                   "Columns" -> {{2}}, "Rows" -> {{Automatic}}}, 
-                  BaseStyle -> {
-                   ShowStringCharacters -> False, NumberMarks -> False, 
-                    PrintPrecision -> 3, ShowSyntaxStyles -> False}]}}, 
-               GridBoxAlignment -> {"Rows" -> {{Top}}}, AutoDelete -> False, 
-               GridBoxItemSize -> {
-                "Columns" -> {{Automatic}}, "Rows" -> {{Automatic}}}, 
-               BaselinePosition -> {1, 1}], True -> GridBox[{{
-                 GridBox[{{
-                    RowBox[{
-                    TagBox["\"OID: \"", "SummaryItemAnnotation"], 
-                    "\[InvisibleSpace]", 
-                    TagBox["\"59f11429af09c5553f73e175\"", "SummaryItem"]}]}},
-                   GridBoxAlignment -> {
-                   "Columns" -> {{Left}}, "Rows" -> {{Automatic}}}, 
-                  AutoDelete -> False, 
-                  GridBoxItemSize -> {
-                   "Columns" -> {{Automatic}}, "Rows" -> {{Automatic}}}, 
-                  GridBoxSpacings -> {
-                   "Columns" -> {{2}}, "Rows" -> {{Automatic}}}, 
-                  BaseStyle -> {
-                   ShowStringCharacters -> False, NumberMarks -> False, 
-                    PrintPrecision -> 3, ShowSyntaxStyles -> False}]}}, 
-               GridBoxAlignment -> {"Rows" -> {{Top}}}, AutoDelete -> False, 
-               GridBoxItemSize -> {
-                "Columns" -> {{Automatic}}, "Rows" -> {{Automatic}}}, 
-               BaselinePosition -> {1, 1}]}, 
-            Dynamic[Typeset`open$$], ImageSize -> Automatic]},
-          "SummaryPanel"],
-         DynamicModuleValues:>{}], "]"}],
-       MongoLink`BSONObjectID["59f11429af09c5553f73e175"],
-       Editable->False,
-       SelectWithContents->True,
-       Selectable->False], ",", 
-      InterpretationBox[
-       RowBox[{
-        TagBox["BSONObjectID",
-         "SummaryHead"], "[", 
-        DynamicModuleBox[{Typeset`open$$ = False, Typeset`embedState$$ = 
-         "Ready"}, 
-         TemplateBox[{PaneSelectorBox[{False -> GridBox[{{
-                 GridBox[{{
-                    RowBox[{
-                    TagBox["\"OID: \"", "SummaryItemAnnotation"], 
-                    "\[InvisibleSpace]", 
-                    TagBox["\"59f11429af09c5553f73e176\"", "SummaryItem"]}]}},
-                   GridBoxAlignment -> {
-                   "Columns" -> {{Left}}, "Rows" -> {{Automatic}}}, 
-                  AutoDelete -> False, 
-                  GridBoxItemSize -> {
-                   "Columns" -> {{Automatic}}, "Rows" -> {{Automatic}}}, 
-                  GridBoxSpacings -> {
-                   "Columns" -> {{2}}, "Rows" -> {{Automatic}}}, 
-                  BaseStyle -> {
-                   ShowStringCharacters -> False, NumberMarks -> False, 
-                    PrintPrecision -> 3, ShowSyntaxStyles -> False}]}}, 
-               GridBoxAlignment -> {"Rows" -> {{Top}}}, AutoDelete -> False, 
-               GridBoxItemSize -> {
-                "Columns" -> {{Automatic}}, "Rows" -> {{Automatic}}}, 
-               BaselinePosition -> {1, 1}], True -> GridBox[{{
-                 GridBox[{{
-                    RowBox[{
-                    TagBox["\"OID: \"", "SummaryItemAnnotation"], 
-                    "\[InvisibleSpace]", 
-                    TagBox["\"59f11429af09c5553f73e176\"", "SummaryItem"]}]}},
-                   GridBoxAlignment -> {
-                   "Columns" -> {{Left}}, "Rows" -> {{Automatic}}}, 
-                  AutoDelete -> False, 
-                  GridBoxItemSize -> {
-                   "Columns" -> {{Automatic}}, "Rows" -> {{Automatic}}}, 
-                  GridBoxSpacings -> {
-                   "Columns" -> {{2}}, "Rows" -> {{Automatic}}}, 
-                  BaseStyle -> {
-                   ShowStringCharacters -> False, NumberMarks -> False, 
-                    PrintPrecision -> 3, ShowSyntaxStyles -> False}]}}, 
-               GridBoxAlignment -> {"Rows" -> {{Top}}}, AutoDelete -> False, 
-               GridBoxItemSize -> {
-                "Columns" -> {{Automatic}}, "Rows" -> {{Automatic}}}, 
-               BaselinePosition -> {1, 1}]}, 
-            Dynamic[Typeset`open$$], ImageSize -> Automatic]},
-          "SummaryPanel"],
-         DynamicModuleValues:>{}], "]"}],
-       MongoLink`BSONObjectID["59f11429af09c5553f73e176"],
-       Editable->False,
-       SelectWithContents->True,
-       Selectable->False]}], "}"}]}], ",", 
-   RowBox[{"\<\"InsertedCount\"\>", "\[Rule]", "2"}]}], 
-  "\[RightAssociation]"}]], "Output",
- CellChangeTimes->{3.717960361233748*^9},
- CellLabel->"Out[19]=",
- CellID->1868940974,ExpressionUUID->"91889950-8b08-428c-bccb-f9fde1123f1a"]
+   TagBox["MongoInsertResult",
+    "SummaryHead"], "[", 
+   DynamicModuleBox[{Typeset`open$$ = False, Typeset`embedState$$ = "Ready"}, 
+    
+    TemplateBox[{PaneSelectorBox[{False -> GridBox[{{
+            GridBox[{{
+               RowBox[{
+                 TagBox["\"InsertedCount: \"", "SummaryItemAnnotation"], 
+                 "\[InvisibleSpace]", 
+                 TagBox["2", "SummaryItem"]}]}, {
+               RowBox[{
+                 TagBox["\"Acknowledged: \"", "SummaryItemAnnotation"], 
+                 "\[InvisibleSpace]", 
+                 TagBox["True", "SummaryItem"]}]}}, 
+             GridBoxAlignment -> {
+              "Columns" -> {{Left}}, "Rows" -> {{Automatic}}}, AutoDelete -> 
+             False, GridBoxItemSize -> {
+              "Columns" -> {{Automatic}}, "Rows" -> {{Automatic}}}, 
+             GridBoxSpacings -> {"Columns" -> {{2}}, "Rows" -> {{Automatic}}},
+              BaseStyle -> {
+              ShowStringCharacters -> False, NumberMarks -> False, 
+               PrintPrecision -> 3, ShowSyntaxStyles -> False}]}}, 
+          GridBoxAlignment -> {"Rows" -> {{Top}}}, AutoDelete -> False, 
+          GridBoxItemSize -> {
+           "Columns" -> {{Automatic}}, "Rows" -> {{Automatic}}}, 
+          BaselinePosition -> {1, 1}], True -> GridBox[{{
+            GridBox[{{
+               RowBox[{
+                 TagBox["\"InsertedCount: \"", "SummaryItemAnnotation"], 
+                 "\[InvisibleSpace]", 
+                 TagBox["2", "SummaryItem"]}]}, {
+               RowBox[{
+                 TagBox["\"Acknowledged: \"", "SummaryItemAnnotation"], 
+                 "\[InvisibleSpace]", 
+                 TagBox["True", "SummaryItem"]}]}}, 
+             GridBoxAlignment -> {
+              "Columns" -> {{Left}}, "Rows" -> {{Automatic}}}, AutoDelete -> 
+             False, GridBoxItemSize -> {
+              "Columns" -> {{Automatic}}, "Rows" -> {{Automatic}}}, 
+             GridBoxSpacings -> {"Columns" -> {{2}}, "Rows" -> {{Automatic}}},
+              BaseStyle -> {
+              ShowStringCharacters -> False, NumberMarks -> False, 
+               PrintPrecision -> 3, ShowSyntaxStyles -> False}]}}, 
+          GridBoxAlignment -> {"Rows" -> {{Top}}}, AutoDelete -> False, 
+          GridBoxItemSize -> {
+           "Columns" -> {{Automatic}}, "Rows" -> {{Automatic}}}, 
+          BaselinePosition -> {1, 1}]}, 
+       Dynamic[Typeset`open$$], ImageSize -> Automatic]},
+     "SummaryPanel"],
+    DynamicModuleValues:>{}], "]"}],
+  MongoLink`MongoInsertResult[
+   Association["Acknowledged" -> True, "InsertedIDs" -> {
+      MongoLink`BSONObjectID["5a31bc93d682eea61f6c1505"], 
+      MongoLink`BSONObjectID["5a31bc93d682eea61f6c1506"]}, "InsertedCount" -> 
+    2]],
+  Editable->False,
+  SelectWithContents->True,
+  Selectable->False]], "Output",
+ CellChangeTimes->{
+  3.717960361233748*^9, 3.7221975882614117`*^9, {3.722197640524021*^9, 
+   3.722197647344254*^9}, {3.722197681833365*^9, 3.722197694511554*^9}, 
+   3.722197779562294*^9},
+ CellLabel->"Out[21]=",
+ CellID->1125176869,ExpressionUUID->"c0ffc898-e3ce-4a4d-8324-761581249514"]
 }, Open  ]]
 }, Open  ]]
 }, Open  ]],
@@ -1717,7 +1631,7 @@ Cell[CellGroupData[{
 
 Cell[BoxData[
  RowBox[{"MongoCollectionFindOne", "[", "coll", "]"}]], "Input",
- CellLabel->"In[20]:=",
+ CellLabel->"In[22]:=",
  CellID->500010179,ExpressionUUID->"3db80437-330a-4097-9aba-417f010962c6"],
 
 Cell[BoxData[
@@ -1735,7 +1649,7 @@ Cell[BoxData[
                   RowBox[{
                     TagBox["\"OID: \"", "SummaryItemAnnotation"], 
                     "\[InvisibleSpace]", 
-                    TagBox["\"59f1141caf09c5553f73e174\"", "SummaryItem"]}]}},
+                    TagBox["\"5a31bc7dd682eea61f6c1504\"", "SummaryItem"]}]}},
                  GridBoxAlignment -> {
                  "Columns" -> {{Left}}, "Rows" -> {{Automatic}}}, AutoDelete -> 
                 False, GridBoxItemSize -> {
@@ -1753,7 +1667,7 @@ Cell[BoxData[
                   RowBox[{
                     TagBox["\"OID: \"", "SummaryItemAnnotation"], 
                     "\[InvisibleSpace]", 
-                    TagBox["\"59f1141caf09c5553f73e174\"", "SummaryItem"]}]}},
+                    TagBox["\"5a31bc7dd682eea61f6c1504\"", "SummaryItem"]}]}},
                  GridBoxAlignment -> {
                  "Columns" -> {{Left}}, "Rows" -> {{Automatic}}}, AutoDelete -> 
                 False, GridBoxItemSize -> {
@@ -1770,33 +1684,33 @@ Cell[BoxData[
           Dynamic[Typeset`open$$], ImageSize -> Automatic]},
         "SummaryPanel"],
        DynamicModuleValues:>{}], "]"}],
-     MongoLink`BSONObjectID["59f1141caf09c5553f73e174"],
+     MongoLink`BSONObjectID["5a31bc7dd682eea61f6c1504"],
      Editable->False,
      SelectWithContents->True,
      Selectable->False]}], ",", 
    RowBox[{"\<\"age\"\>", "\[Rule]", "3"}], ",", 
    RowBox[{"\<\"sex\"\>", "\[Rule]", "\<\"female\"\>"}], ",", 
    RowBox[{"\<\"date\"\>", "\[Rule]", 
-    TemplateBox[{RowBox[{"\"Wednesday 25 October 2017 17:45:46:647\"", 
+    TemplateBox[{RowBox[{"\"Thursday 14 December 2017 01:49:16:177\"", 
         StyleBox[
-         RowBox[{"\"GMT\"", "\[InvisibleSpace]", 
-           RowBox[{"-", "5.`"}]}], FontColor -> GrayLevel[0.5]]}],
-      RowBox[{"DateObject", "[", 
+         RowBox[{"\"GMT+\"", "\[InvisibleSpace]", 
+           StyleBox["2.`", NumberMarks -> False, StripOnInput -> False]}], 
+         FontColor -> GrayLevel[0.5]]}],RowBox[{"DateObject", "[", 
         RowBox[{
           RowBox[{"{", 
             
-            RowBox[{"2017", ",", "10", ",", "25", ",", "17", ",", "45", ",", 
-              "46.64799976348877`"}], "}"}], ",", "\"Instant\"", ",", 
-          "\"Gregorian\"", ",", 
-          RowBox[{"-", "5.`"}], ",", 
+            RowBox[{"2017", ",", "12", ",", "14", ",", "1", ",", "49", ",", 
+              "16.17799997329712`"}], "}"}], ",", "\"Instant\"", ",", 
+          "\"Gregorian\"", ",", "2.`", ",", 
           RowBox[{"{", 
             RowBox[{"\"DateTime\"", ",", "\":\"", ",", "\"Millisecond\""}], 
             "}"}]}], "]"}]},
      "DateObject",
      Editable->False]}]}], "\[RightAssociation]"}]], "Output",
- CellChangeTimes->{3.7179603630718946`*^9},
- CellLabel->"Out[20]=",
- CellID->1766883440,ExpressionUUID->"fe0b70c1-64ea-4a44-8d43-41fa20e4d928"]
+ CellChangeTimes->{3.7179603630718946`*^9, 3.722197598090869*^9, 
+  3.722197781724163*^9},
+ CellLabel->"Out[22]=",
+ CellID->1346780827,ExpressionUUID->"75189282-372a-4ac1-b60a-f1eef4251d17"]
 }, Open  ]]
 }, Open  ]],
 
@@ -1814,7 +1728,7 @@ Cell[BoxData[
   RowBox[{"coll", ",", 
    RowBox[{"<|", 
     RowBox[{"\"\<age\>\"", "->", "5"}], "|>"}]}], "]"}]], "Input",
- CellLabel->"In[21]:=",
+ CellLabel->"In[23]:=",
  CellID->669345516,ExpressionUUID->"3b550556-35ec-4323-adde-5bb5bbf10a62"],
 
 Cell[BoxData[
@@ -1832,7 +1746,7 @@ Cell[BoxData[
                   RowBox[{
                     TagBox["\"OID: \"", "SummaryItemAnnotation"], 
                     "\[InvisibleSpace]", 
-                    TagBox["\"59f11429af09c5553f73e175\"", "SummaryItem"]}]}},
+                    TagBox["\"5a31bc93d682eea61f6c1505\"", "SummaryItem"]}]}},
                  GridBoxAlignment -> {
                  "Columns" -> {{Left}}, "Rows" -> {{Automatic}}}, AutoDelete -> 
                 False, GridBoxItemSize -> {
@@ -1850,7 +1764,7 @@ Cell[BoxData[
                   RowBox[{
                     TagBox["\"OID: \"", "SummaryItemAnnotation"], 
                     "\[InvisibleSpace]", 
-                    TagBox["\"59f11429af09c5553f73e175\"", "SummaryItem"]}]}},
+                    TagBox["\"5a31bc93d682eea61f6c1505\"", "SummaryItem"]}]}},
                  GridBoxAlignment -> {
                  "Columns" -> {{Left}}, "Rows" -> {{Automatic}}}, AutoDelete -> 
                 False, GridBoxItemSize -> {
@@ -1867,33 +1781,33 @@ Cell[BoxData[
           Dynamic[Typeset`open$$], ImageSize -> Automatic]},
         "SummaryPanel"],
        DynamicModuleValues:>{}], "]"}],
-     MongoLink`BSONObjectID["59f11429af09c5553f73e175"],
+     MongoLink`BSONObjectID["5a31bc93d682eea61f6c1505"],
      Editable->False,
      SelectWithContents->True,
      Selectable->False]}], ",", 
    RowBox[{"\<\"age\"\>", "\[Rule]", "5"}], ",", 
    RowBox[{"\<\"sex\"\>", "\[Rule]", "\<\"male\"\>"}], ",", 
    RowBox[{"\<\"date\"\>", "\[Rule]", 
-    TemplateBox[{RowBox[{"\"Wednesday 25 October 2017 17:45:59:177\"", 
+    TemplateBox[{RowBox[{"\"Thursday 14 December 2017 01:49:37:649\"", 
         StyleBox[
-         RowBox[{"\"GMT\"", "\[InvisibleSpace]", 
-           RowBox[{"-", "5.`"}]}], FontColor -> GrayLevel[0.5]]}],
-      RowBox[{"DateObject", "[", 
+         RowBox[{"\"GMT+\"", "\[InvisibleSpace]", 
+           StyleBox["2.`", NumberMarks -> False, StripOnInput -> False]}], 
+         FontColor -> GrayLevel[0.5]]}],RowBox[{"DateObject", "[", 
         RowBox[{
           RowBox[{"{", 
             
-            RowBox[{"2017", ",", "10", ",", "25", ",", "17", ",", "45", ",", 
-              "59.17700004577637`"}], "}"}], ",", "\"Instant\"", ",", 
-          "\"Gregorian\"", ",", 
-          RowBox[{"-", "5.`"}], ",", 
+            RowBox[{"2017", ",", "12", ",", "14", ",", "1", ",", "49", ",", 
+              "37.64900016784668`"}], "}"}], ",", "\"Instant\"", ",", 
+          "\"Gregorian\"", ",", "2.`", ",", 
           RowBox[{"{", 
             RowBox[{"\"DateTime\"", ",", "\":\"", ",", "\"Millisecond\""}], 
             "}"}]}], "]"}]},
      "DateObject",
      Editable->False]}]}], "\[RightAssociation]"}]], "Output",
- CellChangeTimes->{3.7179603648632402`*^9},
- CellLabel->"Out[21]=",
- CellID->2066456210,ExpressionUUID->"c1a03cf4-edf7-4e23-a1df-802ccc470fa0"]
+ CellChangeTimes->{3.7179603648632402`*^9, 3.7221975998059683`*^9, 
+  3.7221977838209753`*^9},
+ CellLabel->"Out[23]=",
+ CellID->1527780651,ExpressionUUID->"340a7eb8-8430-4085-9a63-c496a6a97949"]
 }, Open  ]]
 }, Open  ]],
 
@@ -1926,7 +1840,7 @@ Cell[BoxData[
      RowBox[{"\"\<sex\>\"", "\[Rule]", "False"}]}], "|>"}]}], "]"}]], "Input",\
 
  CellChangeTimes->{{3.7137253847177067`*^9, 3.713725389075547*^9}},
- CellLabel->"In[22]:=",
+ CellLabel->"In[24]:=",
  CellID->691361436,ExpressionUUID->"292fec7b-b0b4-40c1-ba47-f3429bad5a6b"],
 
 Cell[BoxData[
@@ -1944,7 +1858,7 @@ Cell[BoxData[
                   RowBox[{
                     TagBox["\"OID: \"", "SummaryItemAnnotation"], 
                     "\[InvisibleSpace]", 
-                    TagBox["\"59f11429af09c5553f73e175\"", "SummaryItem"]}]}},
+                    TagBox["\"5a31bc93d682eea61f6c1505\"", "SummaryItem"]}]}},
                  GridBoxAlignment -> {
                  "Columns" -> {{Left}}, "Rows" -> {{Automatic}}}, AutoDelete -> 
                 False, GridBoxItemSize -> {
@@ -1962,7 +1876,7 @@ Cell[BoxData[
                   RowBox[{
                     TagBox["\"OID: \"", "SummaryItemAnnotation"], 
                     "\[InvisibleSpace]", 
-                    TagBox["\"59f11429af09c5553f73e175\"", "SummaryItem"]}]}},
+                    TagBox["\"5a31bc93d682eea61f6c1505\"", "SummaryItem"]}]}},
                  GridBoxAlignment -> {
                  "Columns" -> {{Left}}, "Rows" -> {{Automatic}}}, AutoDelete -> 
                 False, GridBoxItemSize -> {
@@ -1979,15 +1893,16 @@ Cell[BoxData[
           Dynamic[Typeset`open$$], ImageSize -> Automatic]},
         "SummaryPanel"],
        DynamicModuleValues:>{}], "]"}],
-     MongoLink`BSONObjectID["59f11429af09c5553f73e175"],
+     MongoLink`BSONObjectID["5a31bc93d682eea61f6c1505"],
      Editable->False,
      SelectWithContents->True,
      Selectable->False]}], ",", 
    RowBox[{"\<\"age\"\>", "\[Rule]", "5"}]}], 
   "\[RightAssociation]"}]], "Output",
- CellChangeTimes->{3.717960366897882*^9},
- CellLabel->"Out[22]=",
- CellID->770897760,ExpressionUUID->"859a2c48-e6dd-41a9-9868-b20cde7faf91"]
+ CellChangeTimes->{3.717960366897882*^9, 3.722197601217622*^9, 
+  3.7221977859387627`*^9},
+ CellLabel->"Out[24]=",
+ CellID->90607946,ExpressionUUID->"a81f969a-f7f3-4620-8aee-8fa1811f7754"]
 }, Open  ]]
 }, Open  ]],
 
@@ -2042,7 +1957,7 @@ Cell[CellGroupData[{
 Cell[BoxData[
  RowBox[{"curs", "=", 
   RowBox[{"MongoCollectionFind", "[", "coll", "]"}]}]], "Input",
- CellLabel->"In[23]:=",
+ CellLabel->"In[25]:=",
  CellID->1070411416,ExpressionUUID->"e9427189-70f0-4bd8-a633-206b2dc09ce7"],
 
 Cell[BoxData[
@@ -2097,9 +2012,10 @@ Cell[BoxData[
   Editable->False,
   SelectWithContents->True,
   Selectable->False]], "Output",
- CellChangeTimes->{3.7179603696397448`*^9},
- CellLabel->"Out[23]=",
- CellID->696277330,ExpressionUUID->"da66de13-3828-4794-b1b9-01b5bb2051d5"]
+ CellChangeTimes->{3.7179603696397448`*^9, 3.7221976058627787`*^9, 
+  3.7221977888485403`*^9},
+ CellLabel->"Out[25]=",
+ CellID->495553696,ExpressionUUID->"4720d3ea-16ce-4fd7-9fa1-9519d4601e0f"]
 }, Open  ]]
 }, Open  ]],
 
@@ -2129,7 +2045,7 @@ Cell[CellGroupData[{
 
 Cell[BoxData[
  RowBox[{"Read", "[", "curs", "]"}]], "Input",
- CellLabel->"In[24]:=",
+ CellLabel->"In[26]:=",
  CellID->1390427678,ExpressionUUID->"eea20726-d54e-4c6d-ba5a-338693ac5b5b"],
 
 Cell[BoxData[
@@ -2147,7 +2063,7 @@ Cell[BoxData[
                   RowBox[{
                     TagBox["\"OID: \"", "SummaryItemAnnotation"], 
                     "\[InvisibleSpace]", 
-                    TagBox["\"59f1141caf09c5553f73e174\"", "SummaryItem"]}]}},
+                    TagBox["\"5a31bc7dd682eea61f6c1504\"", "SummaryItem"]}]}},
                  GridBoxAlignment -> {
                  "Columns" -> {{Left}}, "Rows" -> {{Automatic}}}, AutoDelete -> 
                 False, GridBoxItemSize -> {
@@ -2165,7 +2081,7 @@ Cell[BoxData[
                   RowBox[{
                     TagBox["\"OID: \"", "SummaryItemAnnotation"], 
                     "\[InvisibleSpace]", 
-                    TagBox["\"59f1141caf09c5553f73e174\"", "SummaryItem"]}]}},
+                    TagBox["\"5a31bc7dd682eea61f6c1504\"", "SummaryItem"]}]}},
                  GridBoxAlignment -> {
                  "Columns" -> {{Left}}, "Rows" -> {{Automatic}}}, AutoDelete -> 
                 False, GridBoxItemSize -> {
@@ -2182,33 +2098,33 @@ Cell[BoxData[
           Dynamic[Typeset`open$$], ImageSize -> Automatic]},
         "SummaryPanel"],
        DynamicModuleValues:>{}], "]"}],
-     MongoLink`BSONObjectID["59f1141caf09c5553f73e174"],
+     MongoLink`BSONObjectID["5a31bc7dd682eea61f6c1504"],
      Editable->False,
      SelectWithContents->True,
      Selectable->False]}], ",", 
    RowBox[{"\<\"age\"\>", "\[Rule]", "3"}], ",", 
    RowBox[{"\<\"sex\"\>", "\[Rule]", "\<\"female\"\>"}], ",", 
    RowBox[{"\<\"date\"\>", "\[Rule]", 
-    TemplateBox[{RowBox[{"\"Wednesday 25 October 2017 17:45:46:647\"", 
+    TemplateBox[{RowBox[{"\"Thursday 14 December 2017 01:49:16:177\"", 
         StyleBox[
-         RowBox[{"\"GMT\"", "\[InvisibleSpace]", 
-           RowBox[{"-", "5.`"}]}], FontColor -> GrayLevel[0.5]]}],
-      RowBox[{"DateObject", "[", 
+         RowBox[{"\"GMT+\"", "\[InvisibleSpace]", 
+           StyleBox["2.`", NumberMarks -> False, StripOnInput -> False]}], 
+         FontColor -> GrayLevel[0.5]]}],RowBox[{"DateObject", "[", 
         RowBox[{
           RowBox[{"{", 
             
-            RowBox[{"2017", ",", "10", ",", "25", ",", "17", ",", "45", ",", 
-              "46.64799976348877`"}], "}"}], ",", "\"Instant\"", ",", 
-          "\"Gregorian\"", ",", 
-          RowBox[{"-", "5.`"}], ",", 
+            RowBox[{"2017", ",", "12", ",", "14", ",", "1", ",", "49", ",", 
+              "16.17799997329712`"}], "}"}], ",", "\"Instant\"", ",", 
+          "\"Gregorian\"", ",", "2.`", ",", 
           RowBox[{"{", 
             RowBox[{"\"DateTime\"", ",", "\":\"", ",", "\"Millisecond\""}], 
             "}"}]}], "]"}]},
      "DateObject",
      Editable->False]}]}], "\[RightAssociation]"}]], "Output",
- CellChangeTimes->{3.717960371183856*^9},
- CellLabel->"Out[24]=",
- CellID->583573258,ExpressionUUID->"26979543-dfa7-475a-83d4-f1fd17d0a48a"]
+ CellChangeTimes->{3.717960371183856*^9, 3.722197607224799*^9, 
+  3.722197790696745*^9},
+ CellLabel->"Out[26]=",
+ CellID->281362338,ExpressionUUID->"24134e6e-4718-4151-a39f-65a66825462f"]
 }, Open  ]]
 }, Open  ]],
 
@@ -2234,7 +2150,7 @@ Cell[CellGroupData[{
 Cell[BoxData[
  RowBox[{"docs", "=", 
   RowBox[{"ReadList", "[", "curs", "]"}]}]], "Input",
- CellLabel->"In[25]:=",
+ CellLabel->"In[27]:=",
  CellID->2095618494,ExpressionUUID->"45c2506e-faa9-485a-ad1f-08f07a152036"],
 
 Cell[BoxData[
@@ -2254,7 +2170,7 @@ Cell[BoxData[
                     RowBox[{
                     TagBox["\"OID: \"", "SummaryItemAnnotation"], 
                     "\[InvisibleSpace]", 
-                    TagBox["\"59f11429af09c5553f73e175\"", "SummaryItem"]}]}},
+                    TagBox["\"5a31bc93d682eea61f6c1505\"", "SummaryItem"]}]}},
                    GridBoxAlignment -> {
                    "Columns" -> {{Left}}, "Rows" -> {{Automatic}}}, 
                   AutoDelete -> False, 
@@ -2273,7 +2189,7 @@ Cell[BoxData[
                     RowBox[{
                     TagBox["\"OID: \"", "SummaryItemAnnotation"], 
                     "\[InvisibleSpace]", 
-                    TagBox["\"59f11429af09c5553f73e175\"", "SummaryItem"]}]}},
+                    TagBox["\"5a31bc93d682eea61f6c1505\"", "SummaryItem"]}]}},
                    GridBoxAlignment -> {
                    "Columns" -> {{Left}}, "Rows" -> {{Automatic}}}, 
                   AutoDelete -> False, 
@@ -2291,25 +2207,24 @@ Cell[BoxData[
             Dynamic[Typeset`open$$], ImageSize -> Automatic]},
           "SummaryPanel"],
          DynamicModuleValues:>{}], "]"}],
-       MongoLink`BSONObjectID["59f11429af09c5553f73e175"],
+       MongoLink`BSONObjectID["5a31bc93d682eea61f6c1505"],
        Editable->False,
        SelectWithContents->True,
        Selectable->False]}], ",", 
      RowBox[{"\<\"age\"\>", "\[Rule]", "5"}], ",", 
      RowBox[{"\<\"sex\"\>", "\[Rule]", "\<\"male\"\>"}], ",", 
      RowBox[{"\<\"date\"\>", "\[Rule]", 
-      TemplateBox[{RowBox[{"\"Wednesday 25 October 2017 17:45:59:177\"", 
+      TemplateBox[{RowBox[{"\"Thursday 14 December 2017 01:49:37:649\"", 
           StyleBox[
-           RowBox[{"\"GMT\"", "\[InvisibleSpace]", 
-             RowBox[{"-", "5.`"}]}], FontColor -> GrayLevel[0.5]]}],
-        RowBox[{"DateObject", "[", 
+           RowBox[{"\"GMT+\"", "\[InvisibleSpace]", 
+             StyleBox["2.`", NumberMarks -> False, StripOnInput -> False]}], 
+           FontColor -> GrayLevel[0.5]]}],RowBox[{"DateObject", "[", 
           RowBox[{
             RowBox[{"{", 
               
-              RowBox[{"2017", ",", "10", ",", "25", ",", "17", ",", "45", ",",
-                 "59.17700004577637`"}], "}"}], ",", "\"Instant\"", ",", 
-            "\"Gregorian\"", ",", 
-            RowBox[{"-", "5.`"}], ",", 
+              RowBox[{"2017", ",", "12", ",", "14", ",", "1", ",", "49", ",", 
+                "37.64900016784668`"}], "}"}], ",", "\"Instant\"", ",", 
+            "\"Gregorian\"", ",", "2.`", ",", 
             RowBox[{"{", 
               RowBox[{"\"DateTime\"", ",", "\":\"", ",", "\"Millisecond\""}], 
               "}"}]}], "]"}]},
@@ -2329,7 +2244,7 @@ Cell[BoxData[
                     RowBox[{
                     TagBox["\"OID: \"", "SummaryItemAnnotation"], 
                     "\[InvisibleSpace]", 
-                    TagBox["\"59f11429af09c5553f73e176\"", "SummaryItem"]}]}},
+                    TagBox["\"5a31bc93d682eea61f6c1506\"", "SummaryItem"]}]}},
                    GridBoxAlignment -> {
                    "Columns" -> {{Left}}, "Rows" -> {{Automatic}}}, 
                   AutoDelete -> False, 
@@ -2348,7 +2263,7 @@ Cell[BoxData[
                     RowBox[{
                     TagBox["\"OID: \"", "SummaryItemAnnotation"], 
                     "\[InvisibleSpace]", 
-                    TagBox["\"59f11429af09c5553f73e176\"", "SummaryItem"]}]}},
+                    TagBox["\"5a31bc93d682eea61f6c1506\"", "SummaryItem"]}]}},
                    GridBoxAlignment -> {
                    "Columns" -> {{Left}}, "Rows" -> {{Automatic}}}, 
                   AutoDelete -> False, 
@@ -2366,33 +2281,33 @@ Cell[BoxData[
             Dynamic[Typeset`open$$], ImageSize -> Automatic]},
           "SummaryPanel"],
          DynamicModuleValues:>{}], "]"}],
-       MongoLink`BSONObjectID["59f11429af09c5553f73e176"],
+       MongoLink`BSONObjectID["5a31bc93d682eea61f6c1506"],
        Editable->False,
        SelectWithContents->True,
        Selectable->False]}], ",", 
      RowBox[{"\<\"age\"\>", "\[Rule]", "4"}], ",", 
      RowBox[{"\<\"sex\"\>", "\[Rule]", "\<\"female\"\>"}], ",", 
      RowBox[{"\<\"date\"\>", "\[Rule]", 
-      TemplateBox[{RowBox[{"\"Wednesday 25 October 2017 17:45:59:177\"", 
+      TemplateBox[{RowBox[{"\"Thursday 14 December 2017 01:49:37:649\"", 
           StyleBox[
-           RowBox[{"\"GMT\"", "\[InvisibleSpace]", 
-             RowBox[{"-", "5.`"}]}], FontColor -> GrayLevel[0.5]]}],
-        RowBox[{"DateObject", "[", 
+           RowBox[{"\"GMT+\"", "\[InvisibleSpace]", 
+             StyleBox["2.`", NumberMarks -> False, StripOnInput -> False]}], 
+           FontColor -> GrayLevel[0.5]]}],RowBox[{"DateObject", "[", 
           RowBox[{
             RowBox[{"{", 
               
-              RowBox[{"2017", ",", "10", ",", "25", ",", "17", ",", "45", ",",
-                 "59.17700004577637`"}], "}"}], ",", "\"Instant\"", ",", 
-            "\"Gregorian\"", ",", 
-            RowBox[{"-", "5.`"}], ",", 
+              RowBox[{"2017", ",", "12", ",", "14", ",", "1", ",", "49", ",", 
+                "37.64900016784668`"}], "}"}], ",", "\"Instant\"", ",", 
+            "\"Gregorian\"", ",", "2.`", ",", 
             RowBox[{"{", 
               RowBox[{"\"DateTime\"", ",", "\":\"", ",", "\"Millisecond\""}], 
               "}"}]}], "]"}]},
        "DateObject",
        Editable->False]}]}], "\[RightAssociation]"}]}], "}"}]], "Output",
- CellChangeTimes->{3.7179603733433332`*^9},
- CellLabel->"Out[25]=",
- CellID->1364715661,ExpressionUUID->"8fdbb373-b22c-435f-b417-2e917bfe4e72"]
+ CellChangeTimes->{3.7179603733433332`*^9, 3.722197609408331*^9, 
+  3.722197792933173*^9},
+ CellLabel->"Out[27]=",
+ CellID->124635314,ExpressionUUID->"60e1290a-7170-4061-8331-ebc3404963ea"]
 }, Open  ]]
 }, Open  ]],
 
@@ -2415,7 +2330,7 @@ Cell[TextData[{
 
 Cell[BoxData[
  RowBox[{"Read", "[", "curs", "]"}]], "Input",
- CellLabel->"In[26]:=",
+ CellLabel->"In[28]:=",
  CellID->925149521,ExpressionUUID->"131f3a7d-7645-4657-bda2-b461ceb39479"]
 }, Open  ]],
 
@@ -2431,7 +2346,7 @@ Cell[CellGroupData[{
 Cell[BoxData[
  RowBox[{"curs", "=", 
   RowBox[{"MongoCollectionFind", "[", "coll", "]"}]}]], "Input",
- CellLabel->"In[27]:=",
+ CellLabel->"In[29]:=",
  CellID->1763103434,ExpressionUUID->"e1e3fd45-41d0-4c53-81d7-93d9cf15a606"],
 
 Cell[BoxData[
@@ -2486,9 +2401,9 @@ Cell[BoxData[
   Editable->False,
   SelectWithContents->True,
   Selectable->False]], "Output",
- CellChangeTimes->{3.717960379041357*^9},
- CellLabel->"Out[27]=",
- CellID->378916563,ExpressionUUID->"2bbc7ebb-5258-4769-94f8-a6c4bb094bb9"]
+ CellChangeTimes->{3.717960379041357*^9, 3.7221977969906883`*^9},
+ CellLabel->"Out[29]=",
+ CellID->1983798703,ExpressionUUID->"559efce3-5240-4416-b5e8-20deda43b694"]
 }, Open  ]]
 }, Open  ]],
 
@@ -2508,7 +2423,7 @@ Cell[CellGroupData[{
 
 Cell[BoxData[
  RowBox[{"Dataset", "[", "curs", "]"}]], "Input",
- CellLabel->"In[28]:=",
+ CellLabel->"In[30]:=",
  CellID->1402054679,ExpressionUUID->"0b699488-ec67-443f-ad35-a3cd42778a03"],
 
 Cell[BoxData[
@@ -2535,7 +2450,7 @@ Cell[BoxData[
               TypeSystem`PackageScope`AtomShape[34], "sex" -> 
               TypeSystem`PackageScope`AtomShape[57.60000000000001], "date" -> 
               TypeSystem`PackageScope`AtomShape[75]]]], 3, {}]], 
-        "InitialData" -> TypeSystem`PackageScope`CacheHandle[1574064893], 
+        "InitialData" -> TypeSystem`PackageScope`CacheHandle[602673990], 
         "Type" -> TypeSystem`Vector[
           
           TypeSystem`Struct[{"_id", "age", "sex", "date"}, {
@@ -2543,7 +2458,7 @@ Cell[BoxData[
             TypeSystem`Atom[Integer], 
             TypeSystem`Atom[String], 
             TypeSystem`Atom[DateObject]}], 3], "HandleQ" -> True, "RowTarget" -> 
-        20, "Data" -> TypeSystem`PackageScope`CacheHandle[1574064893]], 
+        20, "Data" -> TypeSystem`PackageScope`CacheHandle[602673990]], 
       TypeSystem`NestedGrid`PackagePrivate`$path$$ = {}, 
       TypeSystem`NestedGrid`PackagePrivate`$pos$$ = 1, 
       TypeSystem`NestedGrid`PackagePrivate`$grid$$ = 
@@ -2575,9 +2490,9 @@ Cell[BoxData[
                    TypeSystem`NestedGrid`PackagePrivate`$state$$, 
                     TypeSystem`NestedGrid`PackagePrivate`$path$$, 
                     TypeSystem`NestedGrid`PackagePrivate`$pos$$, 
-                    TypeSystem`NestedGrid`PackagePrivate`$grid$$, 556862967][{
+                    TypeSystem`NestedGrid`PackagePrivate`$grid$$, 750367555][{
                     All, "_id"}]], 
-                 TypeSystem`NestedGrid`PackagePrivate`$SliceMarker[556862967][
+                 TypeSystem`NestedGrid`PackagePrivate`$SliceMarker[750367555][
                  
                   GeneralUtilities`Slice[All, "_id"]], "Mouse"], Background -> 
                 GrayLevel[0.95], Alignment -> {Left, Baseline}], 
@@ -2605,9 +2520,9 @@ Cell[BoxData[
                    TypeSystem`NestedGrid`PackagePrivate`$state$$, 
                     TypeSystem`NestedGrid`PackagePrivate`$path$$, 
                     TypeSystem`NestedGrid`PackagePrivate`$pos$$, 
-                    TypeSystem`NestedGrid`PackagePrivate`$grid$$, 556862967][{
+                    TypeSystem`NestedGrid`PackagePrivate`$grid$$, 750367555][{
                     All, "age"}]], 
-                 TypeSystem`NestedGrid`PackagePrivate`$SliceMarker[556862967][
+                 TypeSystem`NestedGrid`PackagePrivate`$SliceMarker[750367555][
                  
                   GeneralUtilities`Slice[All, "age"]], "Mouse"], Background -> 
                 GrayLevel[0.95], Alignment -> {Left, Baseline}], 
@@ -2635,9 +2550,9 @@ Cell[BoxData[
                    TypeSystem`NestedGrid`PackagePrivate`$state$$, 
                     TypeSystem`NestedGrid`PackagePrivate`$path$$, 
                     TypeSystem`NestedGrid`PackagePrivate`$pos$$, 
-                    TypeSystem`NestedGrid`PackagePrivate`$grid$$, 556862967][{
+                    TypeSystem`NestedGrid`PackagePrivate`$grid$$, 750367555][{
                     All, "sex"}]], 
-                 TypeSystem`NestedGrid`PackagePrivate`$SliceMarker[556862967][
+                 TypeSystem`NestedGrid`PackagePrivate`$SliceMarker[750367555][
                  
                   GeneralUtilities`Slice[All, "sex"]], "Mouse"], Background -> 
                 GrayLevel[0.95], Alignment -> {Left, Baseline}], 
@@ -2665,9 +2580,9 @@ Cell[BoxData[
                    TypeSystem`NestedGrid`PackagePrivate`$state$$, 
                     TypeSystem`NestedGrid`PackagePrivate`$path$$, 
                     TypeSystem`NestedGrid`PackagePrivate`$pos$$, 
-                    TypeSystem`NestedGrid`PackagePrivate`$grid$$, 556862967][{
+                    TypeSystem`NestedGrid`PackagePrivate`$grid$$, 750367555][{
                     All, "date"}]], 
-                 TypeSystem`NestedGrid`PackagePrivate`$SliceMarker[556862967][
+                 TypeSystem`NestedGrid`PackagePrivate`$SliceMarker[750367555][
                  
                   GeneralUtilities`Slice[All, "date"]], "Mouse"], Background -> 
                 GrayLevel[0.95], Alignment -> {Left, Baseline}]}, {
@@ -2687,7 +2602,7 @@ Cell[BoxData[
                     RowBox[{
                     TagBox["\"OID: \"", "SummaryItemAnnotation"], 
                     "\[InvisibleSpace]", 
-                    TagBox["\"59f1141caf09c5553f73e174\"", "SummaryItem"]}]}},
+                    TagBox["\"5a31bc7dd682eea61f6c1504\"", "SummaryItem"]}]}},
                      GridBoxAlignment -> {
                     "Columns" -> {{Left}}, "Rows" -> {{Automatic}}}, 
                     AutoDelete -> False, 
@@ -2706,7 +2621,7 @@ Cell[BoxData[
                     RowBox[{
                     TagBox["\"OID: \"", "SummaryItemAnnotation"], 
                     "\[InvisibleSpace]", 
-                    TagBox["\"59f1141caf09c5553f73e174\"", "SummaryItem"]}]}},
+                    TagBox["\"5a31bc7dd682eea61f6c1504\"", "SummaryItem"]}]}},
                      GridBoxAlignment -> {
                     "Columns" -> {{Left}}, "Rows" -> {{Automatic}}}, 
                     AutoDelete -> False, 
@@ -2723,12 +2638,12 @@ Cell[BoxData[
                     BaselinePosition -> {1, 1}]}, 
                     Dynamic[Typeset`open$$], ImageSize -> Automatic]}, 
                     "SummaryPanel"], DynamicModuleValues :> {}], "]"}], 
-                    MongoLink`BSONObjectID["59f1141caf09c5553f73e174"], 
+                    MongoLink`BSONObjectID["5a31bc7dd682eea61f6c1504"], 
                     Selectable -> False, Editable -> False, 
                     SelectWithContents -> True], FontFamily -> 
                    "Source Code Pro", FontSize -> 13, ShowStringCharacters -> 
                    True]], 
-                 TypeSystem`NestedGrid`PackagePrivate`$SliceMarker[556862967][
+                 TypeSystem`NestedGrid`PackagePrivate`$SliceMarker[750367555][
                  
                   GeneralUtilities`Slice[1, 
                    Key["_id"]]], "Mouse"], 
@@ -2737,7 +2652,7 @@ Cell[BoxData[
                Pane[
                 Annotation[
                  RawBoxes["3"], 
-                 TypeSystem`NestedGrid`PackagePrivate`$SliceMarker[556862967][
+                 TypeSystem`NestedGrid`PackagePrivate`$SliceMarker[750367555][
                  
                   GeneralUtilities`Slice[1, 
                    Key["age"]]], "Mouse"], 
@@ -2745,7 +2660,7 @@ Cell[BoxData[
                 Alignment -> {Left, Baseline}], 
                Pane[
                 Annotation["female", 
-                 TypeSystem`NestedGrid`PackagePrivate`$SliceMarker[556862967][
+                 TypeSystem`NestedGrid`PackagePrivate`$SliceMarker[750367555][
                  
                   GeneralUtilities`Slice[1, 
                    Key["sex"]]], "Mouse"], 
@@ -2755,12 +2670,12 @@ Cell[BoxData[
                 Annotation[
                  RawBoxes[
                   StyleBox[
-                  "\"Wednesday 25 October 2017 17:45:46:647\"", FontColor -> 
+                  "\"Thursday 14 December 2017 01:49:16:177\"", FontColor -> 
                    RGBColor[{
                     Rational[33, 74], 
                     Rational[27, 74], 
                     Rational[117, 370]}]]], 
-                 TypeSystem`NestedGrid`PackagePrivate`$SliceMarker[556862967][
+                 TypeSystem`NestedGrid`PackagePrivate`$SliceMarker[750367555][
                  
                   GeneralUtilities`Slice[1, 
                    Key["date"]]], "Mouse"], 
@@ -2782,7 +2697,7 @@ Cell[BoxData[
                     RowBox[{
                     TagBox["\"OID: \"", "SummaryItemAnnotation"], 
                     "\[InvisibleSpace]", 
-                    TagBox["\"59f11429af09c5553f73e175\"", "SummaryItem"]}]}},
+                    TagBox["\"5a31bc93d682eea61f6c1505\"", "SummaryItem"]}]}},
                      GridBoxAlignment -> {
                     "Columns" -> {{Left}}, "Rows" -> {{Automatic}}}, 
                     AutoDelete -> False, 
@@ -2801,7 +2716,7 @@ Cell[BoxData[
                     RowBox[{
                     TagBox["\"OID: \"", "SummaryItemAnnotation"], 
                     "\[InvisibleSpace]", 
-                    TagBox["\"59f11429af09c5553f73e175\"", "SummaryItem"]}]}},
+                    TagBox["\"5a31bc93d682eea61f6c1505\"", "SummaryItem"]}]}},
                      GridBoxAlignment -> {
                     "Columns" -> {{Left}}, "Rows" -> {{Automatic}}}, 
                     AutoDelete -> False, 
@@ -2818,12 +2733,12 @@ Cell[BoxData[
                     BaselinePosition -> {1, 1}]}, 
                     Dynamic[Typeset`open$$], ImageSize -> Automatic]}, 
                     "SummaryPanel"], DynamicModuleValues :> {}], "]"}], 
-                    MongoLink`BSONObjectID["59f11429af09c5553f73e175"], 
+                    MongoLink`BSONObjectID["5a31bc93d682eea61f6c1505"], 
                     Selectable -> False, Editable -> False, 
                     SelectWithContents -> True], FontFamily -> 
                    "Source Code Pro", FontSize -> 13, ShowStringCharacters -> 
                    True]], 
-                 TypeSystem`NestedGrid`PackagePrivate`$SliceMarker[556862967][
+                 TypeSystem`NestedGrid`PackagePrivate`$SliceMarker[750367555][
                  
                   GeneralUtilities`Slice[2, 
                    Key["_id"]]], "Mouse"], 
@@ -2832,7 +2747,7 @@ Cell[BoxData[
                Pane[
                 Annotation[
                  RawBoxes["5"], 
-                 TypeSystem`NestedGrid`PackagePrivate`$SliceMarker[556862967][
+                 TypeSystem`NestedGrid`PackagePrivate`$SliceMarker[750367555][
                  
                   GeneralUtilities`Slice[2, 
                    Key["age"]]], "Mouse"], 
@@ -2840,7 +2755,7 @@ Cell[BoxData[
                 Alignment -> {Left, Baseline}], 
                Pane[
                 Annotation["male", 
-                 TypeSystem`NestedGrid`PackagePrivate`$SliceMarker[556862967][
+                 TypeSystem`NestedGrid`PackagePrivate`$SliceMarker[750367555][
                  
                   GeneralUtilities`Slice[2, 
                    Key["sex"]]], "Mouse"], 
@@ -2850,12 +2765,12 @@ Cell[BoxData[
                 Annotation[
                  RawBoxes[
                   StyleBox[
-                  "\"Wednesday 25 October 2017 17:45:59:177\"", FontColor -> 
+                  "\"Thursday 14 December 2017 01:49:37:649\"", FontColor -> 
                    RGBColor[{
                     Rational[33, 74], 
                     Rational[27, 74], 
                     Rational[117, 370]}]]], 
-                 TypeSystem`NestedGrid`PackagePrivate`$SliceMarker[556862967][
+                 TypeSystem`NestedGrid`PackagePrivate`$SliceMarker[750367555][
                  
                   GeneralUtilities`Slice[2, 
                    Key["date"]]], "Mouse"], 
@@ -2877,7 +2792,7 @@ Cell[BoxData[
                     RowBox[{
                     TagBox["\"OID: \"", "SummaryItemAnnotation"], 
                     "\[InvisibleSpace]", 
-                    TagBox["\"59f11429af09c5553f73e176\"", "SummaryItem"]}]}},
+                    TagBox["\"5a31bc93d682eea61f6c1506\"", "SummaryItem"]}]}},
                      GridBoxAlignment -> {
                     "Columns" -> {{Left}}, "Rows" -> {{Automatic}}}, 
                     AutoDelete -> False, 
@@ -2896,7 +2811,7 @@ Cell[BoxData[
                     RowBox[{
                     TagBox["\"OID: \"", "SummaryItemAnnotation"], 
                     "\[InvisibleSpace]", 
-                    TagBox["\"59f11429af09c5553f73e176\"", "SummaryItem"]}]}},
+                    TagBox["\"5a31bc93d682eea61f6c1506\"", "SummaryItem"]}]}},
                      GridBoxAlignment -> {
                     "Columns" -> {{Left}}, "Rows" -> {{Automatic}}}, 
                     AutoDelete -> False, 
@@ -2913,12 +2828,12 @@ Cell[BoxData[
                     BaselinePosition -> {1, 1}]}, 
                     Dynamic[Typeset`open$$], ImageSize -> Automatic]}, 
                     "SummaryPanel"], DynamicModuleValues :> {}], "]"}], 
-                    MongoLink`BSONObjectID["59f11429af09c5553f73e176"], 
+                    MongoLink`BSONObjectID["5a31bc93d682eea61f6c1506"], 
                     Selectable -> False, Editable -> False, 
                     SelectWithContents -> True], FontFamily -> 
                    "Source Code Pro", FontSize -> 13, ShowStringCharacters -> 
                    True]], 
-                 TypeSystem`NestedGrid`PackagePrivate`$SliceMarker[556862967][
+                 TypeSystem`NestedGrid`PackagePrivate`$SliceMarker[750367555][
                  
                   GeneralUtilities`Slice[3, 
                    Key["_id"]]], "Mouse"], 
@@ -2927,7 +2842,7 @@ Cell[BoxData[
                Pane[
                 Annotation[
                  RawBoxes["4"], 
-                 TypeSystem`NestedGrid`PackagePrivate`$SliceMarker[556862967][
+                 TypeSystem`NestedGrid`PackagePrivate`$SliceMarker[750367555][
                  
                   GeneralUtilities`Slice[3, 
                    Key["age"]]], "Mouse"], 
@@ -2935,7 +2850,7 @@ Cell[BoxData[
                 Alignment -> {Left, Baseline}], 
                Pane[
                 Annotation["female", 
-                 TypeSystem`NestedGrid`PackagePrivate`$SliceMarker[556862967][
+                 TypeSystem`NestedGrid`PackagePrivate`$SliceMarker[750367555][
                  
                   GeneralUtilities`Slice[3, 
                    Key["sex"]]], "Mouse"], 
@@ -2945,12 +2860,12 @@ Cell[BoxData[
                 Annotation[
                  RawBoxes[
                   StyleBox[
-                  "\"Wednesday 25 October 2017 17:45:59:177\"", FontColor -> 
+                  "\"Thursday 14 December 2017 01:49:37:649\"", FontColor -> 
                    RGBColor[{
                     Rational[33, 74], 
                     Rational[27, 74], 
                     Rational[117, 370]}]]], 
-                 TypeSystem`NestedGrid`PackagePrivate`$SliceMarker[556862967][
+                 TypeSystem`NestedGrid`PackagePrivate`$SliceMarker[750367555][
                  
                   GeneralUtilities`Slice[3, 
                    Key["date"]]], "Mouse"], 
@@ -3002,7 +2917,7 @@ Cell[BoxData[
                 TypeSystem`NestedGrid`PackagePrivate`$state$$, 
                  TypeSystem`NestedGrid`PackagePrivate`$path$$, 
                  TypeSystem`NestedGrid`PackagePrivate`$pos$$, 
-                 TypeSystem`NestedGrid`PackagePrivate`$grid$$, 556862967][
+                 TypeSystem`NestedGrid`PackagePrivate`$grid$$, 750367555][
                 TypeSystem`NestedGrid`PackagePrivate`tmpData$]]; If[
                Not[
                 FailureQ[TypeSystem`NestedGrid`PackagePrivate`tmpGrid$]], 
@@ -3033,14 +2948,14 @@ Cell[BoxData[
            TypeSystem`NestedGrid`PackagePrivate`$state$$, 
             TypeSystem`NestedGrid`PackagePrivate`$path$$, 
             TypeSystem`NestedGrid`PackagePrivate`$pos$$, 
-            TypeSystem`NestedGrid`PackagePrivate`$grid$$, 556862967]]]], 
+            TypeSystem`NestedGrid`PackagePrivate`$grid$$, 750367555]]]], 
         TrackedSymbols :> {TypeSystem`NestedGrid`PackagePrivate`$path$$}], 
       TypeSystem`NestedGrid`PackagePrivate`$bottomBar$$ = Framed[
         Dynamic[
          Replace[
           MouseAnnotation[Null], {
-          TypeSystem`NestedGrid`PackagePrivate`$SliceMarker[556862967][Null] -> 
-           "", TypeSystem`NestedGrid`PackagePrivate`$SliceMarker[556862967][
+          TypeSystem`NestedGrid`PackagePrivate`$SliceMarker[750367555][Null] -> 
+           "", TypeSystem`NestedGrid`PackagePrivate`$SliceMarker[750367555][
              Pattern[TypeSystem`NestedGrid`PackagePrivate`path, 
               Blank[]]] :> (
             TypeSystem`NestedGrid`PackagePrivate`$lastPath = 
@@ -3074,7 +2989,7 @@ Cell[BoxData[
            TypeSystem`NestedGrid`PackagePrivate`$bottomBar$$]]}], Spacings -> 
         If[TypeSystem`NestedGrid`PackagePrivate`$path$$ == {}, 
           0, {{}, {0, 0.05, 0}}]], StandardForm], 
-      ImageSizeCache -> {980., {109.03173828125, 116.96826171875}}, 
+      ImageSizeCache -> {988., {112.03173828125, 119.96826171875}}, 
       TrackedSymbols :> {
        TypeSystem`NestedGrid`PackagePrivate`$state$$, 
         TypeSystem`NestedGrid`PackagePrivate`$grid$$}], 
@@ -3087,9 +3002,9 @@ Cell[BoxData[
   "CopyTag",
   DisplayFunction->(#& ),
   InterpretationFunction->("Dataset[<>]"& )]], "Output",
- CellChangeTimes->{3.717960380996221*^9},
- CellLabel->"Out[28]=",
- CellID->1440209062,ExpressionUUID->"c0b86131-7f6e-4b7e-b83d-cbff2c56416f"]
+ CellChangeTimes->{3.717960380996221*^9, 3.722197799318644*^9},
+ CellLabel->"Out[30]=",
+ CellID->322990193,ExpressionUUID->"724d4728-3fa3-4768-a0a4-f467895abf9f"]
 }, Open  ]]
 }, Open  ]],
 
@@ -3116,7 +3031,7 @@ Cell[BoxData[{
       RowBox[{"Read", "[", "curs", "]"}]}], "]"}], ",", 
     RowBox[{"Print", "@", 
      RowBox[{"data", "[", "\"\<_id\>\"", "]"}]}]}], "]"}], ";"}]}], "Input",
- CellLabel->"In[29]:=",
+ CellLabel->"In[31]:=",
  CellID->1909527337,ExpressionUUID->"24dd9763-341f-40d6-be3c-ea334ead8ff1"],
 
 Cell[CellGroupData[{
@@ -3133,7 +3048,7 @@ Cell[BoxData[
                RowBox[{
                  TagBox["\"OID: \"", "SummaryItemAnnotation"], 
                  "\[InvisibleSpace]", 
-                 TagBox["\"59f1141caf09c5553f73e174\"", "SummaryItem"]}]}}, 
+                 TagBox["\"5a31bc7dd682eea61f6c1504\"", "SummaryItem"]}]}}, 
              GridBoxAlignment -> {
               "Columns" -> {{Left}}, "Rows" -> {{Automatic}}}, AutoDelete -> 
              False, GridBoxItemSize -> {
@@ -3150,7 +3065,7 @@ Cell[BoxData[
                RowBox[{
                  TagBox["\"OID: \"", "SummaryItemAnnotation"], 
                  "\[InvisibleSpace]", 
-                 TagBox["\"59f1141caf09c5553f73e174\"", "SummaryItem"]}]}}, 
+                 TagBox["\"5a31bc7dd682eea61f6c1504\"", "SummaryItem"]}]}}, 
              GridBoxAlignment -> {
               "Columns" -> {{Left}}, "Rows" -> {{Automatic}}}, AutoDelete -> 
              False, GridBoxItemSize -> {
@@ -3166,13 +3081,13 @@ Cell[BoxData[
        Dynamic[Typeset`open$$], ImageSize -> Automatic]},
      "SummaryPanel"],
     DynamicModuleValues:>{}], "]"}],
-  MongoLink`BSONObjectID["59f1141caf09c5553f73e174"],
+  MongoLink`BSONObjectID["5a31bc7dd682eea61f6c1504"],
   Editable->False,
   SelectWithContents->True,
   Selectable->False]], "Print",
- CellChangeTimes->{3.717960382956192*^9},
- CellLabel->"During evaluation of In[29]:=",
- CellID->688733622,ExpressionUUID->"1f88bf66-38ce-4844-84ef-e7da2f65d2ac"],
+ CellChangeTimes->{3.717960382956192*^9, 3.722197802095234*^9},
+ CellLabel->"During evaluation of In[31]:=",
+ CellID->1820209213,ExpressionUUID->"ad27f0a5-7016-455a-a529-09d7431f30e0"],
 
 Cell[BoxData[
  InterpretationBox[
@@ -3186,7 +3101,7 @@ Cell[BoxData[
                RowBox[{
                  TagBox["\"OID: \"", "SummaryItemAnnotation"], 
                  "\[InvisibleSpace]", 
-                 TagBox["\"59f11429af09c5553f73e175\"", "SummaryItem"]}]}}, 
+                 TagBox["\"5a31bc93d682eea61f6c1505\"", "SummaryItem"]}]}}, 
              GridBoxAlignment -> {
               "Columns" -> {{Left}}, "Rows" -> {{Automatic}}}, AutoDelete -> 
              False, GridBoxItemSize -> {
@@ -3203,7 +3118,7 @@ Cell[BoxData[
                RowBox[{
                  TagBox["\"OID: \"", "SummaryItemAnnotation"], 
                  "\[InvisibleSpace]", 
-                 TagBox["\"59f11429af09c5553f73e175\"", "SummaryItem"]}]}}, 
+                 TagBox["\"5a31bc93d682eea61f6c1505\"", "SummaryItem"]}]}}, 
              GridBoxAlignment -> {
               "Columns" -> {{Left}}, "Rows" -> {{Automatic}}}, AutoDelete -> 
              False, GridBoxItemSize -> {
@@ -3219,13 +3134,13 @@ Cell[BoxData[
        Dynamic[Typeset`open$$], ImageSize -> Automatic]},
      "SummaryPanel"],
     DynamicModuleValues:>{}], "]"}],
-  MongoLink`BSONObjectID["59f11429af09c5553f73e175"],
+  MongoLink`BSONObjectID["5a31bc93d682eea61f6c1505"],
   Editable->False,
   SelectWithContents->True,
   Selectable->False]], "Print",
- CellChangeTimes->{3.717960382970344*^9},
- CellLabel->"During evaluation of In[29]:=",
- CellID->609127624,ExpressionUUID->"e6f36860-f674-478d-a41a-30560b988086"],
+ CellChangeTimes->{3.717960382956192*^9, 3.7221978021024857`*^9},
+ CellLabel->"During evaluation of In[31]:=",
+ CellID->1351691376,ExpressionUUID->"a3d26aff-e961-4184-8371-8b933c31efaf"],
 
 Cell[BoxData[
  InterpretationBox[
@@ -3239,7 +3154,7 @@ Cell[BoxData[
                RowBox[{
                  TagBox["\"OID: \"", "SummaryItemAnnotation"], 
                  "\[InvisibleSpace]", 
-                 TagBox["\"59f11429af09c5553f73e176\"", "SummaryItem"]}]}}, 
+                 TagBox["\"5a31bc93d682eea61f6c1506\"", "SummaryItem"]}]}}, 
              GridBoxAlignment -> {
               "Columns" -> {{Left}}, "Rows" -> {{Automatic}}}, AutoDelete -> 
              False, GridBoxItemSize -> {
@@ -3256,7 +3171,7 @@ Cell[BoxData[
                RowBox[{
                  TagBox["\"OID: \"", "SummaryItemAnnotation"], 
                  "\[InvisibleSpace]", 
-                 TagBox["\"59f11429af09c5553f73e176\"", "SummaryItem"]}]}}, 
+                 TagBox["\"5a31bc93d682eea61f6c1506\"", "SummaryItem"]}]}}, 
              GridBoxAlignment -> {
               "Columns" -> {{Left}}, "Rows" -> {{Automatic}}}, AutoDelete -> 
              False, GridBoxItemSize -> {
@@ -3272,13 +3187,13 @@ Cell[BoxData[
        Dynamic[Typeset`open$$], ImageSize -> Automatic]},
      "SummaryPanel"],
     DynamicModuleValues:>{}], "]"}],
-  MongoLink`BSONObjectID["59f11429af09c5553f73e176"],
+  MongoLink`BSONObjectID["5a31bc93d682eea61f6c1506"],
   Editable->False,
   SelectWithContents->True,
   Selectable->False]], "Print",
- CellChangeTimes->{3.717960382982616*^9},
- CellLabel->"During evaluation of In[29]:=",
- CellID->553431319,ExpressionUUID->"a500e065-680c-472c-b023-79645dc96ced"]
+ CellChangeTimes->{3.717960382956192*^9, 3.722197802110362*^9},
+ CellLabel->"During evaluation of In[31]:=",
+ CellID->1794938466,ExpressionUUID->"dd9aff61-be7b-42f7-907b-36793306613d"]
 }, Open  ]]
 }, Open  ]]
 }, Open  ]],
@@ -3303,7 +3218,7 @@ Cell[BoxData[
  RowBox[{"sample", "=", 
   RowBox[{"RandomSample", "[", 
    RowBox[{"coll", ",", "2"}], "]"}]}]], "Input",
- CellLabel->"In[31]:=",
+ CellLabel->"In[33]:=",
  CellID->1765907730,ExpressionUUID->"71f1a39c-1c7c-4bb9-bc55-c0ba21c9de9e"],
 
 Cell[BoxData[
@@ -3358,9 +3273,9 @@ Cell[BoxData[
   Editable->False,
   SelectWithContents->True,
   Selectable->False]], "Output",
- CellChangeTimes->{3.71796038619977*^9},
- CellLabel->"Out[31]=",
- CellID->227240737,ExpressionUUID->"8ec028eb-8c3b-426c-a4a9-79a722895d86"]
+ CellChangeTimes->{3.71796038619977*^9, 3.7221978055400267`*^9},
+ CellLabel->"Out[33]=",
+ CellID->1980385139,ExpressionUUID->"67985f50-38e4-44e9-a95d-32f46cd20d09"]
 }, Open  ]]
 }, Open  ]],
 
@@ -3380,7 +3295,7 @@ Cell[CellGroupData[{
 
 Cell[BoxData[
  RowBox[{"Dataset", "[", "sample", "]"}]], "Input",
- CellLabel->"In[32]:=",
+ CellLabel->"In[34]:=",
  CellID->1369848861,ExpressionUUID->"036f19d9-5aae-4e91-a648-5425b3d1a210"],
 
 Cell[BoxData[
@@ -3407,7 +3322,7 @@ Cell[BoxData[
               TypeSystem`PackageScope`AtomShape[34], "sex" -> 
               TypeSystem`PackageScope`AtomShape[57.60000000000001], "date" -> 
               TypeSystem`PackageScope`AtomShape[75]]]], 2, {}]], 
-        "InitialData" -> TypeSystem`PackageScope`CacheHandle[960108438], 
+        "InitialData" -> TypeSystem`PackageScope`CacheHandle[644342455], 
         "Type" -> TypeSystem`Vector[
           
           TypeSystem`Struct[{"_id", "age", "sex", "date"}, {
@@ -3415,7 +3330,7 @@ Cell[BoxData[
             TypeSystem`Atom[Integer], 
             TypeSystem`Atom[String], 
             TypeSystem`Atom[DateObject]}], 2], "HandleQ" -> True, "RowTarget" -> 
-        20, "Data" -> TypeSystem`PackageScope`CacheHandle[960108438]], 
+        20, "Data" -> TypeSystem`PackageScope`CacheHandle[644342455]], 
       TypeSystem`NestedGrid`PackagePrivate`$path$$ = {}, 
       TypeSystem`NestedGrid`PackagePrivate`$pos$$ = 1, 
       TypeSystem`NestedGrid`PackagePrivate`$grid$$ = 
@@ -3447,9 +3362,10 @@ Cell[BoxData[
                    TypeSystem`NestedGrid`PackagePrivate`$state$$, 
                     TypeSystem`NestedGrid`PackagePrivate`$path$$, 
                     TypeSystem`NestedGrid`PackagePrivate`$pos$$, 
-                    TypeSystem`NestedGrid`PackagePrivate`$grid$$, 
-                    1135300576][{All, "_id"}]], 
-                 TypeSystem`NestedGrid`PackagePrivate`$SliceMarker[1135300576][
+                    TypeSystem`NestedGrid`PackagePrivate`$grid$$, 898233037][{
+                    All, "_id"}]], 
+                 TypeSystem`NestedGrid`PackagePrivate`$SliceMarker[898233037][
+                 
                   GeneralUtilities`Slice[All, "_id"]], "Mouse"], Background -> 
                 GrayLevel[0.95], Alignment -> {Left, Baseline}], 
                Item[
@@ -3476,9 +3392,10 @@ Cell[BoxData[
                    TypeSystem`NestedGrid`PackagePrivate`$state$$, 
                     TypeSystem`NestedGrid`PackagePrivate`$path$$, 
                     TypeSystem`NestedGrid`PackagePrivate`$pos$$, 
-                    TypeSystem`NestedGrid`PackagePrivate`$grid$$, 
-                    1135300576][{All, "age"}]], 
-                 TypeSystem`NestedGrid`PackagePrivate`$SliceMarker[1135300576][
+                    TypeSystem`NestedGrid`PackagePrivate`$grid$$, 898233037][{
+                    All, "age"}]], 
+                 TypeSystem`NestedGrid`PackagePrivate`$SliceMarker[898233037][
+                 
                   GeneralUtilities`Slice[All, "age"]], "Mouse"], Background -> 
                 GrayLevel[0.95], Alignment -> {Left, Baseline}], 
                Item[
@@ -3505,9 +3422,10 @@ Cell[BoxData[
                    TypeSystem`NestedGrid`PackagePrivate`$state$$, 
                     TypeSystem`NestedGrid`PackagePrivate`$path$$, 
                     TypeSystem`NestedGrid`PackagePrivate`$pos$$, 
-                    TypeSystem`NestedGrid`PackagePrivate`$grid$$, 
-                    1135300576][{All, "sex"}]], 
-                 TypeSystem`NestedGrid`PackagePrivate`$SliceMarker[1135300576][
+                    TypeSystem`NestedGrid`PackagePrivate`$grid$$, 898233037][{
+                    All, "sex"}]], 
+                 TypeSystem`NestedGrid`PackagePrivate`$SliceMarker[898233037][
+                 
                   GeneralUtilities`Slice[All, "sex"]], "Mouse"], Background -> 
                 GrayLevel[0.95], Alignment -> {Left, Baseline}], 
                Item[
@@ -3534,9 +3452,10 @@ Cell[BoxData[
                    TypeSystem`NestedGrid`PackagePrivate`$state$$, 
                     TypeSystem`NestedGrid`PackagePrivate`$path$$, 
                     TypeSystem`NestedGrid`PackagePrivate`$pos$$, 
-                    TypeSystem`NestedGrid`PackagePrivate`$grid$$, 
-                    1135300576][{All, "date"}]], 
-                 TypeSystem`NestedGrid`PackagePrivate`$SliceMarker[1135300576][
+                    TypeSystem`NestedGrid`PackagePrivate`$grid$$, 898233037][{
+                    All, "date"}]], 
+                 TypeSystem`NestedGrid`PackagePrivate`$SliceMarker[898233037][
+                 
                   GeneralUtilities`Slice[All, "date"]], "Mouse"], Background -> 
                 GrayLevel[0.95], Alignment -> {Left, Baseline}]}, {
                Pane[
@@ -3555,7 +3474,7 @@ Cell[BoxData[
                     RowBox[{
                     TagBox["\"OID: \"", "SummaryItemAnnotation"], 
                     "\[InvisibleSpace]", 
-                    TagBox["\"59f11429af09c5553f73e175\"", "SummaryItem"]}]}},
+                    TagBox["\"5a31bc7dd682eea61f6c1504\"", "SummaryItem"]}]}},
                      GridBoxAlignment -> {
                     "Columns" -> {{Left}}, "Rows" -> {{Automatic}}}, 
                     AutoDelete -> False, 
@@ -3574,7 +3493,7 @@ Cell[BoxData[
                     RowBox[{
                     TagBox["\"OID: \"", "SummaryItemAnnotation"], 
                     "\[InvisibleSpace]", 
-                    TagBox["\"59f11429af09c5553f73e175\"", "SummaryItem"]}]}},
+                    TagBox["\"5a31bc7dd682eea61f6c1504\"", "SummaryItem"]}]}},
                      GridBoxAlignment -> {
                     "Columns" -> {{Left}}, "Rows" -> {{Automatic}}}, 
                     AutoDelete -> False, 
@@ -3591,27 +3510,30 @@ Cell[BoxData[
                     BaselinePosition -> {1, 1}]}, 
                     Dynamic[Typeset`open$$], ImageSize -> Automatic]}, 
                     "SummaryPanel"], DynamicModuleValues :> {}], "]"}], 
-                    MongoLink`BSONObjectID["59f11429af09c5553f73e175"], 
+                    MongoLink`BSONObjectID["5a31bc7dd682eea61f6c1504"], 
                     Selectable -> False, Editable -> False, 
                     SelectWithContents -> True], FontFamily -> 
                    "Source Code Pro", FontSize -> 13, ShowStringCharacters -> 
                    True]], 
-                 TypeSystem`NestedGrid`PackagePrivate`$SliceMarker[1135300576][
+                 TypeSystem`NestedGrid`PackagePrivate`$SliceMarker[898233037][
+                 
                   GeneralUtilities`Slice[1, 
                    Key["_id"]]], "Mouse"], 
                 ImageSize -> {{60, Full}, Automatic}, 
                 Alignment -> {Left, Baseline}], 
                Pane[
                 Annotation[
-                 RawBoxes["5"], 
-                 TypeSystem`NestedGrid`PackagePrivate`$SliceMarker[1135300576][
+                 RawBoxes["3"], 
+                 TypeSystem`NestedGrid`PackagePrivate`$SliceMarker[898233037][
+                 
                   GeneralUtilities`Slice[1, 
                    Key["age"]]], "Mouse"], 
                 ImageSize -> {{34, Full}, Automatic}, 
                 Alignment -> {Left, Baseline}], 
                Pane[
-                Annotation["male", 
-                 TypeSystem`NestedGrid`PackagePrivate`$SliceMarker[1135300576][
+                Annotation["female", 
+                 TypeSystem`NestedGrid`PackagePrivate`$SliceMarker[898233037][
+                 
                   GeneralUtilities`Slice[1, 
                    Key["sex"]]], "Mouse"], 
                 ImageSize -> {{57.60000000000001, Full}, Automatic}, 
@@ -3620,12 +3542,13 @@ Cell[BoxData[
                 Annotation[
                  RawBoxes[
                   StyleBox[
-                  "\"Wednesday 25 October 2017 17:45:59:177\"", FontColor -> 
+                  "\"Thursday 14 December 2017 01:49:16:177\"", FontColor -> 
                    RGBColor[{
                     Rational[33, 74], 
                     Rational[27, 74], 
                     Rational[117, 370]}]]], 
-                 TypeSystem`NestedGrid`PackagePrivate`$SliceMarker[1135300576][
+                 TypeSystem`NestedGrid`PackagePrivate`$SliceMarker[898233037][
+                 
                   GeneralUtilities`Slice[1, 
                    Key["date"]]], "Mouse"], 
                 ImageSize -> {{75, Full}, Automatic}, 
@@ -3646,7 +3569,7 @@ Cell[BoxData[
                     RowBox[{
                     TagBox["\"OID: \"", "SummaryItemAnnotation"], 
                     "\[InvisibleSpace]", 
-                    TagBox["\"59f11429af09c5553f73e176\"", "SummaryItem"]}]}},
+                    TagBox["\"5a31bc93d682eea61f6c1506\"", "SummaryItem"]}]}},
                      GridBoxAlignment -> {
                     "Columns" -> {{Left}}, "Rows" -> {{Automatic}}}, 
                     AutoDelete -> False, 
@@ -3665,7 +3588,7 @@ Cell[BoxData[
                     RowBox[{
                     TagBox["\"OID: \"", "SummaryItemAnnotation"], 
                     "\[InvisibleSpace]", 
-                    TagBox["\"59f11429af09c5553f73e176\"", "SummaryItem"]}]}},
+                    TagBox["\"5a31bc93d682eea61f6c1506\"", "SummaryItem"]}]}},
                      GridBoxAlignment -> {
                     "Columns" -> {{Left}}, "Rows" -> {{Automatic}}}, 
                     AutoDelete -> False, 
@@ -3682,12 +3605,13 @@ Cell[BoxData[
                     BaselinePosition -> {1, 1}]}, 
                     Dynamic[Typeset`open$$], ImageSize -> Automatic]}, 
                     "SummaryPanel"], DynamicModuleValues :> {}], "]"}], 
-                    MongoLink`BSONObjectID["59f11429af09c5553f73e176"], 
+                    MongoLink`BSONObjectID["5a31bc93d682eea61f6c1506"], 
                     Selectable -> False, Editable -> False, 
                     SelectWithContents -> True], FontFamily -> 
                    "Source Code Pro", FontSize -> 13, ShowStringCharacters -> 
                    True]], 
-                 TypeSystem`NestedGrid`PackagePrivate`$SliceMarker[1135300576][
+                 TypeSystem`NestedGrid`PackagePrivate`$SliceMarker[898233037][
+                 
                   GeneralUtilities`Slice[2, 
                    Key["_id"]]], "Mouse"], 
                 ImageSize -> {{60, Full}, Automatic}, 
@@ -3695,14 +3619,16 @@ Cell[BoxData[
                Pane[
                 Annotation[
                  RawBoxes["4"], 
-                 TypeSystem`NestedGrid`PackagePrivate`$SliceMarker[1135300576][
+                 TypeSystem`NestedGrid`PackagePrivate`$SliceMarker[898233037][
+                 
                   GeneralUtilities`Slice[2, 
                    Key["age"]]], "Mouse"], 
                 ImageSize -> {{34, Full}, Automatic}, 
                 Alignment -> {Left, Baseline}], 
                Pane[
                 Annotation["female", 
-                 TypeSystem`NestedGrid`PackagePrivate`$SliceMarker[1135300576][
+                 TypeSystem`NestedGrid`PackagePrivate`$SliceMarker[898233037][
+                 
                   GeneralUtilities`Slice[2, 
                    Key["sex"]]], "Mouse"], 
                 ImageSize -> {{57.60000000000001, Full}, Automatic}, 
@@ -3711,12 +3637,13 @@ Cell[BoxData[
                 Annotation[
                  RawBoxes[
                   StyleBox[
-                  "\"Wednesday 25 October 2017 17:45:59:177\"", FontColor -> 
+                  "\"Thursday 14 December 2017 01:49:37:649\"", FontColor -> 
                    RGBColor[{
                     Rational[33, 74], 
                     Rational[27, 74], 
                     Rational[117, 370]}]]], 
-                 TypeSystem`NestedGrid`PackagePrivate`$SliceMarker[1135300576][
+                 TypeSystem`NestedGrid`PackagePrivate`$SliceMarker[898233037][
+                 
                   GeneralUtilities`Slice[2, 
                    Key["date"]]], "Mouse"], 
                 ImageSize -> {{75, Full}, Automatic}, 
@@ -3767,7 +3694,7 @@ Cell[BoxData[
                 TypeSystem`NestedGrid`PackagePrivate`$state$$, 
                  TypeSystem`NestedGrid`PackagePrivate`$path$$, 
                  TypeSystem`NestedGrid`PackagePrivate`$pos$$, 
-                 TypeSystem`NestedGrid`PackagePrivate`$grid$$, 1135300576][
+                 TypeSystem`NestedGrid`PackagePrivate`$grid$$, 898233037][
                 TypeSystem`NestedGrid`PackagePrivate`tmpData$]]; If[
                Not[
                 FailureQ[TypeSystem`NestedGrid`PackagePrivate`tmpGrid$]], 
@@ -3798,14 +3725,14 @@ Cell[BoxData[
            TypeSystem`NestedGrid`PackagePrivate`$state$$, 
             TypeSystem`NestedGrid`PackagePrivate`$path$$, 
             TypeSystem`NestedGrid`PackagePrivate`$pos$$, 
-            TypeSystem`NestedGrid`PackagePrivate`$grid$$, 1135300576]]]], 
+            TypeSystem`NestedGrid`PackagePrivate`$grid$$, 898233037]]]], 
         TrackedSymbols :> {TypeSystem`NestedGrid`PackagePrivate`$path$$}], 
       TypeSystem`NestedGrid`PackagePrivate`$bottomBar$$ = Framed[
         Dynamic[
          Replace[
           MouseAnnotation[Null], {
-          TypeSystem`NestedGrid`PackagePrivate`$SliceMarker[1135300576][Null] -> 
-           "", TypeSystem`NestedGrid`PackagePrivate`$SliceMarker[1135300576][
+          TypeSystem`NestedGrid`PackagePrivate`$SliceMarker[898233037][Null] -> 
+           "", TypeSystem`NestedGrid`PackagePrivate`$SliceMarker[898233037][
              Pattern[TypeSystem`NestedGrid`PackagePrivate`path, 
               Blank[]]] :> (
             TypeSystem`NestedGrid`PackagePrivate`$lastPath = 
@@ -3839,7 +3766,7 @@ Cell[BoxData[
            TypeSystem`NestedGrid`PackagePrivate`$bottomBar$$]]}], Spacings -> 
         If[TypeSystem`NestedGrid`PackagePrivate`$path$$ == {}, 
           0, {{}, {0, 0.05, 0}}]], StandardForm], 
-      ImageSizeCache -> {980., {82.03173828125, 89.96826171875}}, 
+      ImageSizeCache -> {988., {84.03173828125, 91.96826171875}}, 
       TrackedSymbols :> {
        TypeSystem`NestedGrid`PackagePrivate`$state$$, 
         TypeSystem`NestedGrid`PackagePrivate`$grid$$}], 
@@ -3852,9 +3779,9 @@ Cell[BoxData[
   "CopyTag",
   DisplayFunction->(#& ),
   InterpretationFunction->("Dataset[<>]"& )]], "Output",
- CellChangeTimes->{3.717960388419079*^9},
- CellLabel->"Out[32]=",
- CellID->637205231,ExpressionUUID->"fdf088a9-3282-4968-9a88-85941a533734"]
+ CellChangeTimes->{3.717960388419079*^9, 3.7221978067343473`*^9},
+ CellLabel->"Out[34]=",
+ CellID->203881268,ExpressionUUID->"2c569218-fac0-43d8-886c-95a2cb44c6ee"]
 }, Open  ]]
 }, Open  ]]
 }, Open  ]],
@@ -3885,7 +3812,7 @@ Cell[BoxData[
      RowBox[{"<|", 
       RowBox[{"\"\<age\>\"", "\[Rule]", "10"}], "|>"}]}], "|>"}]}], 
   "]"}]], "Input",
- CellLabel->"In[33]:=",
+ CellLabel->"In[35]:=",
  CellID->688843476,ExpressionUUID->"a58b1e3e-3979-4c86-a260-e99d1695a4b7"],
 
 Cell[BoxData[
@@ -3895,9 +3822,9 @@ Cell[BoxData[
    RowBox[{"\<\"MatchedCount\"\>", "\[Rule]", "1"}], ",", 
    RowBox[{"\<\"ModifiedCount\"\>", "\[Rule]", "1"}]}], 
   "\[RightAssociation]"}]], "Output",
- CellChangeTimes->{3.7179603905922737`*^9},
- CellLabel->"Out[33]=",
- CellID->1877148902,ExpressionUUID->"49c6624a-c579-4036-b477-9c45fbac1e10"]
+ CellChangeTimes->{3.7179603905922737`*^9, 3.722197808978537*^9},
+ CellLabel->"Out[35]=",
+ CellID->422349727,ExpressionUUID->"b64c48c8-ac3e-47e2-ab41-776cd0ca8752"]
 }, Open  ]]
 }, Open  ]]
 }, Open  ]],
@@ -3924,7 +3851,7 @@ Cell[BoxData[
   RowBox[{"coll", ",", 
    RowBox[{"<|", 
     RowBox[{"\"\<age\>\"", "\[Rule]", "3"}], "|>"}]}], "]"}]], "Input",
- CellLabel->"In[34]:=",
+ CellLabel->"In[36]:=",
  CellID->447597675,ExpressionUUID->"be05d06b-50be-471f-bcba-592ace676749"],
 
 Cell[BoxData[
@@ -3933,9 +3860,9 @@ Cell[BoxData[
    RowBox[{"\<\"Acknowledged\"\>", "\[Rule]", "True"}], ",", 
    RowBox[{"\<\"DeletedCount\"\>", "\[Rule]", "1"}]}], 
   "\[RightAssociation]"}]], "Output",
- CellChangeTimes->{3.71796039416507*^9},
- CellLabel->"Out[34]=",
- CellID->1940815946,ExpressionUUID->"4a2490f9-d822-4ef1-a66e-9e3d76b47c1e"]
+ CellChangeTimes->{3.71796039416507*^9, 3.722197811442099*^9},
+ CellLabel->"Out[36]=",
+ CellID->1178580524,ExpressionUUID->"31ef6eed-d8ef-4e80-b0fb-1f10c4c23991"]
 }, Open  ]]
 }, Open  ]],
 
@@ -3950,7 +3877,7 @@ Cell[BoxData[
  RowBox[{"MongoCollectionDeleteMany", "[", 
   RowBox[{"coll", ",", 
    RowBox[{"<|", "|>"}]}], "]"}]], "Input",
- CellLabel->"In[35]:=",
+ CellLabel->"In[37]:=",
  CellID->597424535,ExpressionUUID->"b1d9f4f3-df35-424d-8cf1-3d9e84d37bd7"],
 
 Cell[BoxData[
@@ -3959,9 +3886,9 @@ Cell[BoxData[
    RowBox[{"\<\"Acknowledged\"\>", "\[Rule]", "True"}], ",", 
    RowBox[{"\<\"DeletedCount\"\>", "\[Rule]", "2"}]}], 
   "\[RightAssociation]"}]], "Output",
- CellChangeTimes->{3.71796039620395*^9},
- CellLabel->"Out[35]=",
- CellID->426464932,ExpressionUUID->"0a74b4dd-db74-4244-9ab3-064b0f205e6a"]
+ CellChangeTimes->{3.71796039620395*^9, 3.722197813276496*^9},
+ CellLabel->"Out[37]=",
+ CellID->1223660000,ExpressionUUID->"8bae995b-2847-4caf-b27b-36d81ad06963"]
 }, Open  ]]
 }, Open  ]]
 }, Open  ]],
@@ -3996,7 +3923,7 @@ Cell["XXXX", "TutorialRelatedLinks",
 },
 ScreenStyleEnvironment->"ExperimentalObject",
 WindowSize->{1354, 1034},
-WindowMargins->{{Automatic, -46}, {Automatic, 0}},
+WindowMargins->{{Automatic, 299}, {Automatic, 0}},
 TaggingRules->{
  "DocuToolsSettingsInternal" -> {
    "$PacletVersion" -> "0.9.2028", "$MVersion" -> "11.2", "$FlaggedVersion" -> 
@@ -4007,7 +3934,7 @@ TaggingRules->{
     "$UseNewPageDialog" -> ""}, "Author" -> "meghanr", "CreationDate" -> 
   "07-11-2017 17:14:57", "AnnotationsDeleted" -> True},
 Magnification:>1.5 Inherited,
-FrontEndVersion->"11.3 for Mac OS X x86 (32-bit, 64-bit Kernel) (October 24, \
+FrontEndVersion->"11.3 for Mac OS X x86 (32-bit, 64-bit Kernel) (December 12, \
 2017)",
 StyleDefinitions->FrontEnd`FileName[{"Wolfram"}, "TutorialPageStyles.nb", 
   CharacterEncoding -> "UTF-8"]
@@ -4041,7 +3968,7 @@ Cell[1932, 57, 208, 2, 44, "Categorization",ExpressionUUID->"7f107846-aadc-4ae1-
 Cell[CellGroupData[{
 Cell[2177, 64, 111, 1, 42, "SynonymsSection",ExpressionUUID->"ebd8177a-2846-4c14-a259-39a91c2936ab",
  CellID->1427418553],
-Cell[2291, 67, 100, 1, 528, "Synonyms",ExpressionUUID->"4f2c3275-c4e6-450c-a4c6-59a92c9d23f8",
+Cell[2291, 67, 100, 1, 1188, "Synonyms",ExpressionUUID->"4f2c3275-c4e6-450c-a4c6-59a92c9d23f8",
  CellID->1251652828]
 }, Closed]],
 Cell[CellGroupData[{
@@ -4053,23 +3980,23 @@ Cell[2542, 76, 127, 1, 27, "Keywords",ExpressionUUID->"61f70817-b4f2-4df9-8c08-3
 Cell[CellGroupData[{
 Cell[2706, 82, 108, 1, 42, "DetailsSection",ExpressionUUID->"b9f9bd79-beb7-48cf-8795-804d8111fad1",
  CellID->307771771],
-Cell[2817, 85, 118, 2, 528, "Details",ExpressionUUID->"67a5466a-9fee-49c0-b8f1-1b7b47ff346d",
+Cell[2817, 85, 118, 2, 1188, "Details",ExpressionUUID->"67a5466a-9fee-49c0-b8f1-1b7b47ff346d",
  CellID->115134701],
-Cell[2938, 89, 124, 2, 528, "Details",ExpressionUUID->"9fc76e00-3782-4754-a000-5c0d7bd86c4c",
+Cell[2938, 89, 124, 2, 1188, "Details",ExpressionUUID->"9fc76e00-3782-4754-a000-5c0d7bd86c4c",
  CellID->350963985],
-Cell[3065, 93, 121, 2, 528, "Details",ExpressionUUID->"de3255c7-8280-4289-9788-8812f70f8e52",
+Cell[3065, 93, 121, 2, 1188, "Details",ExpressionUUID->"de3255c7-8280-4289-9788-8812f70f8e52",
  CellID->787641479],
-Cell[3189, 97, 126, 2, 528, "Details",ExpressionUUID->"0cae59fb-3258-420b-b4e0-c1088463f991",
+Cell[3189, 97, 126, 2, 1188, "Details",ExpressionUUID->"0cae59fb-3258-420b-b4e0-c1088463f991",
  CellID->489188983],
-Cell[3318, 101, 116, 2, 528, "Details",ExpressionUUID->"b07f7991-8242-4eb9-8f21-f38cbe61adf8",
+Cell[3318, 101, 116, 2, 1188, "Details",ExpressionUUID->"b07f7991-8242-4eb9-8f21-f38cbe61adf8",
  CellID->267986155],
-Cell[3437, 105, 115, 2, 528, "Details",ExpressionUUID->"a6010038-cea5-4444-8a2b-b82ab62fdb8b",
+Cell[3437, 105, 115, 2, 1188, "Details",ExpressionUUID->"a6010038-cea5-4444-8a2b-b82ab62fdb8b",
  CellID->55052072],
-Cell[3555, 109, 118, 2, 528, "Details",ExpressionUUID->"c1b4a2e6-7b5a-47fa-9061-872d45315ea9",
+Cell[3555, 109, 118, 2, 1188, "Details",ExpressionUUID->"c1b4a2e6-7b5a-47fa-9061-872d45315ea9",
  CellID->125741376],
-Cell[3676, 113, 132, 2, 528, "Details",ExpressionUUID->"298b53ab-abe3-47a8-aef3-62af9690dcd7",
+Cell[3676, 113, 132, 2, 1188, "Details",ExpressionUUID->"298b53ab-abe3-47a8-aef3-62af9690dcd7",
  CellID->31040295],
-Cell[3811, 117, 122, 2, 528, "Details",ExpressionUUID->"b2b6ac9a-f7ff-44fb-9db1-213d94bd234e",
+Cell[3811, 117, 122, 2, 1188, "Details",ExpressionUUID->"b2b6ac9a-f7ff-44fb-9db1-213d94bd234e",
  CellID->240026365]
 }, Closed]],
 Cell[CellGroupData[{
@@ -4085,378 +4012,370 @@ Cell[5334, 167, 116, 1, 55, "Subsection",ExpressionUUID->"9cf6ee81-2631-479d-9e3
 Cell[CellGroupData[{
 Cell[5475, 172, 118, 1, 33, "Text",ExpressionUUID->"4ac2b6a7-f9e6-4f3b-a4bf-2d97cc633ab5",
  CellID->2123252264],
-Cell[5596, 175, 173, 3, 41, "Input",ExpressionUUID->"e0e00b8a-ae36-4423-975c-7ae12c14545d",
+Cell[5596, 175, 289, 5, 41, "Input",ExpressionUUID->"e0e00b8a-ae36-4423-975c-7ae12c14545d",
  CellID->783915468]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[5806, 183, 520, 12, 60, "Text",ExpressionUUID->"f613f29c-0307-4358-9e8e-a6385a2d0594",
+Cell[5922, 185, 520, 12, 60, "Text",ExpressionUUID->"f613f29c-0307-4358-9e8e-a6385a2d0594",
  CellID->1490502931],
 Cell[CellGroupData[{
-Cell[6351, 199, 194, 4, 41, "Input",ExpressionUUID->"ef87ce5c-7ece-4991-8253-c2d7cfaf99e9",
+Cell[6467, 201, 253, 5, 41, "Input",ExpressionUUID->"ef87ce5c-7ece-4991-8253-c2d7cfaf99e9",
  CellID->2058623809],
-Cell[6548, 205, 2456, 53, 62, "Output",ExpressionUUID->"c57cc8be-5702-4c9b-b3c1-62aa81b35290",
- CellID->2067123241]
+Cell[6723, 208, 2505, 54, 64, "Output",ExpressionUUID->"0420cd18-d307-46fd-b9bf-5aef460e2f00",
+ CellID->430097690]
 }, Open  ]]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[9053, 264, 142, 1, 33, "Text",ExpressionUUID->"2989d87d-bf12-4a3f-8bfc-c1ab6748a039",
+Cell[9277, 268, 142, 1, 33, "Text",ExpressionUUID->"2989d87d-bf12-4a3f-8bfc-c1ab6748a039",
  CellID->433122057],
 Cell[CellGroupData[{
-Cell[9220, 269, 243, 5, 41, "Input",ExpressionUUID->"d7af958d-1a83-4288-b74e-3fa05f8cd120",
+Cell[9444, 273, 438, 10, 41, "Input",ExpressionUUID->"d7af958d-1a83-4288-b74e-3fa05f8cd120",
  CellID->1246814610],
-Cell[9466, 276, 2429, 52, 62, "Output",ExpressionUUID->"4f988654-35f1-4623-8182-c5771c5bddde",
- CellID->70070407]
+Cell[9885, 285, 2459, 53, 64, "Output",ExpressionUUID->"13159e5d-1cac-4e78-bb95-d5b024620e9d",
+ CellID->1663457543]
 }, Open  ]]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[11944, 334, 334, 8, 37, "Text",ExpressionUUID->"3aa3756e-63e3-4d64-92d1-087d5f64bd9b",
+Cell[12393, 344, 447, 11, 33, "Text",ExpressionUUID->"3aa3756e-63e3-4d64-92d1-087d5f64bd9b",
  CellID->128274779],
 Cell[CellGroupData[{
-Cell[12303, 346, 235, 6, 41, "Input",ExpressionUUID->"72b2482d-a387-4315-a409-537eddd39034",
- CellID->1988112712],
-Cell[12541, 354, 2455, 52, 62, "Output",ExpressionUUID->"8e1da757-07b3-4ab6-88a9-032b53c03b2a",
- CellID->1406730618]
-}, Open  ]]
-}, Open  ]],
-Cell[CellGroupData[{
-Cell[15045, 412, 164, 3, 33, "Text",ExpressionUUID->"66750983-dbf1-464d-aaf6-7cf2127312b1",
- CellID->188496812],
-Cell[CellGroupData[{
-Cell[15234, 419, 200, 4, 41, "Input",ExpressionUUID->"92195d11-6cdf-47e9-b5c9-e31c0b9f4800",
- CellID->321450595],
-Cell[15437, 425, 2429, 52, 62, "Output",ExpressionUUID->"ec061899-6f39-48f5-9d4b-6a1a29477fb5",
- CellID->1691607770]
+Cell[12865, 359, 294, 7, 41, "Input",ExpressionUUID->"2f74bc32-d99a-44c6-947f-2bfe6a80c08d",
+ CellID->75053706],
+Cell[13162, 368, 2455, 53, 64, "Output",ExpressionUUID->"0f4cb3e5-158d-4570-b153-c139b17c5142",
+ CellID->1581134955]
 }, Open  ]]
 }, Open  ]]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[17927, 484, 116, 1, 58, "Subsection",ExpressionUUID->"e7959c42-3e89-4dfa-96f5-9df1aa395c98",
+Cell[15678, 428, 116, 1, 58, "Subsection",ExpressionUUID->"e7959c42-3e89-4dfa-96f5-9df1aa395c98",
  CellID->1723258136],
 Cell[CellGroupData[{
-Cell[18068, 489, 447, 11, 33, "Text",ExpressionUUID->"e74e825c-3346-4b9f-a23f-1d47b8f73640",
+Cell[15819, 433, 447, 11, 33, "Text",ExpressionUUID->"e74e825c-3346-4b9f-a23f-1d47b8f73640",
  CellID->882393254],
 Cell[CellGroupData[{
-Cell[18540, 504, 184, 3, 41, "Input",ExpressionUUID->"5f9a60ce-feee-4a0b-9e8d-3e5b5018caf6",
+Cell[16291, 448, 184, 3, 41, "Input",ExpressionUUID->"5f9a60ce-feee-4a0b-9e8d-3e5b5018caf6",
  CellID->1836483588],
-Cell[18727, 509, 277, 6, 39, "Output",ExpressionUUID->"a9c9d26c-28e9-48f9-8f7a-92b7401446c6",
- CellID->168516612]
+Cell[16478, 453, 382, 8, 39, "Output",ExpressionUUID->"4c4faaf6-07b9-47cd-9e10-85b677c6da21",
+ CellID->228931126]
 }, Open  ]]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[19053, 521, 114, 1, 33, "Text",ExpressionUUID->"5a88c78a-1f2d-41d0-ba1c-b3c7ef56a6d2",
+Cell[16909, 467, 114, 1, 33, "Text",ExpressionUUID->"5a88c78a-1f2d-41d0-ba1c-b3c7ef56a6d2",
  CellID->2129001956],
 Cell[CellGroupData[{
-Cell[19192, 526, 203, 4, 41, "Input",ExpressionUUID->"f28e5f4f-18b2-4a13-bd5b-e73025f47c83",
+Cell[17048, 472, 203, 4, 41, "Input",ExpressionUUID->"f28e5f4f-18b2-4a13-bd5b-e73025f47c83",
  CellID->1572603381],
-Cell[19398, 532, 2889, 62, 78, "Output",ExpressionUUID->"06db980d-e9c9-45cf-bed1-a5cc847f62f7",
- CellID->1836877860]
+Cell[17254, 478, 2945, 63, 80, "Output",ExpressionUUID->"7b1c1682-cce5-4fd0-a372-edbc11f0e6ba",
+ CellID->163055421]
 }, Open  ]]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[22336, 600, 127, 1, 33, "Text",ExpressionUUID->"9715e9a1-5e16-414f-aced-d8714ad2fd20",
+Cell[20248, 547, 127, 1, 33, "Text",ExpressionUUID->"9715e9a1-5e16-414f-aced-d8714ad2fd20",
  CellID->1007565939],
 Cell[CellGroupData[{
-Cell[22488, 605, 248, 5, 41, "Input",ExpressionUUID->"60a28071-58fa-48c5-b5b9-243b37c5d17c",
+Cell[20400, 552, 248, 5, 41, "Input",ExpressionUUID->"60a28071-58fa-48c5-b5b9-243b37c5d17c",
  CellID->1938674796],
-Cell[22739, 612, 2888, 62, 78, "Output",ExpressionUUID->"ffa3aa89-f754-411a-a24d-c8f9df8ad4c9",
- CellID->555871164]
+Cell[20651, 559, 2943, 63, 80, "Output",ExpressionUUID->"a49538c9-f584-4f66-988b-0dac7f22d0d3",
+ CellID->744666744]
 }, Open  ]]
 }, Open  ]]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[25688, 681, 117, 1, 58, "Subsection",ExpressionUUID->"b3f29d96-cbf2-4d20-b469-fa6fde8a6e89",
+Cell[23655, 629, 117, 1, 58, "Subsection",ExpressionUUID->"b3f29d96-cbf2-4d20-b469-fa6fde8a6e89",
  CellID->575465111],
 Cell[CellGroupData[{
-Cell[25830, 686, 446, 12, 33, "Text",ExpressionUUID->"7e2671d0-21b3-44a9-a8df-49ca2faf8dc4",
+Cell[23797, 634, 446, 12, 33, "Text",ExpressionUUID->"7e2671d0-21b3-44a9-a8df-49ca2faf8dc4",
  CellID->2015143029],
 Cell[CellGroupData[{
-Cell[26301, 702, 199, 4, 41, "Input",ExpressionUUID->"3ac84864-4fc6-4a60-8a8e-77d28ee0e8ed",
+Cell[24268, 650, 199, 4, 41, "Input",ExpressionUUID->"3ac84864-4fc6-4a60-8a8e-77d28ee0e8ed",
  CellID->1775497189],
-Cell[26503, 708, 3316, 71, 98, "Output",ExpressionUUID->"0fd86602-7f5d-4b46-be1b-6c53a31cde4b",
- CellID->2089819749]
+Cell[24470, 656, 3363, 71, 101, "Output",ExpressionUUID->"e159af58-08f2-4301-b720-95487d364d69",
+ CellID->2133729099]
 }, Open  ]]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[29868, 785, 124, 1, 33, "Text",ExpressionUUID->"668dd906-343e-4557-8aa3-36d4fc02e966",
+Cell[27882, 733, 124, 1, 33, "Text",ExpressionUUID->"668dd906-343e-4557-8aa3-36d4fc02e966",
  CellID->26866143],
 Cell[CellGroupData[{
-Cell[30017, 790, 240, 5, 41, "Input",ExpressionUUID->"50ff1664-b624-49aa-9319-369c07d67622",
+Cell[28031, 738, 240, 5, 41, "Input",ExpressionUUID->"50ff1664-b624-49aa-9319-369c07d67622",
  CellID->1052116792],
-Cell[30260, 797, 3315, 71, 98, "Output",ExpressionUUID->"442a6e08-71a9-45fb-85af-c100024bb0ba",
- CellID->734591859]
+Cell[28274, 745, 3362, 71, 101, "Output",ExpressionUUID->"131683ff-5a69-411c-921a-a8dc94b5edf6",
+ CellID->701825466]
 }, Open  ]]
 }, Open  ]],
-Cell[33602, 872, 359, 7, 81, "Text",ExpressionUUID->"3fcdf8fa-c19e-4cf7-925f-a69b6528c4e2",
+Cell[31663, 820, 359, 7, 81, "Text",ExpressionUUID->"3fcdf8fa-c19e-4cf7-925f-a69b6528c4e2",
  CellID->1417928168]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[33998, 884, 107, 1, 58, "Subsection",ExpressionUUID->"eb49e267-b1ae-4000-97e9-e7d43e9abd31",
+Cell[32059, 832, 107, 1, 58, "Subsection",ExpressionUUID->"eb49e267-b1ae-4000-97e9-e7d43e9abd31",
  CellID->1836679249],
 Cell[CellGroupData[{
-Cell[34130, 889, 483, 10, 85, "Text",ExpressionUUID->"3645cf52-1a29-4faf-a200-4a6ef3934a22",
+Cell[32191, 837, 483, 10, 85, "Text",ExpressionUUID->"3645cf52-1a29-4faf-a200-4a6ef3934a22",
  CellID->348395779],
 Cell[CellGroupData[{
-Cell[34638, 903, 368, 9, 41, "Input",ExpressionUUID->"d033e911-c70f-482f-81dd-2f39c0c92413",
+Cell[32699, 851, 368, 9, 41, "Input",ExpressionUUID->"d033e911-c70f-482f-81dd-2f39c0c92413",
  CellID->1904949283],
-Cell[35009, 914, 945, 22, 54, "Output",ExpressionUUID->"f55e3abd-d33b-462a-9679-f48c474a5263",
- CellID->784392062]
+Cell[33070, 862, 1008, 22, 54, "Output",ExpressionUUID->"06592b21-a6e6-46cc-976c-3b63803e9d7b",
+ CellID->776550139]
 }, Open  ]]
 }, Open  ]],
-Cell[35981, 940, 332, 9, 37, "Text",ExpressionUUID->"b17e4691-bf3b-4181-8038-69a2f182f56f",
+Cell[34105, 888, 332, 9, 37, "Text",ExpressionUUID->"b17e4691-bf3b-4181-8038-69a2f182f56f",
  CellID->518034447]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[36350, 954, 142, 1, 58, "Subsection",ExpressionUUID->"b3a29b56-1649-471e-8a15-41574a119c3d",
+Cell[34474, 902, 142, 1, 58, "Subsection",ExpressionUUID->"b3a29b56-1649-471e-8a15-41574a119c3d",
  CellID->166814131],
 Cell[CellGroupData[{
-Cell[36517, 959, 278, 7, 36, "Text",ExpressionUUID->"179a04e3-fda0-40ac-b52d-5d9ced1be073",
+Cell[34641, 907, 278, 7, 36, "Text",ExpressionUUID->"179a04e3-fda0-40ac-b52d-5d9ced1be073",
  CellID->1939290392],
 Cell[CellGroupData[{
-Cell[36820, 970, 233, 5, 41, "Input",ExpressionUUID->"81411af9-80fe-4afa-be93-fb89ee539517",
+Cell[34944, 918, 233, 5, 41, "Input",ExpressionUUID->"81411af9-80fe-4afa-be93-fb89ee539517",
  CellID->598403327],
-Cell[37056, 977, 2946, 60, 107, "Output",ExpressionUUID->"316f4aca-0b5f-4995-beee-09b147dc617d",
- CellID->1577834574]
+Cell[35180, 925, 2973, 63, 81, "Output",ExpressionUUID->"90bd6d45-eb47-4c8a-a345-a0d9d6396316",
+ CellID->1062890344]
 }, Open  ]]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[40051, 1043, 925, 24, 116, "Text",ExpressionUUID->"e4567ee4-fea2-4b8c-8abe-549471265bf2",
+Cell[38202, 994, 198, 2, 33, "Text",ExpressionUUID->"9942e14e-4509-443e-9395-35473c447a74",
+ CellID->1292760799],
+Cell[CellGroupData[{
+Cell[38425, 1000, 342, 6, 41, "Input",ExpressionUUID->"7d8933a7-a9b1-4971-9167-684ab05c180e",
+ CellID->1639233800],
+Cell[38770, 1008, 2619, 54, 64, "Output",ExpressionUUID->"9ac668aa-0b13-4198-814c-d1618d187acd",
+ CellID->1795531912]
+}, Open  ]]
+}, Open  ]],
+Cell[41416, 1066, 925, 24, 116, "Text",ExpressionUUID->"e4567ee4-fea2-4b8c-8abe-549471265bf2",
  CellID->2092489834],
 Cell[CellGroupData[{
-Cell[41001, 1071, 318, 7, 41, "Input",ExpressionUUID->"5e6fcf34-dd79-46a1-af08-12b525303f61",
- CellID->1982438038],
-Cell[41322, 1080, 2455, 51, 62, "Output",ExpressionUUID->"ef9dd466-3262-4fe9-b75b-44b6dd3c3d24",
- CellID->811652596]
-}, Open  ]]
-}, Open  ]],
-Cell[CellGroupData[{
-Cell[43826, 1137, 301, 7, 37, "Text",ExpressionUUID->"522ae59d-2332-4b50-a8a4-29cf5253df8d",
+Cell[42366, 1094, 301, 7, 37, "Text",ExpressionUUID->"522ae59d-2332-4b50-a8a4-29cf5253df8d",
  CellID->1067457831],
 Cell[CellGroupData[{
-Cell[44152, 1148, 160, 3, 41, "Input",ExpressionUUID->"30ab5aac-7810-4119-af88-8c1958a20d48",
+Cell[42692, 1105, 302, 6, 41, "Input",ExpressionUUID->"30ab5aac-7810-4119-af88-8c1958a20d48",
  CellID->1132788613],
-Cell[44315, 1153, 16941, 327, 193, "Output",ExpressionUUID->"3accb327-5b37-471f-b28f-3079ed6e794c",
- CellID->538494031]
+Cell[42997, 1113, 17020, 329, 193, "Output",ExpressionUUID->"dddffd83-0bce-4e31-88ef-d8410d8bff07",
+ CellID->801493738]
 }, Open  ]]
 }, Open  ]]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[61317, 1487, 143, 1, 58, "Subsection",ExpressionUUID->"48cf8264-7065-4f4f-83c0-215065cea9cc",
+Cell[60078, 1449, 143, 1, 58, "Subsection",ExpressionUUID->"48cf8264-7065-4f4f-83c0-215065cea9cc",
  CellID->168646266],
 Cell[CellGroupData[{
-Cell[61485, 1492, 202, 4, 33, "Text",ExpressionUUID->"ea0c406a-b76b-49db-80e3-8117ebe301d8",
+Cell[60246, 1454, 202, 4, 33, "Text",ExpressionUUID->"ea0c406a-b76b-49db-80e3-8117ebe301d8",
  CellID->1067517718],
 Cell[CellGroupData[{
-Cell[61712, 1500, 715, 18, 71, "Input",ExpressionUUID->"ae71ea05-67e6-4321-8898-e4b7c8de2f70",
+Cell[60473, 1462, 715, 18, 71, "Input",ExpressionUUID->"ae71ea05-67e6-4321-8898-e4b7c8de2f70",
  CellID->1804895542],
-Cell[62430, 1520, 1840, 43, 101, "Output",ExpressionUUID->"cdce57f2-ea65-4cd1-bcc3-ff22f5f0265c",
- CellID->1704795378]
+Cell[61191, 1482, 1943, 43, 101, "Output",ExpressionUUID->"f30d79e9-7e40-47ad-91a1-4ed2ec289d70",
+ CellID->1545199584]
 }, Open  ]]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[64319, 1569, 138, 1, 33, "Text",ExpressionUUID->"a18b00a3-1964-4e63-a6ee-f4f79fe069ed",
+Cell[63183, 1531, 138, 1, 33, "Text",ExpressionUUID->"a18b00a3-1964-4e63-a6ee-f4f79fe069ed",
  CellID->776035871],
 Cell[CellGroupData[{
-Cell[64482, 1574, 153, 2, 40, "Input",ExpressionUUID->"591ffddb-ab84-4053-aaa9-4439cc1f7beb",
+Cell[63346, 1536, 221, 3, 40, "Input",ExpressionUUID->"591ffddb-ab84-4053-aaa9-4439cc1f7beb",
  CellID->1514949325],
-Cell[64638, 1578, 5644, 115, 119, "Output",ExpressionUUID->"91889950-8b08-428c-bccb-f9fde1123f1a",
- CellID->1868940974]
+Cell[63570, 1541, 3134, 66, 81, "Output",ExpressionUUID->"c0ffc898-e3ce-4a4d-8324-761581249514",
+ CellID->1125176869]
 }, Open  ]]
 }, Open  ]]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[70343, 1700, 123, 1, 58, "Subsection",ExpressionUUID->"a43d7783-68c9-4cf4-9bc4-8cb7a84eafef",
+Cell[66765, 1614, 123, 1, 58, "Subsection",ExpressionUUID->"a43d7783-68c9-4cf4-9bc4-8cb7a84eafef",
  CellID->2083645014],
 Cell[CellGroupData[{
-Cell[70491, 1705, 355, 8, 61, "Text",ExpressionUUID->"1fce7595-2e1d-4ad8-a858-226fb09aef39",
+Cell[66913, 1619, 355, 8, 61, "Text",ExpressionUUID->"1fce7595-2e1d-4ad8-a858-226fb09aef39",
  CellID->323277622],
 Cell[CellGroupData[{
-Cell[70871, 1717, 177, 3, 41, "Input",ExpressionUUID->"3db80437-330a-4097-9aba-417f010962c6",
+Cell[67293, 1631, 177, 3, 41, "Input",ExpressionUUID->"3db80437-330a-4097-9aba-417f010962c6",
  CellID->500010179],
-Cell[71051, 1722, 3593, 76, 110, "Output",ExpressionUUID->"fe0b70c1-64ea-4a44-8d43-41fa20e4d928",
- CellID->1766883440]
+Cell[67473, 1636, 3657, 76, 112, "Output",ExpressionUUID->"75189282-372a-4ac1-b60a-f1eef4251d17",
+ CellID->1346780827]
 }, Open  ]]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[74693, 1804, 171, 3, 33, "Text",ExpressionUUID->"6ea2a00a-69ae-4893-a992-1f0b51a5a9e1",
+Cell[71179, 1718, 171, 3, 33, "Text",ExpressionUUID->"6ea2a00a-69ae-4893-a992-1f0b51a5a9e1",
  CellID->1321954482],
 Cell[CellGroupData[{
-Cell[74889, 1811, 262, 6, 41, "Input",ExpressionUUID->"3b550556-35ec-4323-adde-5bb5bbf10a62",
+Cell[71375, 1725, 262, 6, 41, "Input",ExpressionUUID->"3b550556-35ec-4323-adde-5bb5bbf10a62",
  CellID->669345516],
-Cell[75154, 1819, 3591, 76, 110, "Output",ExpressionUUID->"c1a03cf4-edf7-4e23-a1df-802ccc470fa0",
- CellID->2066456210]
+Cell[71640, 1733, 3659, 76, 112, "Output",ExpressionUUID->"340a7eb8-8430-4085-9a63-c496a6a97949",
+ CellID->1527780651]
 }, Open  ]]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[78794, 1901, 496, 12, 57, "Text",ExpressionUUID->"02ca0d08-6cd9-4c5b-b8ed-35490192f1d0",
+Cell[75348, 1815, 496, 12, 57, "Text",ExpressionUUID->"02ca0d08-6cd9-4c5b-b8ed-35490192f1d0",
  CellID->269716424],
 Cell[CellGroupData[{
-Cell[79315, 1917, 486, 12, 41, "Input",ExpressionUUID->"292fec7b-b0b4-40c1-ba47-f3429bad5a6b",
+Cell[75869, 1831, 486, 12, 41, "Input",ExpressionUUID->"292fec7b-b0b4-40c1-ba47-f3429bad5a6b",
  CellID->691361436],
-Cell[79804, 1931, 2796, 58, 62, "Output",ExpressionUUID->"859a2c48-e6dd-41a9-9868-b20cde7faf91",
- CellID->770897760]
+Cell[76358, 1845, 2844, 59, 64, "Output",ExpressionUUID->"a81f969a-f7f3-4620-8aee-8fa1811f7754",
+ CellID->90607946]
 }, Open  ]]
 }, Open  ]],
-Cell[82627, 1993, 229, 4, 57, "Text",ExpressionUUID->"ea42d3e1-0ff4-4cd5-afbc-71d67b78ba82",
+Cell[79229, 1908, 229, 4, 57, "Text",ExpressionUUID->"ea42d3e1-0ff4-4cd5-afbc-71d67b78ba82",
  CellID->395979520],
-Cell[82859, 1999, 487, 11, 57, "Text",ExpressionUUID->"bd6c9e96-66f2-4c78-8bc9-0177f6ad85f1",
+Cell[79461, 1914, 487, 11, 57, "Text",ExpressionUUID->"bd6c9e96-66f2-4c78-8bc9-0177f6ad85f1",
  CellID->1597390517]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[83383, 2015, 124, 1, 58, "Subsection",ExpressionUUID->"37f41b1b-9035-4941-9992-521d2865ee61",
+Cell[79985, 1930, 124, 1, 58, "Subsection",ExpressionUUID->"37f41b1b-9035-4941-9992-521d2865ee61",
  CellID->1881780685],
 Cell[CellGroupData[{
-Cell[83532, 2020, 680, 17, 65, "Text",ExpressionUUID->"aa1e6a84-459c-4f53-8c7d-64f24e1d242b",
+Cell[80134, 1935, 680, 17, 65, "Text",ExpressionUUID->"aa1e6a84-459c-4f53-8c7d-64f24e1d242b",
  CellID->1299133495],
 Cell[CellGroupData[{
-Cell[84237, 2041, 201, 4, 41, "Input",ExpressionUUID->"e9427189-70f0-4bd8-a633-206b2dc09ce7",
+Cell[80839, 1956, 201, 4, 41, "Input",ExpressionUUID->"e9427189-70f0-4bd8-a633-206b2dc09ce7",
  CellID->1070411416],
-Cell[84441, 2047, 2479, 54, 62, "Output",ExpressionUUID->"da66de13-3828-4794-b1b9-01b5bb2051d5",
- CellID->696277330]
+Cell[81043, 1962, 2530, 55, 64, "Output",ExpressionUUID->"4720d3ea-16ce-4fd7-9fa1-9519d4601e0f",
+ CellID->495553696]
 }, Open  ]]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[86969, 2107, 602, 18, 37, "Text",ExpressionUUID->"d932a628-e669-41d9-9b1a-8ab7524e8056",
+Cell[83622, 2023, 602, 18, 37, "Text",ExpressionUUID->"d932a628-e669-41d9-9b1a-8ab7524e8056",
  CellID->1577475391],
 Cell[CellGroupData[{
-Cell[87596, 2129, 160, 3, 41, "Input",ExpressionUUID->"eea20726-d54e-4c6d-ba5a-338693ac5b5b",
+Cell[84249, 2045, 160, 3, 41, "Input",ExpressionUUID->"eea20726-d54e-4c6d-ba5a-338693ac5b5b",
  CellID->1390427678],
-Cell[87759, 2134, 3590, 76, 110, "Output",ExpressionUUID->"26979543-dfa7-475a-83d4-f1fd17d0a48a",
- CellID->583573258]
+Cell[84412, 2050, 3654, 76, 112, "Output",ExpressionUUID->"24134e6e-4718-4151-a39f-65a66825462f",
+ CellID->281362338]
 }, Open  ]]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[91398, 2216, 471, 13, 37, "Text",ExpressionUUID->"e91283a9-fd76-4671-8f01-7f00636a0e56",
+Cell[88115, 2132, 471, 13, 37, "Text",ExpressionUUID->"e91283a9-fd76-4671-8f01-7f00636a0e56",
  CellID->724185105],
 Cell[CellGroupData[{
-Cell[91894, 2233, 190, 4, 41, "Input",ExpressionUUID->"45c2506e-faa9-485a-ad1f-08f07a152036",
+Cell[88611, 2149, 190, 4, 41, "Input",ExpressionUUID->"45c2506e-faa9-485a-ad1f-08f07a152036",
  CellID->2095618494],
-Cell[92087, 2239, 7401, 155, 214, "Output",ExpressionUUID->"8fdbb373-b22c-435f-b417-2e917bfe4e72",
- CellID->1364715661]
+Cell[88804, 2155, 7477, 154, 218, "Output",ExpressionUUID->"60e1290a-7170-4061-8331-ebc3404963ea",
+ CellID->124635314]
 }, Open  ]]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[99537, 2400, 470, 13, 37, "Text",ExpressionUUID->"ab6d0dea-e4ab-4592-b871-c3cf468552ea",
+Cell[96330, 2315, 470, 13, 37, "Text",ExpressionUUID->"ab6d0dea-e4ab-4592-b871-c3cf468552ea",
  CellID->399827539],
-Cell[100010, 2415, 159, 3, 41, "Input",ExpressionUUID->"131f3a7d-7645-4657-bda2-b461ceb39479",
+Cell[96803, 2330, 159, 3, 41, "Input",ExpressionUUID->"131f3a7d-7645-4657-bda2-b461ceb39479",
  CellID->925149521]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[100206, 2423, 162, 3, 33, "Text",ExpressionUUID->"7cedd925-bde2-492f-b989-e2983e49306c",
+Cell[96999, 2338, 162, 3, 33, "Text",ExpressionUUID->"7cedd925-bde2-492f-b989-e2983e49306c",
  CellID->2095902991],
 Cell[CellGroupData[{
-Cell[100393, 2430, 201, 4, 41, "Input",ExpressionUUID->"e1e3fd45-41d0-4c53-81d7-93d9cf15a606",
+Cell[97186, 2345, 201, 4, 41, "Input",ExpressionUUID->"e1e3fd45-41d0-4c53-81d7-93d9cf15a606",
  CellID->1763103434],
-Cell[100597, 2436, 2477, 54, 62, "Output",ExpressionUUID->"2bbc7ebb-5258-4769-94f8-a6c4bb094bb9",
- CellID->378916563]
+Cell[97390, 2351, 2502, 54, 64, "Output",ExpressionUUID->"559efce3-5240-4416-b5e8-20deda43b694",
+ CellID->1983798703]
 }, Open  ]]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[103123, 2496, 301, 8, 37, "Text",ExpressionUUID->"ae4927f4-777f-4607-a1d2-35c7382b07d8",
+Cell[99941, 2411, 301, 8, 37, "Text",ExpressionUUID->"ae4927f4-777f-4607-a1d2-35c7382b07d8",
  CellID->1200676525],
 Cell[CellGroupData[{
-Cell[103449, 2508, 163, 3, 41, "Input",ExpressionUUID->"0b699488-ec67-443f-ad35-a3cd42778a03",
+Cell[100267, 2423, 163, 3, 41, "Input",ExpressionUUID->"0b699488-ec67-443f-ad35-a3cd42778a03",
  CellID->1402054679],
-Cell[103615, 2513, 29435, 578, 243, "Output",ExpressionUUID->"c0b86131-7f6e-4b7e-b83d-cbff2c56416f",
- CellID->1440209062]
+Cell[100433, 2428, 29454, 578, 249, "Output",ExpressionUUID->"724d4728-3fa3-4768-a0a4-f467895abf9f",
+ CellID->322990193]
 }, Open  ]]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[133099, 3097, 232, 4, 57, "Text",ExpressionUUID->"95a130c7-df76-4765-a973-29244e7ac3ec",
+Cell[129936, 3012, 232, 4, 57, "Text",ExpressionUUID->"95a130c7-df76-4765-a973-29244e7ac3ec",
  CellID->673496098],
 Cell[CellGroupData[{
-Cell[133356, 3105, 507, 14, 71, "Input",ExpressionUUID->"24dd9763-341f-40d6-be3c-ea334ead8ff1",
+Cell[130193, 3020, 507, 14, 71, "Input",ExpressionUUID->"24dd9763-341f-40d6-be3c-ea334ead8ff1",
  CellID->1909527337],
 Cell[CellGroupData[{
-Cell[133888, 3123, 2473, 51, 56, "Print",ExpressionUUID->"1f88bf66-38ce-4844-84ef-e7da2f65d2ac",
- CellID->688733622],
-Cell[136364, 3176, 2473, 51, 56, "Print",ExpressionUUID->"e6f36860-f674-478d-a41a-30560b988086",
- CellID->609127624],
-Cell[138840, 3229, 2473, 51, 56, "Print",ExpressionUUID->"a500e065-680c-472c-b023-79645dc96ced",
- CellID->553431319]
+Cell[130725, 3038, 2496, 51, 58, "Print",ExpressionUUID->"ad27f0a5-7016-455a-a529-09d7431f30e0",
+ CellID->1820209213],
+Cell[133224, 3091, 2498, 51, 58, "Print",ExpressionUUID->"a3d26aff-e961-4184-8371-8b933c31efaf",
+ CellID->1351691376],
+Cell[135725, 3144, 2496, 51, 58, "Print",ExpressionUUID->"dd9aff61-be7b-42f7-907b-36793306613d",
+ CellID->1794938466]
 }, Open  ]]
 }, Open  ]]
 }, Open  ]],
-Cell[141352, 3285, 141, 1, 33, "Text",ExpressionUUID->"d9dbae1e-b591-48f1-97ef-060c200559d8",
+Cell[138260, 3200, 141, 1, 33, "Text",ExpressionUUID->"d9dbae1e-b591-48f1-97ef-060c200559d8",
  CellID->1586063811]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[141530, 3291, 123, 1, 58, "Subsection",ExpressionUUID->"09ca7de6-7a38-4730-8d44-73b08dee6e0e",
+Cell[138438, 3206, 123, 1, 58, "Subsection",ExpressionUUID->"09ca7de6-7a38-4730-8d44-73b08dee6e0e",
  CellID->474330942],
 Cell[CellGroupData[{
-Cell[141678, 3296, 124, 1, 33, "Text",ExpressionUUID->"d64d72a5-6867-49fd-b089-1e83e266f2f1",
+Cell[138586, 3211, 124, 1, 33, "Text",ExpressionUUID->"d64d72a5-6867-49fd-b089-1e83e266f2f1",
  CellID->2121174909],
 Cell[CellGroupData[{
-Cell[141827, 3301, 220, 5, 41, "Input",ExpressionUUID->"71f1a39c-1c7c-4bb9-bc55-c0ba21c9de9e",
+Cell[138735, 3216, 220, 5, 41, "Input",ExpressionUUID->"71f1a39c-1c7c-4bb9-bc55-c0ba21c9de9e",
  CellID->1765907730],
-Cell[142050, 3308, 2476, 54, 62, "Output",ExpressionUUID->"8ec028eb-8c3b-426c-a4a9-79a722895d86",
- CellID->227240737]
+Cell[138958, 3223, 2501, 54, 64, "Output",ExpressionUUID->"67985f50-38e4-44e9-a95d-32f46cd20d09",
+ CellID->1980385139]
 }, Open  ]]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[144575, 3368, 273, 8, 37, "Text",ExpressionUUID->"36b73bd5-88f0-4e17-8550-f82ca342aca8",
+Cell[141508, 3283, 273, 8, 37, "Text",ExpressionUUID->"36b73bd5-88f0-4e17-8550-f82ca342aca8",
  CellID->745556059],
 Cell[CellGroupData[{
-Cell[144873, 3380, 165, 3, 41, "Input",ExpressionUUID->"036f19d9-5aae-4e91-a648-5425b3d1a210",
+Cell[141806, 3295, 165, 3, 41, "Input",ExpressionUUID->"036f19d9-5aae-4e91-a648-5425b3d1a210",
  CellID->1369848861],
-Cell[145041, 3385, 24530, 471, 189, "Output",ExpressionUUID->"fdf088a9-3282-4968-9a88-85941a533734",
- CellID->637205231]
+Cell[141974, 3300, 24752, 483, 193, "Output",ExpressionUUID->"2c569218-fac0-43d8-886c-95a2cb44c6ee",
+ CellID->203881268]
 }, Open  ]]
 }, Open  ]]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[169632, 3863, 116, 1, 58, "Subsection",ExpressionUUID->"b03bc921-7a80-4daa-8ce9-e8fc752b2102",
+Cell[166787, 3790, 116, 1, 58, "Subsection",ExpressionUUID->"b03bc921-7a80-4daa-8ce9-e8fc752b2102",
  CellID->803528265],
 Cell[CellGroupData[{
-Cell[169773, 3868, 176, 3, 33, "Text",ExpressionUUID->"0a07aa3a-cb11-4bbf-8fb5-ef02662943ba",
+Cell[166928, 3795, 176, 3, 33, "Text",ExpressionUUID->"0a07aa3a-cb11-4bbf-8fb5-ef02662943ba",
  CellID->1236493762],
 Cell[CellGroupData[{
-Cell[169974, 3875, 494, 13, 71, "Input",ExpressionUUID->"a58b1e3e-3979-4c86-a260-e99d1695a4b7",
+Cell[167129, 3802, 494, 13, 71, "Input",ExpressionUUID->"a58b1e3e-3979-4c86-a260-e99d1695a4b7",
  CellID->688843476],
-Cell[170471, 3890, 416, 9, 39, "Output",ExpressionUUID->"49c6624a-c579-4036-b477-9c45fbac1e10",
- CellID->1877148902]
+Cell[167626, 3817, 437, 9, 39, "Output",ExpressionUUID->"b64c48c8-ac3e-47e2-ab41-776cd0ca8752",
+ CellID->422349727]
 }, Open  ]]
 }, Open  ]]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[170948, 3906, 115, 1, 58, "Subsection",ExpressionUUID->"f4a18313-bbf9-4025-b3d0-62d12c443253",
+Cell[168124, 3833, 115, 1, 58, "Subsection",ExpressionUUID->"f4a18313-bbf9-4025-b3d0-62d12c443253",
  CellID->609504799],
 Cell[CellGroupData[{
-Cell[171088, 3911, 272, 6, 57, "Text",ExpressionUUID->"ac8eb880-3270-43a0-893b-db90a879553b",
+Cell[168264, 3838, 272, 6, 57, "Text",ExpressionUUID->"ac8eb880-3270-43a0-893b-db90a879553b",
  CellID->1821712323],
 Cell[CellGroupData[{
-Cell[171385, 3921, 270, 6, 41, "Input",ExpressionUUID->"be05d06b-50be-471f-bcba-592ace676749",
+Cell[168561, 3848, 270, 6, 41, "Input",ExpressionUUID->"be05d06b-50be-471f-bcba-592ace676749",
  CellID->447597675],
-Cell[171658, 3929, 353, 8, 39, "Output",ExpressionUUID->"4a2490f9-d822-4ef1-a66e-9e3d76b47c1e",
- CellID->1940815946]
+Cell[168834, 3856, 375, 8, 39, "Output",ExpressionUUID->"31ef6eed-d8ef-4e80-b0fb-1f10c4c23991",
+ CellID->1178580524]
 }, Open  ]]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[172060, 3943, 128, 1, 33, "Text",ExpressionUUID->"27e32725-3da4-48ca-9f6d-825200349456",
+Cell[169258, 3870, 128, 1, 33, "Text",ExpressionUUID->"27e32725-3da4-48ca-9f6d-825200349456",
  CellID->549525829],
 Cell[CellGroupData[{
-Cell[172213, 3948, 224, 5, 41, "Input",ExpressionUUID->"b1d9f4f3-df35-424d-8cf1-3d9e84d37bd7",
+Cell[169411, 3875, 224, 5, 41, "Input",ExpressionUUID->"b1d9f4f3-df35-424d-8cf1-3d9e84d37bd7",
  CellID->597424535],
-Cell[172440, 3955, 352, 8, 39, "Output",ExpressionUUID->"0a74b4dd-db74-4244-9ab3-064b0f205e6a",
- CellID->426464932]
+Cell[169638, 3882, 375, 8, 39, "Output",ExpressionUUID->"8bae995b-2847-4caf-b27b-36d81ad06963",
+ CellID->1223660000]
 }, Open  ]]
 }, Open  ]]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[172853, 3970, 120, 1, 107, "TutorialMoreAboutSection",ExpressionUUID->"8a596118-8023-48a9-9405-713267d3ab88",
+Cell[170074, 3897, 120, 1, 107, "TutorialMoreAboutSection",ExpressionUUID->"8a596118-8023-48a9-9405-713267d3ab88",
  CellID->23220180],
-Cell[172976, 3973, 109, 1, 32, "TutorialMoreAbout",ExpressionUUID->"5c11aa1b-4ba1-4155-b445-18614f889739",
+Cell[170197, 3900, 109, 1, 32, "TutorialMoreAbout",ExpressionUUID->"5c11aa1b-4ba1-4155-b445-18614f889739",
  CellID->1567025153]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[173122, 3979, 127, 1, 107, "RelatedTutorialsSection",ExpressionUUID->"30da5c77-57ce-42bb-86b0-000581ccb3f3",
+Cell[170343, 3906, 127, 1, 107, "RelatedTutorialsSection",ExpressionUUID->"30da5c77-57ce-42bb-86b0-000581ccb3f3",
  CellID->415694126],
-Cell[173252, 3982, 107, 1, 32, "RelatedTutorials",ExpressionUUID->"af48a6c6-69d5-474c-8727-811e85178263",
+Cell[170473, 3909, 107, 1, 32, "RelatedTutorials",ExpressionUUID->"af48a6c6-69d5-474c-8727-811e85178263",
  CellID->806871991]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[173396, 3988, 146, 1, 107, "TutorialRelatedLinksSection",ExpressionUUID->"e67dd672-9fd6-4f3b-a06c-6d96e4048c64",
+Cell[170617, 3915, 146, 1, 107, "TutorialRelatedLinksSection",ExpressionUUID->"e67dd672-9fd6-4f3b-a06c-6d96e4048c64",
  CellID->415694148],
-Cell[173545, 3991, 111, 1, 32, "TutorialRelatedLinks",ExpressionUUID->"ad520563-9aeb-4953-80eb-f495aa838ea9",
+Cell[170766, 3918, 111, 1, 32, "TutorialRelatedLinks",ExpressionUUID->"ad520563-9aeb-4953-80eb-f495aa838ea9",
  CellID->415694149]
 }, Open  ]]
 }, Open  ]]
