@@ -55,6 +55,12 @@ $MongoLinkLib = Switch[$OperatingSystem,
 		FileNameJoin[{$LibraryResources, "MongoLink.so"}]
 ]
 
+(* For windows: we need to explicitly load dependencies, not rely on autoloading *)
+If[$OperatingSystem === "Windows",
+	LibraryLoad @ FileNameJoin[{$LibraryResources, "libbson-1.0.dll"}];
+	LibraryLoad @ FileNameJoin[{$LibraryResources, "libmongoc-1.0.dll"}];
+];
+
 (***** Initialize Library *****)
 
 (* see http://mongoc.org/libmongoc/current/init-cleanup.html. We build with 
