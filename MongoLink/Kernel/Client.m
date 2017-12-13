@@ -61,7 +61,51 @@ getMLEID[MongoClient[clientMLE_]] := ManagedLibraryExpressionID[clientMLE];
 MongoClient[clientMLE_][db_String] := 
 	MongoClientGetDatabase[MongoClient[clientMLE], db]
 
+
 (*----------------------------------------------------------------------------*)
+PackageExport["MongoConnect"]
+
+$DefaultConnection = <|
+	"Port" -> 27017,
+	"Host" -> "localhost",
+	"Username" -> None,
+	"Password" -> None,
+	"SSL" -> Automatic,
+	"PEMFile" -> None,
+	"PEMFilePassword" -> None,
+	"CAFile" -> None,
+	"CertificateRevocationList" -> None,	
+	VerifySecurityCertificates -> True,
+	"AllowInvalidHostname" -> False
+|>;
+
+MongoConnect[connection_Association] := CatchFailureAsMessage @ Module[
+	{newConn, host, port, uri},
+	newConn = Join[$DefaultConnection, connection];
+	{host, port} = Lookup[newConn, {"Host", "Port"}];
+	KeyDropFrom[newConn, {"Host", "Port"}];
+	If[stringURIQ[host], 
+		uri = iMongoURIFromString[host];
+		OpenMongoConnection[uri, Sequence @@ Normal[newConn]]
+		,
+		OpenMongoConnection[host, port, Sequence @@ Normal[newConn]]
+	]
+]
+
+(* conformization *)
+MongoConnect[] := MongoConnect[<||>]
+MongoConnect[uri_String] := MongoConnect[<|"Host" -> uri|>]
+MongoConnect[MongoURI[uri_, _]] := MongoConnect[<|"Host" -> uri|>]
+
+(* is this simple rule correct? *)
+stringURIQ[str_String] := (StringTake[str, 7] === "mongodb")
+stringURIQ[___] := False
+
+(*----------------------------------------------------------------------------*)
+(* NOTE: OpenMongoConnection will be deprecated. Its being supported for one 
+	version to allow code to switch to MongoConnect.
+ *)
+
 PackageExport["OpenMongoConnection"]
 
 OpenMongoConnection::winpem = "Support for encrypted PEM files requiring \

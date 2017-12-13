@@ -43,6 +43,7 @@ getMLEID[MongoCollection[uriMLE_, __]] := ManagedLibraryExpressionID[uriMLE];
 
 (*----------------------------------------------------------------------------*)
 PackageExport["MongoURIFromString"]
+PackageScope["iMongoURIFromString"]
 
 (*SetUsage[URIFromString,
 "URIFromString[uri$] creates a MongoURI[$$] from a uri$ string. 
@@ -50,7 +51,10 @@ PackageExport["MongoURIFromString"]
 ]*)
 MongoURIFromString::inv = "Invalid URI."
 
-MongoURIFromString[uri_String] := CatchFailureAsMessage @ Module[
+MongoURIFromString[uri_String] := 
+	CatchFailureAsMessage @ iMongoURIFromString[uri]
+
+iMongoURIFromString[uri_String] := Module[
 	{
 		handle = CreateManagedLibraryExpression["URI", uriMLE],
 		res
