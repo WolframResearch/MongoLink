@@ -113,6 +113,29 @@ bulkOpExecute[bulk_bulkopMLE] := Module[
 ]
 
 (*----------------------------------------------------------------------------*)
+PackageExport["MongoInsertResult"]
+
+(* This is a utility function defined in GeneralUtilities, which makes a nicely
+formatted display box *)
+DefineCustomBoxes[MongoInsertResult, 
+	e:MongoInsertResult[res_Association] :> Block[{},
+	BoxForm`ArrangeSummaryBox[
+		MongoInsertResult, e, None,
+		{
+			BoxForm`SummaryItem[{"InsertedCount: ", Lookup[res, "InsertedCount"]}],
+			BoxForm`SummaryItem[{"Acknowledged: ", Lookup[res, "Acknowledged"]}]
+		},
+		{},
+		StandardForm
+	]
+]];
+
+MongoInsertResult[res_]["InsertedCount"] := Lookup[res, "InsertedCount"]
+MongoInsertResult[res_]["Acknowledged"] := Lookup[res, "Acknowledged"]
+MongoInsertResult[res_]["InsertedIDs"] := Lookup[res, "InsertedIDs"]
+MongoInsertResult[res_][___] := $Failed
+
+(*----------------------------------------------------------------------------*)
 (* Insertion: Note that the Mongo spec supports three different insert ops:
 	insert, insertOne, insertMany. PyMongo deprecated insert, and recommends 
 	only insertOne and insertMany. We will follow the API of insertMany,
@@ -149,7 +172,7 @@ iMongoCollectionInsert[
 	(* execute bulk. reply not used in insert *)
 	bulkOpExecute[bulk];
 	keyNames = bsonLookup[#, "_id"]& /@ docs;
-	<|
+	System`Private`SetNoEntry @ MongoInsertResult @ <|
 		"Acknowledged" -> auth, 
 		"InsertedIDs" -> keyNames, 
 		"InsertedCount" -> Length[keyNames]
