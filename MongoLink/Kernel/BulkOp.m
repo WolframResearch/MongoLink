@@ -131,9 +131,12 @@ DefineCustomBoxes[MongoInsertResult,
 ]];
 
 MongoInsertResult[res_]["InsertedCount"] := Lookup[res, "InsertedCount"]
+MongoInsertResult[res_]["InsertedCount"] := Lookup[res, "InsertedCount"]
 MongoInsertResult[res_]["Acknowledged"] := Lookup[res, "Acknowledged"]
 MongoInsertResult[res_]["InsertedIDs"] := Lookup[res, "InsertedIDs"]
 MongoInsertResult[res_][___] := $Failed
+
+MongoInsertResult /: Normal[MongoInsertResult[x_Association]] := x
 
 (*----------------------------------------------------------------------------*)
 (* Insertion: Note that the Mongo spec supports three different insert ops:
