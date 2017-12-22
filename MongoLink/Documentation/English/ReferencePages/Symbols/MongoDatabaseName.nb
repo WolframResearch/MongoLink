@@ -282,9 +282,9 @@ Cell[TextData[{
   ExpressionUUID->"33727e5f-82e8-48f8-8262-9208664142dd"],
  " \[EmptyVerySmallSquare] ",
  Cell[BoxData[
-  ButtonBox["MongoDatabaseGetCollectionNames",
+  ButtonBox["MongoGetCollectionNames",
    BaseStyle->"Link",
-   ButtonData->"paclet:MongoLink/ref/MongoDatabaseGetCollectionNames"]], 
+   ButtonData->"paclet:MongoLink/ref/MongoGetCollectionNames"]], 
   "InlineFormula",ExpressionUUID->"00d28d05-cf43-4650-8c11-766da9eee4a5"],
  " \[EmptyVerySmallSquare] ",
  Cell[BoxData[
@@ -407,7 +407,7 @@ Cell[CellGroupData[{
 
 Cell[BoxData[
  RowBox[{"db", "=", 
-  RowBox[{"MongoClientGetDatabase", "[", 
+  RowBox[{"MongoGetDatabase", "[", 
    RowBox[{"client", ",", "\"\<WolframTestDB\>\""}], "]"}]}]], "Input",
  CellLabel->"In[3]:=",
  CellID->1365265261,ExpressionUUID->"e9abd1b5-81e7-4116-96c1-3f9fbcd02c2c"],

@@ -72,13 +72,13 @@ MongoDatabaseName[MongoDatabase[_, name_, _]] := name;
 MongoDatabaseName[___] := $Failed
 
 (*----------------------------------------------------------------------------*)
-PackageExport["MongoClientGetDatabase"]
-PackageScope["iMongoClientGetDatabase"]
+PackageExport["MongoGetDatabase"]
+PackageScope["iMongoGetDatabase"]
 
-MongoClientGetDatabase[client_MongoClient, databaseName_String] := 
-CatchFailureAsMessage @ iMongoClientGetDatabase[client, databaseName]
+MongoGetDatabase[client_MongoClient, databaseName_String] := 
+CatchFailureAsMessage @ iMongoGetDatabase[client, databaseName]
 
-iMongoClientGetDatabase[client_MongoClient, databaseName_String] := Module[
+iMongoGetDatabase[client_MongoClient, databaseName_String] := Module[
 	{dbMLE, result},
 	dbMLE = CreateManagedLibraryExpression["Database", databaseMLE];
 	result = safeLibraryInvoke[databaseHandleCreate,
@@ -91,9 +91,9 @@ iMongoClientGetDatabase[client_MongoClient, databaseName_String] := Module[
 ]
 
 (*----------------------------------------------------------------------------*)
-PackageExport["MongoDatabaseGetCollectionNames"]
+PackageExport["MongoGetCollectionNames"]
 
-MongoDatabaseGetCollectionNames[db_MongoDatabase] := CatchFailureAsMessage @
+MongoGetCollectionNames[db_MongoDatabase] := CatchFailureAsMessage @
 	safeLibraryInvoke[getCollectionNames, getMLEID @ db]
 
 (*----------------------------------------------------------------------------*)
