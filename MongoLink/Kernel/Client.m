@@ -61,6 +61,9 @@ getMLEID[MongoClient[clientMLE_]] := ManagedLibraryExpressionID[clientMLE];
 MongoClient[clientMLE_][db_String] := 
 	MongoClientGetDatabase[MongoClient[clientMLE], db]
 
+MongoClient[clientMLE_][db_String, coll_String] := 
+	CatchFailureAsMessage @ 
+	MongoGetCollection[iMongoClientGetDatabase[MongoClient[clientMLE], db], coll]
 
 (*----------------------------------------------------------------------------*)
 PackageExport["MongoConnect"]
