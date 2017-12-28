@@ -43,7 +43,9 @@ bool _bson_as_wl_visit_before(const bson_iter_t *iter, const char *key,
 
   if (s->keys) {
     MATH_CHECK(MLPutFunction(*mlp, "Rule", 2));
-    MATH_CHECK(MLPutString(*mlp, key));
+    int key_len = strlen(key);
+    MATH_CHECK(MLPutUTF8String(
+        *mlp, reinterpret_cast<const unsigned char *>(key), key_len));
   }
 
   return false;
@@ -66,7 +68,9 @@ bool _bson_as_wl_visit_double(const bson_iter_t *iter, const char *key,
 bool _bson_as_wl_visit_utf8(const bson_iter_t *iter, const char *key,
                             size_t v_utf8_len, const char *v_utf8, void *data) {
   MLINK *mlp = reinterpret_cast<bson_wl_state_t *>(data)->wstp_state;
-  MATH_CHECK(MLPutString(*mlp, v_utf8));
+  MATH_CHECK(MLPutUTF8String(*mlp,
+                             reinterpret_cast<const unsigned char *>(v_utf8),
+                             static_cast<int>(v_utf8_len)));
   return false;
 }
 
@@ -93,6 +97,7 @@ bool _bson_as_wl_visit_oid(const bson_iter_t *iter, const char *key,
   char str[25];
   bson_oid_to_string(v_oid, str);
   MATH_CHECK(MLPutFunction(*mlp, "BSONObjectID", 1));
+  // don't need general UTF8 string here
   MATH_CHECK(MLPutString(*mlp, str));
   return false;
 }
@@ -137,7 +142,6 @@ bool _bson_as_wl_visit_dbpointer(const bson_iter_t *iter, const char *key,
                                  const char *v_collection,
                                  const bson_oid_t *v_oid, void *data) {
   MLINK *mlp = reinterpret_cast<bson_wl_state_t *>(data)->wstp_state;
-  std::cout << "POinasdfa" << std::endl;
   MATH_CHECK(MLPutFunction(*mlp, "BSONDBReference", 2));
   // Collection
   MATH_CHECK(MLPutString(*mlp, v_collection));
@@ -223,6 +227,7 @@ bool _bson_as_wl_visit_decimal128(const bson_iter_t *iter, const char *key,
   char decimal128_string[BSON_DECIMAL128_STRING];
   bson_decimal128_to_string(v_decimal128, decimal128_string);
   MATH_CHECK(MLPutFunction(*mlp, "ToExpression", 1));
+  // don't need utf8
   MATH_CHECK(MLPutString(*mlp, decimal128_string));
   return false;
 }
