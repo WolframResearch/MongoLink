@@ -101,3 +101,47 @@ EXTERN_C DLLEXPORT int WL_MongoCollectionStats(WolframLibraryData libData,
 
   return LIBRARY_NO_ERROR;
 }
+
+EXTERN_C DLLEXPORT int WL_MongoCollectionDrop(WolframLibraryData libData,
+                                               mint Argc, MArgument *Args,
+                                               MArgument Res) {
+  COLLECTION_GET(collection, 0)
+  BSON_GET(opts, 1)
+
+  // http://mongoc.org/libmongoc/current/mongoc_collection_drop_with_opts.html
+  bson_error_t error;
+  bool result = mongoc_collection_drop_with_opts(collection, opts, &error);
+
+  // Error handling
+  if (!result) {
+    std::cout << error.message << std::endl;
+    errorString = error.message;
+    return LIBRARY_FUNCTION_ERROR;
+  }
+
+  return LIBRARY_NO_ERROR;
+}
+
+EXTERN_C DLLEXPORT int WL_MongoCollectionValidate(WolframLibraryData libData,
+                                               mint Argc, MArgument *Args,
+                                               MArgument Res) {
+  COLLECTION_GET(collection, 0)
+  BSON_GET(opts, 1)
+  mint reply_key = MArgument_getInteger(Args[2]);
+
+  bson_t *reply = bson_new();
+  bsonHandleMap[reply_key] = reply;
+
+  // http://mongoc.org/libmongoc/current/mongoc_collection_validate.html
+  bson_error_t error;
+  bool result = mongoc_collection_validate(collection, opts, reply, &error);
+
+  // Error handling
+  if (!result) {
+    std::cout << error.message << std::endl;
+    errorString = error.message;
+    return LIBRARY_FUNCTION_ERROR;
+  }
+
+  return LIBRARY_NO_ERROR;
+}

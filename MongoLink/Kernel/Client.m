@@ -59,8 +59,11 @@ getMLE[MongoClient[clientMLE_]] := clientMLE;
 getMLEID[MongoClient[clientMLE_]] := ManagedLibraryExpressionID[clientMLE];
 
 MongoClient[clientMLE_][db_String] := 
-	MongoClientGetDatabase[MongoClient[clientMLE], db]
+	MongoGetDatabase[MongoClient[clientMLE], db]
 
+MongoClient[clientMLE_][db_String, coll_String] := 
+	CatchFailureAsMessage @ 
+	MongoGetCollection[iMongoGetDatabase[MongoClient[clientMLE], db], coll]
 
 (*----------------------------------------------------------------------------*)
 PackageExport["MongoConnect"]
@@ -186,13 +189,13 @@ OpenMongoConnection[opts:OptionsPattern[]] :=
 	OpenMongoConnection["localhost", 27017, opts]
 
 (*----------------------------------------------------------------------------*)
-PackageExport["MongoClientGetDatabaseNames"]
+PackageExport["MongoGetDatabaseNames"]
 
-SetUsage[MongoClientGetDatabaseNames,
-"MongoClientGetDatabaseNames[MongoClient[$$]] returns a list of databases on the \
+SetUsage[MongoGetDatabaseNames,
+"MongoGetDatabaseNames[MongoClient[$$]] returns a list of databases on the \
 connected server. 
 "
 ]
 
-MongoClientGetDatabaseNames[client_MongoClient] := 
+MongoGetDatabaseNames[client_MongoClient] := 
 	CatchFailureAsMessage @ safeLibraryInvoke[getDatabaseNames, getMLEID[client]]

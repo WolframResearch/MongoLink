@@ -85,6 +85,27 @@ mongoCollectionStats = LibraryFunctionLoad[$MongoLinkLib,
 	"Void"				
 ]
 
+mongoCollectionValidate = LibraryFunctionLoad[$MongoLinkLib, 
+	"WL_MongoCollectionValidate", 
+	{
+		Integer,		(* collection handle *)
+		Integer,		(* opts bson *)
+		Integer			(* reply bson *)
+	
+	}, 
+	"Void"				
+]
+
+mongoCollectionDrop = LibraryFunctionLoad[$MongoLinkLib, 
+	"WL_MongoCollectionDrop", 
+	{
+		Integer,		(* collection handle *)
+		Integer			(* opts bson *)
+	
+	}, 
+	"Void"				
+]
+
 (*----------------------------------------------------------------------------*)
 PackageExport["MongoCollection"]
 
@@ -294,6 +315,35 @@ MongoCollectionStats[coll_MongoCollection] := CatchFailureAsMessage @ Module[
 	optsBSON = ToBSON[<||>];
 	replyBSON = CreateManagedLibraryExpression["BSON", bsonMLE];
 	safeLibraryInvoke[mongoCollectionStats,
+		getMLEID[coll],
+		getMLEID[optsBSON], 
+		getMLEID[replyBSON]
+	];
+	Dataset @ BSONToAssociation[BSONObject[replyBSON]]
+]
+
+(*----------------------------------------------------------------------------*)
+PackageExport["MongoCollectionDrop"]
+
+MongoCollectionDrop[coll_MongoCollection] := CatchFailureAsMessage @ Module[
+	{optsBSON},
+	(* don't support opts yet *)
+	optsBSON = ToBSON[<||>];
+	safeLibraryInvoke[mongoCollectionDrop,
+		getMLEID[coll],
+		getMLEID[optsBSON]
+	];
+]
+
+(*----------------------------------------------------------------------------*)
+PackageExport["MongoCollectionValidate"]
+
+MongoCollectionValidate[coll_MongoCollection] := CatchFailureAsMessage @ Module[
+	{optsBSON, replyBSON},
+	(* don't support opts yet *)
+	optsBSON = ToBSON[<||>];
+	replyBSON = CreateManagedLibraryExpression["BSON", bsonMLE];
+	safeLibraryInvoke[mongoCollectionValidate,
 		getMLEID[coll],
 		getMLEID[optsBSON], 
 		getMLEID[replyBSON]
