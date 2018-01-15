@@ -192,7 +192,7 @@ Cell["MongoCollectionAggregate", "ObjectName",
  CellID->1224892054,ExpressionUUID->"e83e4266-7b96-4514-9c01-84f35b982428"],
 
 Cell[TextData[{
- Cell["   ", "ModInfo",ExpressionUUID->"7581d0a0-bf9a-4449-b8c9-1331b834b878"],
+ Cell["   ", "ModInfo",ExpressionUUID->"82838560-647a-4337-b7bd-6f4a520dfc20"],
  Cell[BoxData[
   RowBox[{
    ButtonBox["MongoCollectionAggregate",
@@ -202,16 +202,16 @@ Cell[TextData[{
     RowBox[{
      ButtonBox["MongoCollection",
       BaseStyle->"Link",
-      ButtonData->"paclet:mongolink/ref/MongoCollection"], "[", 
+      ButtonData->"paclet:MongoLink/ref/MongoCollection"], "[", 
      StyleBox["\[Ellipsis]", "TR"], "]"}], ",", 
     StyleBox["pipeline", "TI"]}], "]"}]], "InlineFormula",ExpressionUUID->
-  "fd71b9a2-5e14-4890-97f0-374a82855a90"],
+  "10489b70-19e5-462f-a2bb-1b3a1ba381b8"],
  " \[LineSeparator]calculates aggregate values for the data in a ",
  Cell[BoxData[
   ButtonBox["MongoCollection",
    BaseStyle->"Link",
-   ButtonData->"paclet:mongolink/ref/MongoCollection"]], "InlineFormula",
-  ExpressionUUID->"0a2b22df-159d-4c82-830c-db0320cfc02d"],
+   ButtonData->"paclet:MongoLink/ref/MongoCollection"]], "InlineFormula",
+  ExpressionUUID->"57c1eae0-e5a9-4f3f-ad02-febd8937cb63"],
  "."
 }], "Usage",
  CellChangeTimes->{{3.714403070357017*^9, 3.7144030964548607`*^9}, {
@@ -1180,7 +1180,7 @@ Cell["XXXX", "FunctionEssay",
 },
 ScreenStyleEnvironment->"ExperimentalObject",
 WindowSize->{1720, 1324},
-WindowMargins->{{Automatic, 609}, {Automatic, 0}},
+WindowMargins->{{520, Automatic}, {Automatic, 5}},
 TaggingRules->{
  "DocuToolsSettingsInternal" -> {
    "$PacletVersion" -> "0.9.1871", "$MVersion" -> "11", "$FlaggedVersion" -> 
