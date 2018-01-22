@@ -102,7 +102,10 @@ MongoCursorToArray[cursor_MongoCursor] := CatchFailureAsMessage @ Module[
 PackageExport["MongoCursorBatchSize"]
 
 MongoCursorBatchSize[cursor_MongoCursor] := CatchFailureAsMessage @
-	safeLibraryInvoke[cursorGetBatchSize, getMLEID[cursor]];
+	Replace[safeLibraryInvoke[cursorGetBatchSize, getMLEID[cursor]], 0 -> Automatic]
 
 MongoCursorBatchSize[cursor_MongoCursor, size_Integer] := CatchFailureAsMessage @
 	safeLibraryInvoke[cursorSetBatchSize, getMLEID[cursor], size];
+
+MongoCursorBatchSize[cursor_MongoCursor, Automatic] := CatchFailureAsMessage @
+	safeLibraryInvoke[cursorSetBatchSize, getMLEID[cursor], 0];
