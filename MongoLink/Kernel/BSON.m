@@ -129,12 +129,12 @@ iBSONToAssociation[___] := ThrowFailure[iBSONToAssociation::invarg]
 PackageExport["ToBSON"]
 PackageScope["iToBSON"]
 
-iToBSON::invjson = "Cannot parse the input into json.";
+iToBSON::invjson = "Cannot parse the input into JSON.";
 iToBSON::invtype = "Argument must be string, Association or list.";
 
 iToBSON[doc_Association] := Module[
 	{json},
-	json = Developer`WriteRawJSONString[doc,
+	json = Quiet @ Developer`WriteRawJSONString[doc,
 	 	"Compact" -> True,
 	 	"ConversionRules" -> $EncodingRules
 	];
