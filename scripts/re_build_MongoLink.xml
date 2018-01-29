@@ -40,7 +40,7 @@
 			<fileset dir='${checkout_directory}/MongoC/lib'>
 				<include name='*.dll' />
 				<include name='*.dylib' />
-				<include name='*.so.0' />
+				<include name='*.so.1' />
 			</fileset>
 
 			<fileset dir='${basedir}/${component}/Kernel/SSL'>
