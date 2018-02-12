@@ -7,7 +7,6 @@ Client level functions
 Package["MongoLink`"]
 
 PackageImport["GeneralUtilities`"]
-PackageImport["DatabaseLink`"]
 
 PackageScope["clientMLE"] (* client ManagedLibraryExpression *)
 
@@ -114,6 +113,8 @@ PackageExport["OpenMongoConnection"]
 OpenMongoConnection::winpem = "Support for encrypted PEM files requiring \
 a PemFilePassword is not available on Windows."
 
+OpenMongoConnection::authcancel = "Password authentication cancelled."
+
 Options[OpenMongoConnection] = {
 	"Username" -> None,
 	"Password" -> None,
@@ -170,11 +171,15 @@ OpenMongoConnection[host_String, port_Integer, opts:OptionsPattern[]] := Module[
 	{
 		username = OptionValue["Username"],
 		password = OptionValue["Password"],
-		uri
+		uri, cred
 	},
 	If[password === "$Prompt",
-		{username, password} = 
-			DatabaseLink`UI`Private`PasswordDialog[{username, ""}]
+		cred = AuthenticationDialog["UsernamePassword" -> {"Username" -> username}];
+		If[Head[cred] =!= Association,
+			Message[OpenMongoConnection::authcancel];
+			Return[$Failed]
+		];
+		{username, password} = Lookup[cred, {"Username", "Password"}];
 	];
 	
 	(* this should never fail *)

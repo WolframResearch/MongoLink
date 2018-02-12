@@ -80,12 +80,16 @@ MongoURIConstruct[host_String, port_Integer, opts:OptionsPattern[]] := Module[
 		password = OptionValue["Password"],
 		database = OptionValue["Database"],
 		ssl = OptionValue["SSL"],
-		cred, uri
+		cred, uri, tempCred
 	},
 
 	If[password === "$Prompt",
-		{username, password} = 
-			DatabaseLink`UI`Private`PasswordDialog[{username, ""}]
+		tempCred = AuthenticationDialog["UsernamePassword" -> {"Username" -> username}];
+		If[Head[tempCred] =!= Association,
+			Message[OpenMongoConnection::authcancel];
+			Return[$Failed]
+		];
+		{username, password} = Lookup[tempCred, {"Username", "Password"}];
 	];
 	
 	If[(username =!= None) && (password =!= None), 
