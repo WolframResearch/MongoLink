@@ -145,3 +145,27 @@ EXTERN_C DLLEXPORT int WL_MongoCollectionValidate(WolframLibraryData libData,
 
   return LIBRARY_NO_ERROR;
 }
+
+EXTERN_C DLLEXPORT int
+WL_MongoCollectionCommandSimple(WolframLibraryData libData, mint Argc,
+                                MArgument *Args, MArgument Res) {
+  COLLECTION_GET(collection, 0)
+  BSON_GET(command, 1)
+  mint reply_key = MArgument_getInteger(Args[2]);
+
+  bson_error_t error;
+  bson_t reply;
+  // http://mongoc.org/libmongoc/current/mongoc_collection_command_simple.html
+  if (!mongoc_collection_command_simple(collection, command, NULL, &reply,
+                                        &error)) {
+    std::cout << error.message << std::endl;
+    errorString = error.message;
+    return LIBRARY_FUNCTION_ERROR;
+  };
+
+  // crashes without copy. Not sure why yet.
+  bsonHandleMap[reply_key] = bson_copy(&reply);
+  bson_destroy(&reply);
+
+  return LIBRARY_NO_ERROR;
+}
