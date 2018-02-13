@@ -106,6 +106,16 @@ mongoCollectionDrop = LibraryFunctionLoad[$MongoLinkLib,
 	"Void"				
 ]
 
+mongoCollectionCommandSimple = LibraryFunctionLoad[$MongoLinkLib, 
+	"WL_MongoCollectionCommandSimple", 
+	{
+		Integer,		(* collection handle *)
+		Integer,		(* command bson *)
+		Integer			(* reply bson *)
+	}, 
+	"Void"		
+]
+
 (*----------------------------------------------------------------------------*)
 PackageExport["MongoCollection"]
 
@@ -362,4 +372,34 @@ CatchFailureAsMessage @ Module[
 	If[FailureQ[docIter], Return[$Failed]];
 	Read[docIter]
 ]
+
+(*----------------------------------------------------------------------------*)
+PackageScope["mongoCollectionCommand"]
+
+mongoCollectionCommand[coll_MongoCollection, command_] := Module[
+	{commandBSON, docIter},
+	commandBSON = ToBSON[command];
+	replyBSON = CreateManagedLibraryExpression["BSON", bsonMLE];
+	safeLibraryInvoke[mongoCollectionCommandSimple,
+		getMLEID[coll],
+		getMLEID[commandBSON],
+		getMLEID[replyBSON]
+	];
+	BSONToAssociation[BSONObject[replyBSON]]
+]
+
+(*----------------------------------------------------------------------------*)
+PackageExport["MongoCollectionDistinct"]
+
+MongoCollectionDistinct[coll_MongoCollection, key_String, query_Association] := 
+CatchFailureAsMessage @ Module[
+	{cmd = <||>},
+	cmd["distinct"] = MongoCollectionName[coll];
+	cmd["key"] = key;
+	cmd["query"] = query;
+	Lookup[mongoCollectionCommand[coll, cmd], "values"]
+]
+
+MongoCollectionDistinct[coll_MongoCollection, key_String] := 
+	MongoCollectionDistinct[coll, key, <||>]
 
