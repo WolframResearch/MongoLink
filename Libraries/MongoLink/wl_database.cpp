@@ -52,7 +52,8 @@ EXTERN_C DLLEXPORT int WL_GetCollectionNames(WolframLibraryData libData,
   bson_error_t error;
   char **strv;
   int length = 0;
-  if ((strv = mongoc_database_get_collection_names(database, &error))) {
+  if ((strv = mongoc_database_get_collection_names_with_opts(database, NULL,
+                                                             &error))) {
     for (int i = 0; strv[i]; i++)
       ++length; // need to know length to initialize output list
   } else {

@@ -106,7 +106,8 @@ EXTERN_C DLLEXPORT int WL_GetDatabaseNames(WolframLibraryData libData,
   bson_error_t error;
   char **strv;
   int length = 0;
-  if ((strv = mongoc_client_get_database_names(client, &error))) {
+  if ((strv =
+           mongoc_client_get_database_names_with_opts(client, NULL, &error))) {
     for (int i = 0; strv[i]; i++) {
       ++length; // need to know length to initialize output list
     }

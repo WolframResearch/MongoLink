@@ -90,16 +90,16 @@ EXTERN_C DLLEXPORT int WL_get_bson_key(WolframLibraryData libData, mint Argc,
   mint out_bson_key = MArgument_getInteger(Args[1]);
   char *key = MArgument_getUTF8String(Args[2]);
 
-  bson_iter_t *iter;
+  bson_iter_t iter;
   // return 0 if key not found, 1 if found
   // http://mongoc.org/libbson/current/bson_iter_init_find_case.html
-  bool result = bson_iter_init_find(iter, bson, key);
+  bool result = bson_iter_init_find(&iter, bson, key);
 
   bson_t *out_bson = bson_new();
   bsonHandleMap[out_bson_key] = out_bson;
   // http://mongoc.org/libbson/current/bson_append_iter.html
   if (result)
-    bson_append_iter(out_bson, key, -1, iter);
+    bson_append_iter(out_bson, key, -1, &iter);
 
   libData->UTF8String_disown(key);
   MArgument_setInteger(Res, static_cast<mint>(result));
