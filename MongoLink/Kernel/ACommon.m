@@ -129,7 +129,12 @@ FromMillisecondUnixTime[time_] := Module[
 
 PackageScope["ToMillisecondUnixTime"]
 
-ToMillisecondUnixTime[date_DateObject] := 1000 * (UnixTime[date] + FractionalPart[date["Second"]])
+ToMillisecondUnixTime[date_DateObject] := Module[
+	{sec},
+	sec = date["Second"];
+	If[MissingQ[sec], sec = 0];
+	1000 * (UnixTime[date] + FractionalPart[sec])
+]
 
 (*----------------------------------------------------------------------------*)
 PackageScope["fileConform"]
