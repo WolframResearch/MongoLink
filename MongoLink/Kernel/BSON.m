@@ -199,6 +199,7 @@ $EncodingRules = {
 	|>|>,
 	x_DateObject :> <|"$date" -> Round @ ToMillisecondUnixTime[x]|>,
 	BSONObjectID[x_] :> <|"$oid" -> x|>,
+	BSONTimestamp[time_, inc_] :> <|"$timestamp" -> <|"t" -> time, "i" -> inc|>|>,
 	BSONDBReference[coll_, id_] :> <|"$ref" -> coll, "$id" -> First[id]|>
 };
 
@@ -219,6 +220,22 @@ DefineCustomBoxes[BSONObjectID,
 		BSONObjectID, e, None, 
 		{
 			BoxForm`SummaryItem[{"OID: ", id}]
+		},
+		{},
+		StandardForm
+	]
+]];
+
+(*----- Timestamp -------*)
+PackageExport["BSONTimestamp"]
+
+DefineCustomBoxes[BSONTimestamp, 
+	e:BSONTimestamp[time_, inc_] :> Block[{},
+	BoxForm`ArrangeSummaryBox[
+		BSONObjectID, e, None, 
+		{
+			BoxForm`SummaryItem[{"Time: ", time}],
+			BoxForm`SummaryItem[{"Increment: ", inc}]
 		},
 		{},
 		StandardForm
