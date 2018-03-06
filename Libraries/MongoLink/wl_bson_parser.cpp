@@ -186,8 +186,11 @@ bool _bson_as_wl_visit_int32(const bson_iter_t *iter, const char *key,
 bool _bson_as_wl_visit_timestamp(const bson_iter_t *iter, const char *key,
                                  uint32_t v_timestamp, uint32_t v_increment,
                                  void *data) {
-  errorString = "Encountered Timestamp type. Not currently supported.";
-  return true;
+  MLINK *mlp = reinterpret_cast<bson_wl_state_t *>(data)->wstp_state;
+  MATH_CHECK(MLPutFunction(*mlp, "BSONTimestamp", 2));
+  MATH_CHECK(MLPutInteger32(*mlp, static_cast<int>(v_timestamp)));
+  MATH_CHECK(MLPutInteger32(*mlp, static_cast<int>(v_increment)));
+  return false;
 }
 
 bool _bson_as_wl_visit_int64(const bson_iter_t *iter, const char *key,

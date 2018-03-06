@@ -393,11 +393,12 @@ PackageExport["MongoCollectionDistinct"]
 
 MongoCollectionDistinct[coll_MongoCollection, key_String, query_Association] := 
 CatchFailureAsMessage @ Module[
-	{cmd = <||>},
+	{cmd = <||>, res},
 	cmd["distinct"] = MongoCollectionName[coll];
 	cmd["key"] = key;
 	cmd["query"] = query;
-	Lookup[mongoCollectionCommand[coll, cmd], "values"]
+	res = mongoCollectionCommand[coll, cmd];
+	Lookup[res, "values"]
 ]
 
 MongoCollectionDistinct[coll_MongoCollection, key_String] := 
