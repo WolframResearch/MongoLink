@@ -8,12 +8,8 @@ Paclet[
 		"Meghan Rieu-Werden <meghanr@wolfram.com>, Sebastian Bodenstein <sebastianb@wolfram.com>",
 	Extensions -> {
 		{"Kernel", Context -> "MongoLink`"}, 
-		{"Documentation", Resources -> 
-			{
-				"ReferencePages/Symbols/MongoDatabaseDrop",
-				"ReferencePages/Symbols/MongoDatabaseName"
-			},
-		Language -> "English"
+		{"Documentation", Resources -> {},
+		Language -> All
 		},
 		{"LibraryLink"}
 	}
