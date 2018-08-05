@@ -18,5 +18,5 @@ std::map<mint, bson_t *> bsonHandleMap;
 // Return string to store any returned strings outside of scope of functions
 char *returnCharArray = 0;
 char *returnBSONJSON = 0;
-std::string returnString = "None";
-std::string errorString = "None";
+std::string returnString = "";
+std::string errorString = "";
