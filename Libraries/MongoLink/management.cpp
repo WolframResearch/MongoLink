@@ -81,6 +81,11 @@ DLLEXPORT void manage_instance_mongowriteconcern(WolframLibraryData libData,
 }
 
 /*----------------------------------------------------------------------------*/
+void my_logger(mongoc_log_level_t log_level, const char *log_domain,
+               const char *message, void *user_data) {
+  errorString = std::string(message);
+}
+
 
 /* Return the version of Library Link */
 EXTERN_C DLLEXPORT mint WolframLibrary_getVersion() {
@@ -90,6 +95,8 @@ EXTERN_C DLLEXPORT mint WolframLibrary_getVersion() {
 EXTERN_C DLLEXPORT int WolframLibrary_initialize(WolframLibraryData libData) {
   // initialize mongodb
   mongoc_init();
+  mongoc_log_set_handler(my_logger, NULL);
+
   // Register All Library Managers
   (*libData->registerLibraryExpressionManager)("URI", manage_instance_mongouri);
   (*libData->registerLibraryExpressionManager)("Client",
@@ -131,6 +138,13 @@ EXTERN_C DLLEXPORT int WL_MongoGetLastError(WolframLibraryData libData,
                                             mint Argc, MArgument *Args,
                                             MArgument Res) {
   MArgument_setUTF8String(Res, const_cast<char *>(errorString.c_str()));
+  return LIBRARY_NO_ERROR;
+}
+
+EXTERN_C DLLEXPORT int WL_MongoEraseLastError(WolframLibraryData libData,
+                                            mint Argc, MArgument *Args,
+                                            MArgument Res) {
+  errorString = "";
   return LIBRARY_NO_ERROR;
 }
 

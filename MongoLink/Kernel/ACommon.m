@@ -84,6 +84,11 @@ MongoGetLastError = LibraryFunctionLoad[$MongoLinkLib, "WL_MongoGetLastError",
 	"UTF8String"				
 	]
 
+PackageScope["MongoEraseLastError"]
+
+MongoEraseLastError = 
+	LibraryFunctionLoad[$MongoLinkLib, "WL_MongoEraseLastError", {}, Null]
+
 (*----------------------------------------------------------------------------*)
 PackageScope["LibraryFunctionFailureQ"]
 
@@ -109,6 +114,7 @@ General::mongoliberr = "C Function `` failed. Error from Mongo C Driver: \"``\""
 MongoPanic[f_] := Module[
 	{lastError},
 	lastError = MongoGetLastError[];
+	MongoEraseLastError[];
 	If[TrueQ @ LibraryFunctionFailureQ[lastError], 
 		lastError = "Unknown Error";
 	];
@@ -152,3 +158,22 @@ fileConform[None] := "";
 
 General::mongoinvfile = "Object `` is not a String, File[...] or None."
 fileConform[file_] := ThrowFailure["mongonff", file];
+
+(*----------------------------------------------------------------------------*)
+(* opts process: will eventually do something more complicated, like lower-case
+first character to allow camel case opts
+*)
+
+PackageScope["processOpts"]
+processOpts[opts_Association] := opts
+
+(*----------------------------------------------------------------------------*)
+(* This function converts a number of WL inputs to a Mongo millisecond time format 
+	Note: there cannot be a 0 time in mongo, so 0 is infinity
+*)
+
+PackageScope["timeToMilliseconds"]
+timeToMilliseconds[x_Integer] := x
+timeToMilliseconds[Infinity] := 0
+timeToMilliseconds[x_Quantity] := UnitConvert[x, "Milliseconds"]
+
