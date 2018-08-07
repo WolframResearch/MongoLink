@@ -64,85 +64,73 @@ MongoClient[clientMLE_][db_String, coll_String] :=
 	CatchFailureAsMessage @ 
 	MongoGetCollection[iMongoGetDatabase[MongoClient[clientMLE], db], coll]
 
+MongoClient /: Length[c_MongoClient] := Module[
+	{names = MongoGetDatabaseNames[c]},
+	If[FailureQ[names], Return[names]];
+	Length[names]
+]
+
 (*----------------------------------------------------------------------------*)
 PackageExport["MongoConnect"]
 
+(* Note: we over-ride the default values of the C driver for socketTimeoutMS,
+	which is around 5 minutes. This can cause problems for long operations.
+	We follow the official default of no timeout, which is also PyMongo defualt:
+	https://docs.mongodb.com/manual/reference/connection-string/#connection-options
+*)
+
 $DefaultConnection = <|
-	"Port" -> 27017,
-	"Host" -> "localhost",
-	"Username" -> None,
-	"Password" -> None,
-	"SSL" -> Automatic,
-	"PEMFile" -> None,
-	"PEMFilePassword" -> None,
-	"CAFile" -> None,
-	"CertificateRevocationList" -> None,	
-	VerifySecurityCertificates -> True,
-	"AllowInvalidHostname" -> False
+	"port" -> 27017,
+	"host" -> "localhost",
+	"sockettimeoutms" -> -1, (* follow pymongo, never timeout *)
+	"connecttimeoutms" -> 20000, (* follow pymongo *)
+	"journal" -> True (* this is NOT default in pymongo. Seems safer though... *)
 |>;
 
+DeclareArgumentCount[MongoConnect, {0, 1}];
 MongoConnect[connection_Association] := CatchFailureAsMessage @ Module[
-	{newConn, host, port, uri},
-	newConn = Join[$DefaultConnection, connection];
-	{host, port} = Lookup[newConn, {"Host", "Port"}];
-	KeyDropFrom[newConn, {"Host", "Port"}];
-	If[stringURIQ[host], 
-		uri = iMongoURIFromString[host];
-		OpenMongoConnection[uri, Sequence @@ Normal[newConn]]
-		,
-		OpenMongoConnection[host, port, Sequence @@ Normal[newConn]]
-	]
-]
-
-(* conformization *)
-MongoConnect[] := MongoConnect[<||>]
-MongoConnect[uri_String] := MongoConnect[<|"Host" -> uri|>]
-MongoConnect[MongoURI[uri_, _]] := MongoConnect[<|"Host" -> uri|>]
-
-(* is this simple rule correct? *)
-stringURIQ[str_String] := (StringTake[str, 7] === "mongodb")
-stringURIQ[___] := False
-
-(*----------------------------------------------------------------------------*)
-(* NOTE: OpenMongoConnection will be deprecated. Its being supported for one 
-	version to allow code to switch to MongoConnect.
- *)
-
-PackageExport["OpenMongoConnection"]
-
-OpenMongoConnection::winpem = "Support for encrypted PEM files requiring \
-a PemFilePassword is not available on Windows."
-
-OpenMongoConnection::authcancel = "Password authentication cancelled."
-
-Options[OpenMongoConnection] = {
-	"Username" -> None,
-	"Password" -> None,
-	"SSL" -> Automatic,
-	"PEMFile" -> None,
-	"PEMFilePassword" -> None,
-	"CAFile" -> None,
-	"CertificateRevocationList" -> None,	
-	VerifySecurityCertificates -> True,
-	"AllowInvalidHostname" -> False
-};
-
-(* URI Client connect *)
-OpenMongoConnection[MongoURI[uri_, _], opts:OptionsPattern[]] := 
-	CatchFailureAsMessage @ Module[
 	{
-		ssl = OptionValue["SSL"],
-		pemFile = fileConform @ OptionValue["PEMFile"],
-		pemFilePassword = OptionValue["PEMFilePassword"],
-		caFile = fileConform @ OptionValue["CAFile"],
-		crList = fileConform @ OptionValue["CertificateRevocationList"],
-		verifyCert = OptionValue[VerifySecurityCertificates],
-		invHost = OptionValue["AllowInvalidHostname"],
+		replaceRules, con, uri, clientID, result,
 		clientHandle = CreateManagedLibraryExpression["Client", clientMLE],
-		clientID, result
+		password, username, cred,
+		ssl, pemFile, caFile, crList, pemFilePassword, verifyCert
 	},
+	(* conform WL names to native mongo names *)
+	replaceRules = {
+		VerifySecurityCertificates -> "sslallowinvalidcertificates",
+		"AllowInvalidHostname" -> "sslallowinvalidhostnames",
+		"CAFile" -> "sslcertificateauthorityfile",
+		"PEMFile" -> "sslclientcertificatekeyfile",
+		"PEMFilePassword" -> "sslclientcertificatekeypassword"
+	};
+	con = processOpts[connection, $DefaultConnection, replaceRules];
+
+	(* special handling for passwords *)
+	{password, username} = popAssociation[con, {"password", "username"}, None];
+	If[password === "$Prompt",
+		cred = AuthenticationDialog["UsernamePassword" -> {"Username" -> username}];
+		If[Head[cred] =!= Association,
+			Message[OpenMongoConnection::authcancel];
+			Return[$Failed]
+		];
+		{username, password} = Lookup[cred, {"Username", "Password"}];
+	];
+
+	(* pop ssl opts: handle separately *)
+	{ssl, verifyCert} = popAssociation[con, {"ssl", "sslallowinvalidcertificates"}, False];
+	{pemFile, caFile, crList} = fileConform /@ 
+		popAssociation[con, 
+			{"sslclientcertificatekeyfile", "sslcertificateauthorityfile", "certificaterevocationlist"}, 
+			None
+		];
+	pemFilePassword = popAssociation[con, "sslclientcertificatekeypassword", ""];
+
+	(* construct URI *)
+	uri = uriConstruct[con];
+
 	clientID = getMLEID[clientHandle];
 	result = safeLibraryInvoke[clientHandleCreate, clientID, getMLEID[uri]];
+
 	(***** SSL Opts ******)
 	(* See http://mongoc.org/libmongoc/current/mongoc_ssl_opt_t.html for 
 		this issue *)
@@ -154,7 +142,7 @@ OpenMongoConnection[MongoURI[uri_, _], opts:OptionsPattern[]] :=
 		 safeLibraryInvoke[clientSetSSL, 
 		 	clientID,
 		 	pemFile,
-		 	Replace[pemFilePassword, None -> ""],
+		 	pemFilePassword,
 		 	caFile,
 		 	"", (* ca_dir: not going to support *)
 		 	crList,
@@ -162,36 +150,20 @@ OpenMongoConnection[MongoURI[uri_, _], opts:OptionsPattern[]] :=
 		 	invHost
 		 ]
 	];
-	
+
 	(* return client object *)
 	System`Private`SetNoEntry @ MongoClient[clientHandle]
+
 ]
 
-OpenMongoConnection[host_String, port_Integer, opts:OptionsPattern[]] := Module[
-	{
-		username = OptionValue["Username"],
-		password = OptionValue["Password"],
-		uri, cred
-	},
-	If[password === "$Prompt",
-		cred = AuthenticationDialog["UsernamePassword" -> {"Username" -> username}];
-		If[Head[cred] =!= Association,
-			Message[OpenMongoConnection::authcancel];
-			Return[$Failed]
-		];
-		{username, password} = Lookup[cred, {"Username", "Password"}];
-	];
-	
-	(* this should never fail *)
-	uri = MongoURIConstruct[host, port, "Username" -> username, "Password" -> password];
-	OpenMongoConnection[uri, opts]
-]
+(* conformization *)
+MongoConnect[] := MongoConnect[<||>]
+MongoConnect[uri_String] := MongoConnect[<|"host" -> uri|>]
+MongoConnect[MongoURI[uri_, _]] := MongoConnect[<|"host" -> uri|>]
 
-OpenMongoConnection[host_String, opts:OptionsPattern[]] := 
-	OpenMongoConnection[host, 27017, opts]
+MongoConnect::invargs = "MongoConnect expects either a String or an Association, `` was given."
+MongoConnect[x_] := (Message[MongoConnect::invargs, x]; $Failed)
 
-OpenMongoConnection[opts:OptionsPattern[]] := 
-	OpenMongoConnection["localhost", 27017, opts]
 
 (*----------------------------------------------------------------------------*)
 PackageExport["MongoGetDatabaseNames"]
@@ -204,3 +176,8 @@ connected server.
 
 MongoGetDatabaseNames[client_MongoClient] := 
 	CatchFailureAsMessage @ safeLibraryInvoke[getDatabaseNames, getMLEID[client]]
+
+DeclareArgumentCount[MongoGetDatabaseNames, 1];
+MongoGetDatabaseNames::invargs = 
+	"MongoGetDatabaseNames expects a MongoClient object, but `` was given."
+MongoGetDatabaseNames[x_] := (Message[MongoGetDatabaseNames::invargs, x]; $Failed)

@@ -160,12 +160,61 @@ General::mongoinvfile = "Object `` is not a String, File[...] or None."
 fileConform[file_] := ThrowFailure["mongonff", file];
 
 (*----------------------------------------------------------------------------*)
+PackageScope["popAssociation"]
+
+SetAttributes[popAssociation, HoldFirst]
+popAssociation[assoc_, keys_] := Module[
+	{out},
+	out = Lookup[assoc, keys];
+	KeyDropFrom[assoc, keys];
+	out
+]
+
+popAssociation[assoc_, keys_, default_] := Module[
+	{out},
+	out = Lookup[assoc, keys, default];
+	KeyDropFrom[assoc, keys];
+	out
+]
+
+
+(*----------------------------------------------------------------------------*)
 (* opts process: will eventually do something more complicated, like lower-case
 first character to allow camel case opts
 *)
 
 PackageScope["processOpts"]
-processOpts[opts_Association] := opts
+
+processOpts[opts_Association, defaults_Association, changeRules_List] := Module[
+	{opts2},
+	opts2 = replaceAssociationKeys[opts, changeRules];
+	opts2 = KeyMap[ToLowerCase, opts2];
+	Join[defaults, opts2]
+]
+
+processOpts[opts_Association, defaults_Association] := 
+	processOpts[opts, defaults, {}]
+
+(* this can probably be done better *)
+replaceAssociationKeys[assoc_, rules_] := Module[
+	{old, new, look, keyPos},
+	If[Length[rules] === 0, Return[assoc]];
+
+	old = Keys[rules];
+	new = Values[rules];
+	look = Lookup[assoc, old];
+	keyPos = Flatten @ Position[look, Except[_Missing], 1, Heads->False];
+	KeyDrop[old] @ Join[assoc, AssociationThread[new[[keyPos]] -> look[[keyPos]]]]
+]
+
+optsBSON[opts_Association, defaults_Association, changeRules_List] := Module[
+	{opts2},
+	opts2 = processOpts[opts, defaults, changeRules];
+	iToBSON[opts2]
+]
+
+optsBSON[opts_Association, defaults_Association] :=
+	optsBSON[opts, defaults, {}]
 
 (*----------------------------------------------------------------------------*)
 (* This function converts a number of WL inputs to a Mongo millisecond time format 
@@ -175,5 +224,6 @@ processOpts[opts_Association] := opts
 PackageScope["timeToMilliseconds"]
 timeToMilliseconds[x_Integer] := x
 timeToMilliseconds[Infinity] := 0
-timeToMilliseconds[x_Quantity] := UnitConvert[x, "Milliseconds"]
+timeToMilliseconds[x_Quantity] := QuantityMagnitude @ UnitConvert[x, "Milliseconds"]
+timeToMilliseconds[x_] := x
 

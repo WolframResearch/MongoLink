@@ -105,21 +105,31 @@ PackageScope["uriConstruct"]
 setprop[func_, uri_, opts_, val1_, val2_] := 
 	If[KeyExistsQ[opts, val1], safeLibraryInvoke[func, getMLEID@uri, opts[val1], val2]];
 
-uriConstruct[connection_String, opts_Association] := Module[
-	{uri, opts2},
-	uri = uriFromString[connection];
+uriConstruct[opts_Association] := Module[
+	{uri, opts2 = opts, host, port},
+
+	{host, port} = Lookup[opts2, {"host", "port"}];
+	KeyDropFrom[opts2, {"host", "port"}];
+
+	(* assume host is URI string *)
+	uri = CatchFailure @ uriFromString[host];
+	If[FailureQ[uri],
+		uri = uriFromString["mongodb://" <> host <> ":" <> ToString[port]]
+	];
 
 	(** Authentication **)
-	setprop[uriSetPropEnum, uri, opts, "authmechanism", 1];
-	setprop[uriSetPropEnum, uri, opts, "authsource", 2];
-	setprop[uriSetPropEnum, uri, opts, "password", 5];
-	setprop[uriSetPropEnum, uri, opts, "username", 6];
+	setprop[uriSetPropEnum, uri, opts2, "authmechanism", 1];
+	setprop[uriSetPropEnum, uri, opts2, "authsource", 2];
+	setprop[uriSetPropEnum, uri, opts2, "password", 5];
+	setprop[uriSetPropEnum, uri, opts2, "username", 6];
 
 	(** Compress **)
 	setprop[uriSetPropEnum, uri, opts, "compressors", 3];
 
 	(** Other **)
-	opts2 = KeyDrop[opts, {"authmechanism", "authsource", "password", "username", "compressors"}];
+	KeyDropFrom[opts2, 
+		{"authmechanism", "authsource", "password", "username", "compressors"}
+	];
 	KeyValueMap[uriSetOption[uri, #1, #2]&, opts2];
 	uri
 ]
