@@ -62,7 +62,7 @@ extern std::string errorString;
   }                                                                            \
   var = collectionHandleMap[MArgument_getInteger(Args[key])];
 
-#define ITERATOR_GET(var, key)                                                 \
+#define CURSOR_GET(var, key)                                                 \
   mongoc_cursor_t *var;                                                        \
   if (cursorHandleMap.count(MArgument_getInteger(Args[key])) == 0) {           \
     return LIBRARY_FUNCTION_ERROR;                                             \

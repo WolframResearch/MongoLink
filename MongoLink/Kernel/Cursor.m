@@ -33,9 +33,10 @@ cursorSetBatchSize = LibraryFunctionLoad[$MongoLinkLib, "WL_CursorSetBatchSize",
 	"Void"
 ]
 
-cursorGetBatchSize = LibraryFunctionLoad[$MongoLinkLib, "WL_CursorGetBatchSize", 
+cursorGetInfo = LibraryFunctionLoad[$MongoLinkLib, "WL_CursorInfo", 
 	{
-		Integer					(* cursor handle *)
+		Integer,					(* cursor handle *)
+		Integer						(* type switch *)
 
 	},
 	Integer
@@ -111,5 +112,21 @@ MongoCursorBatchSize[cursor_MongoCursor, Automatic] := CatchFailureAsMessage @
 PackageExport["MongoCursorGetBatchSize"]
 
 MongoCursorGetBatchSize[cursor_MongoCursor] := CatchFailureAsMessage @
-	Replace[safeLibraryInvoke[cursorGetBatchSize, getMLEID[cursor]], 0 -> Automatic]
+	Replace[safeLibraryInvoke[cursorGetInfo, getMLEID[cursor], 1], 0 -> Automatic]
 
+(*----------------------------------------------------------------------------*)
+PackageExport["MongoCursorInformation"]
+
+MongoCursorInformation[cursor_MongoCursor] := CatchFailureAsMessage @ Module[
+	{info = getMLEID[cursor]},
+	info = safeLibraryInvoke[cursorGetInfo, getMLEID[cursor], #]& /@ Range[5];
+	<|
+		"BatchSize" -> Replace[info[[1]], 0 -> Automatic],
+		"AliveQ" -> Replace[info[[2]], {0 -> False, 1 -> True}],
+		"ServerID" -> info[[3]],
+		"MaxWaitTime" -> timeconv @ info[[4]],
+		"Limit" -> Replace[info[[5]], 0 -> Infinity]
+	|>
+]
+
+timeconv[x_] := If[x == 0, Automatic, Quantity[8, "Milliseconds"]]

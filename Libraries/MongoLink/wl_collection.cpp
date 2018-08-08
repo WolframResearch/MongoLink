@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Collection-level functions
-//	- For API guide, see:
+//  - For API guide, see:
 // http://mongoc.org/libmongoc/current/mongoc_collection_t.html
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -25,10 +25,11 @@ EXTERN_C DLLEXPORT int WL_MongoCollectionCount(WolframLibraryData libData,
                                                MArgument Res) {
   COLLECTION_GET(collection, 0)
   BSON_GET(query, 1)
+  BSON_GET(opts, 2)
 
   bson_error_t error;
-  mint count = mongoc_collection_count(collection, MONGOC_QUERY_NONE, query, 0,
-                                       0, NULL, &error);
+  mint count = mongoc_collection_count_with_opts(collection, MONGOC_QUERY_NONE, query, 0,
+                                       0, opts, NULL, &error);
   // Error handling
   if (count < 0) {
     errorString = error.message;
@@ -63,10 +64,11 @@ EXTERN_C DLLEXPORT int WL_MongoCollectionAggregation(WolframLibraryData libData,
                                                      MArgument Res) {
   COLLECTION_GET(collection, 0)
   BSON_GET(pipeline, 1)
-  mint outputCursorHandleKey = MArgument_getInteger(Args[2]);
+  BSON_GET(opts, 2)
+  mint outputCursorHandleKey = MArgument_getInteger(Args[3]);
   // http://mongoc.org/libmongoc/current/mongoc_collection_aggregate.html
   mongoc_cursor_t *cursor = mongoc_collection_aggregate(
-      collection, MONGOC_QUERY_NONE, pipeline, NULL, NULL);
+      collection, MONGOC_QUERY_NONE, pipeline, opts, NULL);
 
   // Cursor can return Null if invalid parameters. Check
   if (!cursor) {

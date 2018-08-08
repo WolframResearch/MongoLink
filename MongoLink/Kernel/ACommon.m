@@ -207,14 +207,18 @@ replaceAssociationKeys[assoc_, rules_] := Module[
 	KeyDrop[old] @ Join[assoc, AssociationThread[new[[keyPos]] -> look[[keyPos]]]]
 ]
 
-optsBSON[opts_Association, defaults_Association, changeRules_List] := Module[
+PackageScope["optsToBSON"]
+optsToBSON[opts_Association, defaults_Association, changeRules_List] := Module[
 	{opts2},
 	opts2 = processOpts[opts, defaults, changeRules];
 	iToBSON[opts2]
 ]
 
-optsBSON[opts_Association, defaults_Association] :=
-	optsBSON[opts, defaults, {}]
+optsToBSON[opts_Association, defaults_Association] :=
+	optsToBSON[opts, defaults, {}]
+
+optsToBSON[opts_Association] :=
+	optsToBSON[opts, <||>, {}]
 
 (*----------------------------------------------------------------------------*)
 (* This function converts a number of WL inputs to a Mongo millisecond time format 

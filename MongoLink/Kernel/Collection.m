@@ -68,6 +68,7 @@ mongoCollectionAggregate = LibraryFunctionLoad[$MongoLinkLib,
 	{
 		Integer,		(* collection handle *)
 		Integer,		(* pipeline bson *)
+		Integer,		(* opts bson *)
 		Integer			(* cursor *)
 	
 	}, 
@@ -300,14 +301,15 @@ MongoCollectionFind[coll_MongoCollection, query_, opts:OptionsPattern[]] :=
 (*----------------------------------------------------------------------------*)
 PackageExport["MongoCollectionAggregate"]
 
-MongoCollectionAggregate[coll_MongoCollection, pipeline_] := Module[
-	{cursorHandle, pipelineBSON},
+MongoCollectionAggregate[coll_MongoCollection, pipeline_, opts_Association] := Module[
+	{cursorHandle, pipelineBSON, optsBSON},
 	cursorHandle = CreateManagedLibraryExpression["Cursor", cursorMLE];
 	pipelineBSON = iToBSON[<|"pipeline" -> pipeline|>];
-
+	optsBSON = optsToBSON[opts];
 	safeLibraryInvoke[mongoCollectionAggregate,
 		getMLEID[coll], 
-		getMLEID[pipelineBSON], 
+		getMLEID[pipelineBSON],
+		getMLEID[optsBSON],
 		getMLEID[cursorHandle]
 	];
 
@@ -315,6 +317,9 @@ MongoCollectionAggregate[coll_MongoCollection, pipeline_] := Module[
 		cursorHandle, getClient[coll]
 	]
 ]
+
+MongoCollectionAggregate[coll_MongoCollection, pipeline_] := 
+	MongoCollectionAggregate[coll, pipeline, <||>]
 
 (*----------------------------------------------------------------------------*)
 PackageExport["MongoCollectionStats"]
