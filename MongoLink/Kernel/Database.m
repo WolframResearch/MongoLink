@@ -71,6 +71,12 @@ PackageExport["MongoDatabaseName"]
 MongoDatabaseName[MongoDatabase[_, name_, _]] := name;
 MongoDatabaseName[___] := $Failed
 
+MongoDatabase /: Length[d_MongoDatabase] := Module[
+	{names = MongoGetCollectionNames[d]},
+	If[FailureQ[names], Return[names]];
+	Length[names]
+]
+
 (*----------------------------------------------------------------------------*)
 PackageExport["MongoGetDatabase"]
 PackageScope["iMongoGetDatabase"]
@@ -90,14 +96,25 @@ iMongoGetDatabase[client_MongoClient, databaseName_String] := Module[
 		MongoDatabase[dbMLE, databaseName, client]
 ]
 
+DeclareArgumentCount[MongoGetDatabase, 2];
+MongoGetDatabase[args___] := (Message[MongoGetDatabase::mongoinvarg, List@args]; $Failed)
+
 (*----------------------------------------------------------------------------*)
 PackageExport["MongoGetCollectionNames"]
 
 MongoGetCollectionNames[db_MongoDatabase] := CatchFailureAsMessage @
 	safeLibraryInvoke[getCollectionNames, getMLEID @ db]
 
+DeclareArgumentCount[MongoGetCollectionNames, 1];
+MongoGetCollectionNames::invargs = "A MongoDatabase object was expected, but `` was given."
+MongoGetCollectionNames[db_] := (Message[MongoGetCollectionNames::invargs, db]; $Failed)
+
 (*----------------------------------------------------------------------------*)
 PackageExport["MongoDatabaseDrop"]
 
 MongoDatabaseDrop[db_MongoDatabase] := CatchFailureAsMessage @ 
 	safeLibraryInvoke[mongoDatabaseDrop, getMLEID[db]];
+
+DeclareArgumentCount[MongoDatabaseDrop, 1];
+MongoDatabaseDrop::invargs = "A MongoDatabase object was expected, but `` was given."
+MongoDatabaseDrop[db_] := (Message[MongoDatabaseDrop::invargs, db]; $Failed)
