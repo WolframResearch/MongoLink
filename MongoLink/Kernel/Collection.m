@@ -149,11 +149,25 @@ MongoCollection /: RandomSample[coll_MongoCollection, n_] := Module[
 	ReadList @ MongoCollectionAggregate[coll, pipeline]
 ]
 
+MongoCollection /: ByteCount[coll_MongoCollection] := Module[
+	{stats},
+	stats = MongoCollectionStats[coll];
+	If[FailureQ[stats], Return@stats];
+	Normal[stats]["size"]
+]
+
+MongoCollection /: Length[coll_MongoCollection] := 
+	MongoCollectionCount[coll]
+
 (*----------------------------------------------------------------------------*)
 PackageExport["MongoCollectionName"]
 
 MongoCollectionName[MongoCollection[__, collname_, _]] := collname;
-MongoCollectionName[___] := $Failed
+
+DeclareArgumentCount[MongoCollectionName, 1];
+MongoCollectionName::invargs = "A MongoCollection object was expected, but `` was given."
+MongoCollectionName[x_] := (Message[MongoCollectionName::invargs, x]; $Failed)
+
 
 (*----------------------------------------------------------------------------*)
 PackageExport["MongoGetCollection"]
@@ -207,6 +221,7 @@ MongoCollectionName[coll_MongoCollection] := CatchFailureAsMessage @
 (*----------------------------------------------------------------------------*)
 PackageExport["MongoCollectionCount"]
 
+DeclareArgumentCount[MongoCollectionCount, {1, 3}];
 MongoCollectionCount[coll_MongoCollection, query_Association] := 
 CatchFailureAsMessage @ Module[
 	{bsonQuery},
@@ -223,6 +238,7 @@ MongoCollectionCount[coll_MongoCollection] :=
 (*----------------------------------------------------------------------------*)
 PackageExport["MongoCollectionFindOne"]
 
+DeclareArgumentCount[MongoCollectionFindOne, {1, 3}];
 MongoCollectionFindOne[coll_MongoCollection, query_Association, projection_Association] := Module[
 	{res},	
 	res = MongoCollectionFind[coll, query, projection];
@@ -253,6 +269,8 @@ MongoCollectionFind::invLimit =
 	"The Option \"Limit\" must have value None or a non-negative integer, but `` was given.";
 MongoCollectionFind::invBatchSize = 
 	"The Option BatchSize must have value Automatic or a non-negative integer, but `` was given.";
+
+DeclareArgumentCount[MongoCollectionFind, {1, 3}];
 
 MongoCollectionFind[coll_MongoCollection, 
 	query_Association, projection_Association, opts:OptionsPattern[]] := 
@@ -301,6 +319,8 @@ MongoCollectionFind[coll_MongoCollection, query_, opts:OptionsPattern[]] :=
 (*----------------------------------------------------------------------------*)
 PackageExport["MongoCollectionAggregate"]
 
+DeclareArgumentCount[MongoCollectionAggregate, {1, 2}];
+
 MongoCollectionAggregate[coll_MongoCollection, pipeline_, opts_Association] := Module[
 	{cursorHandle, pipelineBSON, optsBSON},
 	cursorHandle = CreateManagedLibraryExpression["Cursor", cursorMLE];
@@ -324,6 +344,8 @@ MongoCollectionAggregate[coll_MongoCollection, pipeline_] :=
 (*----------------------------------------------------------------------------*)
 PackageExport["MongoCollectionStats"]
 
+DeclareArgumentCount[MongoCollectionStats, {1}];
+
 MongoCollectionStats[coll_MongoCollection] := CatchFailureAsMessage @ Module[
 	{optsBSON, replyBSON},
 	(* don't support opts yet *)
@@ -340,6 +362,8 @@ MongoCollectionStats[coll_MongoCollection] := CatchFailureAsMessage @ Module[
 (*----------------------------------------------------------------------------*)
 PackageExport["MongoCollectionDrop"]
 
+DeclareArgumentCount[MongoCollectionDrop, {1}];
+
 MongoCollectionDrop[coll_MongoCollection] := CatchFailureAsMessage @ Module[
 	{optsBSON},
 	(* don't support opts yet *)
@@ -352,6 +376,8 @@ MongoCollectionDrop[coll_MongoCollection] := CatchFailureAsMessage @ Module[
 
 (*----------------------------------------------------------------------------*)
 PackageExport["MongoCollectionValidate"]
+
+DeclareArgumentCount[MongoCollectionValidate, {1}];
 
 MongoCollectionValidate[coll_MongoCollection] := CatchFailureAsMessage @ Module[
 	{optsBSON, replyBSON},
@@ -395,6 +421,8 @@ mongoCollectionCommand[coll_MongoCollection, command_] := Module[
 
 (*----------------------------------------------------------------------------*)
 PackageExport["MongoCollectionDistinct"]
+
+DeclareArgumentCount[MongoCollectionDistinct, {2, 3}];
 
 MongoCollectionDistinct[coll_MongoCollection, key_String, query_Association] := 
 CatchFailureAsMessage @ Module[
