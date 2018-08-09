@@ -11,7 +11,7 @@ bson1 = ToBSON[<|"hello" -> {1, 2.5, 3.}|>];
 
 VerificationTest[
 	BSONToRawArray[bson1], 
-	_RawArray, 
+	(_NumericArray | _RawArray), 
  	TestID -> "BSON to raw array", 
  	SameTest -> MatchQ
  ]

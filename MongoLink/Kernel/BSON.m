@@ -129,19 +129,34 @@ iBSONToAssociation[___] := ThrowFailure[iBSONToAssociation::invarg]
 PackageExport["ToBSON"]
 PackageScope["iToBSON"]
 
-iToBSON::invjson = "Cannot parse the input into JSON.";
-iToBSON::invtype = "Argument must be string, Association or list.";
+General::tobsoninvjson = "iToBSON failed: Expression `` cannot be exported as JSON.";
+General::tobsoninvtype = 
+	"iToBSON failed: Argument must be a String, Association, List, or NumericArray.";
+General::tobsoninvnatype = 
+	"iToBSON failed: NumericArray has type ``, but must have type UnsignedInteger8.";
 
 iToBSON[doc_Association] := Module[
 	{json},
-	json = Quiet @ Developer`WriteRawJSONString[doc,
-	 	"Compact" -> True,
-	 	"ConversionRules" -> $EncodingRules
+
+	(* capture message *)
+	myMessageList = {};
+	Internal`InheritedBlock[{Message, $InMsg = False}, 
+  		Unprotect[Message];
+		Message[msg_, vars___] /; ! $InMsg := 
+   		Block[{$InMsg = True}, 
+    		AppendTo[myMessageList, {HoldForm[msg], vars}];
+    		Message[msg, vars]
+    	];
+  		(*code to run*)
+  		json = Quiet @ Developer`WriteRawJSONString[doc,
+	 		"Compact" -> True,
+	 		"ConversionRules" -> $EncodingRules
+		];
 	];
 	If[FailureQ[json],
-	 	ThrowFailure[iToBSON::invjson]
+	 	ThrowFailure["tobsoninvjson", myMessageList[[1, 2]]];
 	];
-	 iToBSON[json]
+	iToBSON[json]
 ]
 
 (* assumes doc is json *)
@@ -152,8 +167,12 @@ iToBSON[doc_String] := Module[
 	BSONObject[bsonHandle]
 ]
 
-iToBSON[doc_RawArray /; (Developer`RawArrayType[doc] === "UnsignedInteger8")] := Module[
-	{bsonHandle}, 
+iToBSON[doc: (_RawArray | _NumericArray)] := Module[
+	{bsonHandle, type}, 
+	type = Developer`RawArrayType[doc];
+	If[type =!= "UnsignedInteger8",
+		ThrowFailure["tobsoninvnatype", type]
+	];
 	bsonHandle = CreateManagedLibraryExpression["BSON", bsonMLE];
 	safeLibraryInvoke[rawarrayToBSON, getMLEID[bsonHandle], doc];
 	BSONObject[bsonHandle]
@@ -161,7 +180,7 @@ iToBSON[doc_RawArray /; (Developer`RawArrayType[doc] === "UnsignedInteger8")] :=
 
 iToBSON[doc_ByteArray] := iToBSON[RawArray["UnsignedInteger8", Normal[doc]]]
 
-iToBSON[doc_] := ThrowFailure[iToBSON::invtype]
+iToBSON[doc_] := ThrowFailure["tobsoninvtype"]
 
 iToBSON[doc_BSONObject] := doc (* idempotency *)
 
