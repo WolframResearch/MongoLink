@@ -70,11 +70,6 @@ EXTERN_C DLLEXPORT int WL_MongoCollectionAggregation(WolframLibraryData libData,
   mongoc_cursor_t *cursor = mongoc_collection_aggregate(
       collection, MONGOC_QUERY_NONE, pipeline, opts, NULL);
 
-  // Cursor can return Null if invalid parameters. Check
-  if (!cursor) {
-    errorString = "Unable to do perform query.";
-    return LIBRARY_FUNCTION_ERROR;
-  }
   // add cursor to map
   cursorHandleMap[outputCursorHandleKey] = cursor;
   return LIBRARY_NO_ERROR;

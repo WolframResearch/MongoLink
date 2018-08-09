@@ -188,7 +188,7 @@ PackageScope["processOpts"]
 processOpts[opts_Association, defaults_Association, changeRules_List] := Module[
 	{opts2},
 	opts2 = replaceAssociationKeys[opts, changeRules];
-	opts2 = KeyMap[ToLowerCase, opts2];
+	opts2 = KeyMap[Decapitalize, opts2];
 	Join[defaults, opts2]
 ]
 
