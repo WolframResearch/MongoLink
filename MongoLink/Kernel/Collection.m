@@ -146,7 +146,7 @@ getMLEID[MongoCollection[collMLE_, __]] := ManagedLibraryExpressionID[collMLE];
 MongoCollection /: RandomSample[coll_MongoCollection, n_] := Module[
 	{pipeline},
 	pipeline = {<|"$sample" -> <|"size" -> n|>|>};
-	MongoCollectionAggregate[coll, pipeline]
+	ReadList @ MongoCollectionAggregate[coll, pipeline]
 ]
 
 (*----------------------------------------------------------------------------*)
