@@ -88,13 +88,22 @@ iMongoCursorNext[cursor_MongoCursor] := Module[
 (*----------------------------------------------------------------------------*)
 PackageExport["MongoCursorToArray"]
 
-MongoCursorToArray[cursor_MongoCursor] := CatchFailureAsMessage @ Module[
+Options[MongoCursorToArray] = {
+	MaxItems -> Infinity
+}
+
+MongoCursorToArray[cursor_MongoCursor, OptionsPattern[]] := 
+CatchFailureAsMessage @ Module[
 	{bag, current},
+	max = OptionValue[MaxItems];
+
 	bag = Internal`Bag[];
 	current = iMongoCursorNext[cursor];
-	While[current =!= Null,
+	count = 1;
+	While[(current =!= Null) && (count <= max),
 		Internal`StuffBag[bag, current];
-		current = iMongoCursorNext[cursor]
+		current = iMongoCursorNext[cursor];
+		count += 1;
 	];
 	Internal`BagPart[bag, All]
 ]
