@@ -106,7 +106,7 @@ MongoConnect[connection_Association] := CatchFailureAsMessage @ Module[
 	con = processOpts[connection, $DefaultConnection, replaceRules];
 
 	(* special handling for passwords *)
-	{password, username} = popAssociation[con, {"password", "username"}, None];
+	{password, username} = Lookup[con, {"password", "username"}, None];
 	If[password === "$Prompt",
 		cred = AuthenticationDialog["UsernamePassword" -> {"Username" -> username}];
 		If[Head[cred] =!= Association,
@@ -114,10 +114,13 @@ MongoConnect[connection_Association] := CatchFailureAsMessage @ Module[
 			Return[$Failed]
 		];
 		{username, password} = Lookup[cred, {"Username", "Password"}];
+		con = Join[con, <|"password" -> password, "username" -> username|>];
 	];
 
 	(* pop ssl opts: handle separately *)
-	{ssl, verifyCert} = popAssociation[con, {"ssl", "sslallowinvalidcertificates"}, False];
+	ssl = popAssociation[con, "ssl", Automatic];
+	verifyCert = popAssociation[con, "sslallowinvalidcertificates", True];
+	invHost = popAssociation[con, "sslallowinvalidhostnames", False];
 	{pemFile, caFile, crList} = fileConform /@ 
 		popAssociation[con, 
 			{"sslclientcertificatekeyfile", "sslcertificateauthorityfile", "certificaterevocationlist"}, 

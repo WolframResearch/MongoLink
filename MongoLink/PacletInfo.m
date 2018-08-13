@@ -1,6 +1,6 @@
 Paclet[
 	Name -> "MongoLink",
-	Version -> "12",
+	Version -> "12.1",
 	MathematicaVersion -> "11.1+",
 	Description -> "Link to MongoDB C driver.",
 	Loading -> Automatic,

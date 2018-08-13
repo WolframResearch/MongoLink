@@ -344,7 +344,7 @@ MongoCollectionAggregate[coll_MongoCollection, pipeline_] :=
 (*----------------------------------------------------------------------------*)
 PackageExport["MongoCollectionStats"]
 
-DeclareArgumentCount[MongoCollectionStats, {1}];
+DeclareArgumentCount[MongoCollectionStats, 1];
 
 MongoCollectionStats[coll_MongoCollection] := CatchFailureAsMessage @ Module[
 	{optsBSON, replyBSON},
@@ -362,7 +362,7 @@ MongoCollectionStats[coll_MongoCollection] := CatchFailureAsMessage @ Module[
 (*----------------------------------------------------------------------------*)
 PackageExport["MongoCollectionDrop"]
 
-DeclareArgumentCount[MongoCollectionDrop, {1}];
+DeclareArgumentCount[MongoCollectionDrop, 1];
 
 MongoCollectionDrop[coll_MongoCollection] := CatchFailureAsMessage @ Module[
 	{optsBSON},
@@ -377,7 +377,7 @@ MongoCollectionDrop[coll_MongoCollection] := CatchFailureAsMessage @ Module[
 (*----------------------------------------------------------------------------*)
 PackageExport["MongoCollectionValidate"]
 
-DeclareArgumentCount[MongoCollectionValidate, {1}];
+DeclareArgumentCount[MongoCollectionValidate, 1];
 
 MongoCollectionValidate[coll_MongoCollection] := CatchFailureAsMessage @ Module[
 	{optsBSON, replyBSON},
