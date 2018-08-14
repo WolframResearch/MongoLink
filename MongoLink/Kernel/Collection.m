@@ -39,7 +39,8 @@ mongoCollectionCount = LibraryFunctionLoad[$MongoLinkLib,
 	"WL_MongoCollectionCount", 
 	{
 		Integer,		(* connection handle *)
-		Integer			(* bson handle *)
+		Integer,		(* bson handle *)
+		Integer			(* opts handle *)
 	}, 
 	Integer				(* count *)						
 ]	
@@ -221,14 +222,16 @@ MongoCollectionName[coll_MongoCollection] := CatchFailureAsMessage @
 (*----------------------------------------------------------------------------*)
 PackageExport["MongoCollectionCount"]
 
-DeclareArgumentCount[MongoCollectionCount, {1, 3}];
+DeclareArgumentCount[MongoCollectionCount, {1, 2}];
 MongoCollectionCount[coll_MongoCollection, query_Association] := 
 CatchFailureAsMessage @ Module[
-	{bsonQuery},
+	{bsonQuery, opts = <||>, optsBSON},
 	bsonQuery = iToBSON[query];
+	optsBSON = iToBSON[opts]; (* support opts in future *)
 	safeLibraryInvoke[mongoCollectionCount,
 		getMLEID[coll], 
-		getMLEID[bsonQuery]
+		getMLEID[bsonQuery],
+		getMLEID[optsBSON]
 	]
 ]
 
