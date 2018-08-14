@@ -105,7 +105,7 @@ MongoConnect[connection_Association] := CatchFailureAsMessage @ Module[
 		replaceRules, con, uri, clientID, result,
 		clientHandle = CreateManagedLibraryExpression["Client", clientMLE],
 		password, username, cred,
-		ssl, pemFile, caFile, crList, pemFilePassword, verifyCert
+		ssl, pemFile, caFile, crList, pemFilePassword, verifyCert, test
 	},
 	(* conform WL names to native mongo names *)
 	replaceRules = {
@@ -167,7 +167,10 @@ MongoConnect[connection_Association] := CatchFailureAsMessage @ Module[
 	];
 
 	(* check whether connected *)
-	mongoClientCommandSimple[c, <|"ping" -> 1|>, "admin"];
+	test = 
+		mongoClientCommandSimple[MongoClient[clientHandle], <|"ping" -> 1|>, "admin"];
+	If[!AssociationQ[test], Return@$Failed];
+	If[Round@Lookup[test, "ok", Return[$Failed]] =!= 1, Return[$Failed]];
 
 	(* return client object *)
 	System`Private`SetNoEntry @ MongoClient[clientHandle]
@@ -203,7 +206,7 @@ MongoGetDatabaseNames[x_] := (Message[MongoGetDatabaseNames::invargs, x]; $Faile
 (*----------------------------------------------------------------------------*)
 PackageScope["mongoClientCommandSimple"]
 
-mongoClientCommandSimple[client_MongoClient, command_, database_] := CatchFailureAsMessage @ Module[
+mongoClientCommandSimple[client_MongoClient, command_, database_] := Module[
 	{comBSON = iToBSON[command], outBSON},
 	outBSON = CreateManagedLibraryExpression["BSON", bsonMLE];
 	safeLibraryInvoke[
