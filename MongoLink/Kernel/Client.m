@@ -39,6 +39,16 @@ getDatabaseNames = LibraryFunctionLoad[$MongoLinkLib, "WL_GetDatabaseNames",
 	Automatic, LinkObject					
 ]
 
+clientSimpleCommand = LibraryFunctionLoad[$MongoLinkLib, "WL_ClientSimpleCommand",
+	{
+		Integer,					(* client handle *)
+		Integer,					(* command bson *)
+		"UTF8String",				(* json *)
+		Integer						(* out bson *)
+	},
+	"Void"
+]
+
 (*----------------------------------------------------------------------------*)
 PackageExport["MongoClient"]
 
@@ -69,6 +79,8 @@ MongoClient /: Length[c_MongoClient] := Module[
 	If[FailureQ[names], Return[names]];
 	Length[names]
 ]
+
+MongoClient /: Keys[c_MongoClient] := MongoGetDatabaseNames[c]
 
 (*----------------------------------------------------------------------------*)
 PackageExport["MongoConnect"]
@@ -154,6 +166,9 @@ MongoConnect[connection_Association] := CatchFailureAsMessage @ Module[
 		 ]
 	];
 
+	(* check whether connected *)
+	mongoClientCommandSimple[c, <|"ping" -> 1|>, "admin"];
+
 	(* return client object *)
 	System`Private`SetNoEntry @ MongoClient[clientHandle]
 
@@ -184,3 +199,19 @@ DeclareArgumentCount[MongoGetDatabaseNames, 1];
 MongoGetDatabaseNames::invargs = 
 	"MongoGetDatabaseNames expects a MongoClient object, but `` was given."
 MongoGetDatabaseNames[x_] := (Message[MongoGetDatabaseNames::invargs, x]; $Failed)
+
+(*----------------------------------------------------------------------------*)
+PackageScope["mongoClientCommandSimple"]
+
+mongoClientCommandSimple[client_MongoClient, command_, database_] := CatchFailureAsMessage @ Module[
+	{comBSON = iToBSON[command], outBSON},
+	outBSON = CreateManagedLibraryExpression["BSON", bsonMLE];
+	safeLibraryInvoke[
+		clientSimpleCommand, 
+		getMLEID[client],
+		getMLEID[comBSON],
+		database,
+		getMLEID[outBSON]
+	];
+	BSONToAssociation @ BSONObject[outBSON]
+]

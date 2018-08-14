@@ -77,6 +77,9 @@ MongoDatabase /: Length[d_MongoDatabase] := Module[
 	Length[names]
 ]
 
+MongoDatabase /: Keys[d_MongoDatabase] := 
+	MongoGetCollectionNames[d]
+
 (*----------------------------------------------------------------------------*)
 PackageExport["MongoGetDatabase"]
 PackageScope["iMongoGetDatabase"]

@@ -19,20 +19,6 @@ EXTERN_C DLLEXPORT int WL_ClientHandleCreate(WolframLibraryData libData,
 
   mongoc_client_set_error_api(client, 2);
 
-  // bson_t *command = BCON_NEW("ping", BCON_INT32(1));
-  // bson_error_t error;
-  // bson_t reply;
-  // bool retval = mongoc_client_command_simple(client, "admin", command, NULL,
-  //                                            &reply, &error);
-
-  // if (!retval) {
-  //   std::cout << error.domain << std::endl;
-  //   errorString = error.message;
-  //   return LIBRARY_FUNCTION_ERROR;
-  // }
-
-  // std::cout << bson_as_json(&reply, NULL) << std::endl;
-
   // If connection was successful, add to clientHandleMap
   clientHandleMap[client_handle_key] = client;
   return LIBRARY_NO_ERROR;
@@ -153,5 +139,29 @@ EXTERN_C DLLEXPORT int WL_ClientGetCollection(WolframLibraryData libData,
   // Disown strings
   libData->UTF8String_disown(databaseName);
   libData->UTF8String_disown(collectionName);
+  return LIBRARY_NO_ERROR;
+}
+
+EXTERN_C DLLEXPORT int WL_ClientSimpleCommand(WolframLibraryData libData,
+                                              mint Argc, MArgument *Args,
+                                              MArgument Res) {
+  CLIENT_GET(client, 0)
+  BSON_GET(command, 1)
+
+  const char *dbName = MArgument_getUTF8String(Args[2]);
+  int bson_handle_key = MArgument_getInteger(Args[3]);
+
+  bson_error_t error;
+  bson_t reply;
+  bool retval = mongoc_client_command_simple(client, dbName, command, NULL,
+                                             &reply, &error);
+  libData->UTF8String_disown(MArgument_getUTF8String(Args[2]));
+
+  if (!retval) {
+    errorString = error.message;
+    return LIBRARY_FUNCTION_ERROR;
+  }
+  bsonHandleMap[bson_handle_key] = bson_copy(&reply);
+  bson_destroy(&reply);
   return LIBRARY_NO_ERROR;
 }
