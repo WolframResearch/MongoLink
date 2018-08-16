@@ -129,7 +129,8 @@ PackageScope["FromMillisecondUnixTime"]
 FromMillisecondUnixTime[time_] := Module[
 	{dateList}
 	,
-	dateList = DateList @ FromUnixTime[time / 1000.];
+	(* mongo servers use UTC format. TimeZone ensures this *)
+	dateList = DateList @ FromUnixTime[time / 1000., TimeZone -> 0];
 	DateObject[dateList, DateFormat -> {"DateTime", ":", "Millisecond"}]
 ]
 
