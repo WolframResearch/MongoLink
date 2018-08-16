@@ -150,13 +150,6 @@ MongoCollection /: RandomSample[coll_MongoCollection, n_] := Module[
 	ReadList @ MongoCollectionAggregate[coll, pipeline]
 ]
 
-MongoCollection /: ByteCount[coll_MongoCollection] := Module[
-	{stats},
-	stats = MongoCollectionStats[coll];
-	If[FailureQ[stats], Return@stats];
-	Normal[stats]["size"]
-]
-
 MongoCollection /: Length[coll_MongoCollection] := 
 	MongoCollectionCount[coll]
 
@@ -179,10 +172,10 @@ PackageExport["MongoGetCollection"]
 
 MongoGetCollection[db_MongoDatabase, collectionName_String] := 
 CatchFailureAsMessage @ Module[
-	{collHandle, result},
+	{collHandle},
 	(* Check that collectionName is in database *)
 	collHandle = CreateManagedLibraryExpression["Collection", collectionMLE];
-	result = safeLibraryInvoke[databaseGetCollection,
+	safeLibraryInvoke[databaseGetCollection,
 		getMLEID[db], 
 		getMLEID[collHandle],
 		collectionName
@@ -197,9 +190,9 @@ CatchFailureAsMessage @ Module[
 
 MongoGetCollection[client_MongoClient, 
 	databaseName_String, collectionName_String] := CatchFailureAsMessage @ Module[
-	{collHandle, result},
+	{collHandle},
 	collHandle = CreateManagedLibraryExpression["Collection", collectionMLE];
-	result = safeLibraryInvoke[clientGetCollection,
+	safeLibraryInvoke[clientGetCollection,
 		getMLEID[client], 
 		getMLEID[collHandle],
 		databaseName, 
