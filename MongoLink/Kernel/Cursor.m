@@ -94,15 +94,14 @@ Options[MongoCursorToArray] = {
 
 MongoCursorToArray[cursor_MongoCursor, OptionsPattern[]] := 
 CatchFailureAsMessage @ Module[
-	{bag, current},
+	{max, bag, current, count},
 	max = OptionValue[MaxItems];
-
 	bag = Internal`Bag[];
-	current = iMongoCursorNext[cursor];
 	count = 1;
-	While[(current =!= Null) && (count <= max),
-		Internal`StuffBag[bag, current];
+	While[count <= max,
 		current = iMongoCursorNext[cursor];
+		If[current === Null, Break[]];
+		Internal`StuffBag[bag, current];
 		count += 1;
 	];
 	Internal`BagPart[bag, All]
