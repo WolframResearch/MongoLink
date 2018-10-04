@@ -219,7 +219,8 @@ $EncodingRules = {
 	x_DateObject :> <|"$date" -> Round @ ToMillisecondUnixTime[x]|>,
 	BSONObjectID[x_] :> <|"$oid" -> x|>,
 	BSONTimestamp[time_, inc_] :> <|"$timestamp" -> <|"t" -> time, "i" -> inc|>|>,
-	BSONDBReference[coll_, id_] :> <|"$ref" -> coll, "$id" -> First[id]|>
+	BSONDBReference[coll_, id_] :> <|"$ref" -> coll, "$id" -> First[id]|>,
+	BSONDecimal128[x_] :> <|"$numberDecimal" -> x|>
 };
 
 (*----- ObjectID -------*)
@@ -260,6 +261,40 @@ DefineCustomBoxes[BSONTimestamp,
 		StandardForm
 	]
 ]];
+
+(*----- Decimal128 -------*)
+PackageExport["BSONDecimal128"]
+
+(* check that number is not more precise than Decimal128 can handle *)
+BSONDecimal128::invnum = "Number is too `` for Decimal128.";
+
+(* There is probably a faster way to do this *)
+safeDecimal128[num_] := Module[
+	{
+		str = RealDigitsString[num, 34],
+		val
+	},
+	val = If[Positive[num], "large", "small"];
+	If[Last[MantissaExponent[num, 10]] > 34, ThrowFailure[BSONDecimal128::invnum, val]];
+	BSONDecimal128[str]
+]
+
+BSONDecimal128 /: Normal[BSONDecimal128[num_String]] := ToExpression[num]
+
+DefineCustomBoxes[BSONDecimal128, 
+	e:BSONDecimal128[num_String] :> Block[{},
+	BoxForm`ArrangeSummaryBox[
+		BSONDecimal128, e, None, 
+		{
+			BoxForm`SummaryItem[{"Value: ", num}]
+		},
+		{},
+		StandardForm
+	]
+]];
+
+BSONDecimal128[num_Real] := CatchFailureAsMessage @ safeDecimal128[num]
+BSONDecimal128[num_Integer] := BSONDecimal128[N[num]]
 
 (*----- DB Reference -------*)
 (* 
