@@ -149,8 +149,8 @@ MongoConnect[connection_Association] := CatchFailureAsMessage @ Module[
 	(***** SSL Opts ******)
 	(* See http://mongoc.org/libmongoc/current/mongoc_ssl_opt_t.html for 
 		this issue *)
-	If[($OperatingSystem === "Windows") && (pemFilePassword =!= None),
-		Message[OpenMongoConnection::winpem];
+	If[($OperatingSystem === "Windows") && (pemFilePassword =!= ""),
+		Message[MongoConnect::winpem];
 		Return[$Failed]
 	];
 	If[(ssl =!= False) && ((pemFile =!= "") || (caFile =!= "") || (crList =!= "")),
