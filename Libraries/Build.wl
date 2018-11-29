@@ -51,7 +51,7 @@ BuildMongoLink[opts:OptionsPattern[]] := Catch @ Module[
 			libDir = {"/Users/sebastianb/Documents/workspace/MongoC/1.7.0/MacOSX-x86-64/libcxx-min10.9/lib/"}
 		,
 		"Unix",
-			compileOpts = "-std=c++11"  <> compileOpts;
+			compileOpts = "-std=c++11 -fvisibility=hidden "  <> compileOpts;
 	];
 	libNames = 	{"mongoc-1.0.0", "bson-1.0.0"};
 	
